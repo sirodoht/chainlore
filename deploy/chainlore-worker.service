@@ -1,0 +1,26 @@
+[Unit]
+Description=Chainlore article request automation
+After=network-online.target chainlore.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+WorkingDirectory=/var/www/chainlore/app-current
+Environment=CHAINLORE_PRODUCTION=1
+Environment=CHAINLORE_DATA_DIR=/var/www/chainlore/private
+Environment=CHAINLORE_SITE_ROOT=/var/www/chainlore/current
+Environment=CHAINLORE_PUBLICATION_ROOT=/var/www/chainlore/published
+Environment=CHAINLORE_AUTOMATION_ENABLED=1
+Environment=CHAINLORE_AUTOMATION_DAILY_LIMIT=10
+ExecStart=/var/www/chainlore/app-current/.venv/bin/python manage.py process_requests
+TimeoutStartSec=12min
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/chainlore/private /var/www/chainlore/published
+MemoryMax=768M
+CPUQuota=100%

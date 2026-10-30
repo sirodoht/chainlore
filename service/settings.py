@@ -97,3 +97,10 @@ else:
 NOTIFICATIONS_ENABLED = bool(POSTMARK_TOKEN) or not PRODUCTION
 EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = 'Chainlore <notifications@chainlore.xyz>'
+
+# Provider credentials are read only by the background worker, never rendered.
+AUTOMATION_ENABLED = os.environ.get('CHAINLORE_AUTOMATION_ENABLED') == '1'
+AUTOMATION_DAILY_LIMIT = int(os.environ.get('CHAINLORE_AUTOMATION_DAILY_LIMIT', '10'))
+ANTHROPIC_MODEL = 'claude-haiku-5-5'
+JEV_MODEL = 'jev-latest'
+PUBLICATION_ROOT = Path(os.environ.get('CHAINLORE_PUBLICATION_ROOT', DATA_DIR / 'published'))

@@ -43,7 +43,8 @@ REMOTE
 # Public files and application source have separate roots. Persistent data is never synced.
 rsync -az --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r dist/ "$host:$remote_root/releases/$release/"
 rsync -az --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r --exclude '__pycache__/' \
-    pyproject.toml uv.lock manage.py service submissions deploy \
+    pyproject.toml uv.lock manage.py service submissions deploy scripts site pages \
+    README.md INDEX.md ABOUT.md VISION.md POLICY.md \
     "$host:$remote_root/app-releases/$release/"
 ssh "$host" bash -s -- "$release" < deploy/activate.sh
 curl --fail --silent --show-error --retry 3 --retry-delay 2 --retry-all-errors \

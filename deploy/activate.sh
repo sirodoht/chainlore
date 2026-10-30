@@ -19,6 +19,25 @@ if ss -lnt '( sport = :5011 )' | tail -n +2 | grep -q .; then
 fi
 mkdir -m 700 "$backup"
 install -d -o deploy -g deploy -m 700 "$root/private"
+install -d -o deploy -g deploy -m 755 "$root/published"
+# Stop processing before backing up/migrating or switching the application.
+# A run interrupted here resumes from its saved stage on the next timer tick.
+worker_was_active=0
+if systemctl is-active --quiet chainlore-worker.timer; then
+    worker_was_active=1
+fi
+systemctl stop chainlore-worker.timer chainlore-worker.service 2>/dev/null || true
+resume_worker() {
+    if [[ "$worker_was_active" == 1 ]]; then
+        systemctl start chainlore-worker.timer
+    fi
+}
+trap resume_worker EXIT
+for unit in chainlore-worker.service chainlore-worker.timer; do
+    if [[ -f "/etc/systemd/system/$unit" ]]; then
+        cp -p "/etc/systemd/system/$unit" "$backup/$unit"
+    fi
+done
 cp -p /etc/caddy/Caddyfile "$backup/Caddyfile"
 cp -p /etc/caddy/chainlore.caddy "$backup/chainlore.caddy"
 if [[ -f /etc/systemd/system/chainlore.service ]]; then
@@ -26,6 +45,7 @@ if [[ -f /etc/systemd/system/chainlore.service ]]; then
 fi
 previous="$(readlink "$root/current" || true)"
 previous_app="$(readlink "$root/app-current" || true)"
+previous_publication="$(readlink -f "$root/current" || true)"
 printf '%s\n' "$previous" > "$backup/previous-release"
 printf '%s\n' "$previous_app" > "$backup/previous-app-release"
 
@@ -46,6 +66,7 @@ chown -R deploy:deploy "$app" "$root/releases/$release"
 cd "$app"
 as_deploy() {
     runuser -u deploy -- env CHAINLORE_PRODUCTION=1 CHAINLORE_DATA_DIR="$root/private" \
+        CHAINLORE_PUBLICATION_ROOT="$root/published" \
         CHAINLORE_SITE_ROOT="$root/releases/$release" "$@"
 }
 as_deploy "$uv" sync --locked --no-dev --python /usr/bin/python3
@@ -59,6 +80,19 @@ rollback() {
     trap - ERR
     echo 'Activation failed; restoring the previous code and routing. Database is not reversed.' >&2
     cp -p "$backup/chainlore.caddy" /etc/caddy/chainlore.caddy
+    systemctl stop chainlore-worker.timer chainlore-worker.service 2>/dev/null || true
+    for unit in chainlore-worker.service chainlore-worker.timer; do
+        if [[ -f "$backup/$unit" ]]; then
+            cp -p "$backup/$unit" "/etc/systemd/system/$unit"
+        else
+            systemctl disable "$unit" 2>/dev/null || true
+            rm -f "/etc/systemd/system/$unit"
+        fi
+    done
+    if [[ -n "$previous_publication" ]]; then
+        ln -s "$previous_publication" "$root/published/rollback-$release"
+        mv -Tf "$root/published/rollback-$release" "$root/published/current"
+    fi
     if [[ -n "$previous" ]]; then
         ln -s "$previous" "$root/rollback-$release"
         mv -Tf "$root/rollback-$release" "$root/current"
@@ -80,11 +114,14 @@ rollback() {
 }
 trap rollback ERR
 
-ln -s "$root/releases/$release" "$root/next-$release"
+as_deploy .venv/bin/python manage.py publish_site --base-release "$root/releases/$release"
+ln -s "$root/published/current" "$root/next-$release"
 mv -Tf "$root/next-$release" "$root/current"
 ln -s "$app" "$root/app-next-$release"
 mv -Tf "$root/app-next-$release" "$root/app-current"
 install -m 644 "$app/deploy/chainlore.service" /etc/systemd/system/chainlore.service
+install -m 644 "$app/deploy/chainlore-worker.service" /etc/systemd/system/chainlore-worker.service
+install -m 644 "$app/deploy/chainlore-worker.timer" /etc/systemd/system/chainlore-worker.timer
 install -m 644 "$app/deploy/chainlore.caddy" /etc/caddy/chainlore.caddy
 caddy fmt --overwrite /etc/caddy/chainlore.caddy
 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
@@ -95,5 +132,7 @@ curl --fail --silent --show-error --retry 8 --retry-delay 1 --retry-connrefused 
     -H 'Host: chainlore.xyz' -H 'X-Forwarded-Proto: https' http://127.0.0.1:5011/_service/health/
 systemctl reload caddy
 systemctl is-active --quiet chainlore caddy
+systemctl enable --now chainlore-worker.timer
+systemctl is-active --quiet chainlore-worker.timer
 printf '\nDeployed: %s\nPrevious public release: %s\nPrevious app: %s\nBackup: %s\n' \
     "$release" "$previous" "${previous_app:-none}" "$backup"

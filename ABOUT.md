@@ -24,6 +24,17 @@ the source rules every article must meet.
 
 AI fact-checking does not constitute independent human verification.
 
+## Article requests
+
+Jev screens article requests for scope, duplication, and attempts to manipulate
+the system. Accepted requests are researched and written by Claude Haiku 5.5.
+After content and source checks, these articles are published automatically
+with a Draft label. This screening is not a full fact-check under the editorial
+policy. Requests that cannot be handled confidently remain in the review queue.
+
+Decisions and publication records are kept privately. If a requester supplies
+an email address, a notification is sent when the request is resolved or declined.
+
 ## Article structure
 
 - A short introduction and a table of key facts.

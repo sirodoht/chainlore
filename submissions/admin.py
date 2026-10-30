@@ -53,3 +53,43 @@ class SubmissionAdmin(admin.ModelAdmin):
             messages.error(request, 'The submitter could not be emailed. Save again to retry.')
         else:
             messages.info(request, 'Emailed the submitter about this decision.')
+
+
+# Audit records and source artifacts are visible only to authenticated staff.
+# They are append-only in the application; no public endpoints expose them.
+from .models import AutomationEvent, AutomationRun, GeneratedArticle
+
+
+class AuditAdmin(admin.ModelAdmin):
+    def get_readonly_fields(self, request, obj=None):
+        return [field.name for field in self.model._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(AutomationRun)
+class AutomationRunAdmin(AuditAdmin):
+    list_display = ['id', 'submission', 'state', 'attempts', 'last_error', 'created_at']
+    list_filter = ['state', 'created_at']
+    search_fields = ['submission__title', 'submission__reference']
+
+
+@admin.register(AutomationEvent)
+class AutomationEventAdmin(AuditAdmin):
+    list_display = ['id', 'run', 'kind', 'created_at']
+    list_filter = ['kind', 'created_at']
+    search_fields = ['run__submission__title', 'run__submission__reference']
+    list_select_related = ['run__submission']
+
+
+@admin.register(GeneratedArticle)
+class GeneratedArticleAdmin(AuditAdmin):
+    list_display = ['slug', 'title', 'run', 'published_at', 'content_hash']
+    search_fields = ['slug', 'title']

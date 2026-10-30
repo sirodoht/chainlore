@@ -1,0 +1,10 @@
+[Unit]
+Description=Process queued Chainlore article requests
+
+[Timer]
+OnBootSec=90s
+OnUnitInactiveSec=60s
+Unit=chainlore-worker.service
+
+[Install]
+WantedBy=timers.target

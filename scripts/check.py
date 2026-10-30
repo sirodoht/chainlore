@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Verify article front matter, and every local link, asset, and fragment in the generated site."""
 from html.parser import HTMLParser
+import os
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlsplit
 
 from build import load, validate
 
-SOURCE = Path(__file__).resolve().parent.parent
+SOURCE = Path(os.environ.get('CHAINLORE_BUILD_ROOT', Path(__file__).resolve().parent.parent)).resolve()
 ROOT = SOURCE / 'dist'
 DYNAMIC_ROUTES = {'/submit/', '/submit/request/', '/submit/correction/'}
 

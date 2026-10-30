@@ -4,6 +4,7 @@ import copy
 import hashlib
 import html
 import json
+import os
 import random
 import re
 import shutil
@@ -17,7 +18,7 @@ from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import markdown
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(os.environ.get('CHAINLORE_BUILD_ROOT', Path(__file__).resolve().parent.parent)).resolve()
 OUT = ROOT / 'dist'
 SUPPORTING = ('INDEX.md', 'VISION.md', 'ABOUT.md', 'POLICY.md')
 ROUTES = {'INDEX.md': '/all-articles/', 'VISION.md': '/vision/',

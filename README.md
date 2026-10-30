@@ -52,7 +52,7 @@ spam controls, private receipts, and admin access and review operations.
   duplicate links, and a URL for the resulting article change.
 
 Email is optional and never published. It is available only in the authenticated
-editorial queue for replying to the submitter. New submissions notify the configured
+editorial queue for sending status notifications. New submissions notify the configured
 admin; resolving or declining a submission emails the submitter if they supplied an address.
 Submissions are private;
 receipt pages show a reference number without exposing submitted text or email.
@@ -71,6 +71,64 @@ duplicate records. Limits are 10 submissions per connection per hour and
 10 admin login attempts per connection per 15 minutes. Rate-limit keys use
 hashed addresses and expire at the end of their window; raw addresses are not
 stored in the submission database.
+
+### Automatic article requests
+
+The production `chainlore-worker.timer` runs every minute. It processes new article
+requests (including an existing backlog), one at a time, with a default limit of
+10 new runs per UTC day. Error reports remain in the manual queue.
+
+1. Save an immutable snapshot of title, scope, and source hints. The email field
+   and server secrets are never sent to either model.
+2. Resolve exact existing titles locally. Ask Jev (`jev-latest`) independent
+   questions about scope, injection, and duplicate subjects. Generation requires
+   confidence at least 0.8 and selected-option probability at least 0.9 on all three.
+3. Have `claude-haiku-5-5` research with up to eight web searches, then write a
+   bounded JSON/Markdown draft in a separate call without tools. No model gets
+   shell access, filesystem tools, email tools, or publishing credentials.
+4. Check the slug, metadata, inert Markdown, citations, and source provenance.
+   Require at least three distinct search-result sources across two domains.
+   Jev screens the completed draft for suitability. This does not confer an
+   AI fact-checked status: generated articles are explicitly published as drafts.
+5. Rebuild the full site, run the static checker, and atomically switch its public
+   symlink. Email the requester about the resulting article or declined request.
+
+Ambiguous decisions and validation failures go to review. Transient provider
+errors retry from saved checkpoints, at most three attempts with backoff. The
+worker never silently substitutes a model or approves a failed screening call.
+Provider errors, requests, responses, usage, decisions, validation results, hashes,
+publication IDs, and notification outcomes are available in the private admin
+under Automation runs, Automation events, and Generated articles. Hidden model
+thinking is not stored. Notifications retry up to three times, one hour apart;
+SMTP acceptance does not prove inbox delivery. Existing admin-new-submission
+notifications keep their original behavior.
+
+Provider keys are read by the worker from `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`,
+or private files `jev-api-key` and `anthropic-api-key` in `CHAINLORE_DATA_DIR`
+(owner `deploy`, mode `600` on Brick). Never put credentials in source, prompts,
+unit files, or public build artifacts. `CHAINLORE_AUTOMATION_ENABLED=1` enables
+processing; `CHAINLORE_AUTOMATION_DAILY_LIMIT` changes the daily run cap. Local
+development defaults to disabled. Stop `chainlore-worker.timer` and the worker
+service together to pause production processing immediately.
+
+Generated Markdown is authoritative in SQLite, not automatically committed to
+Git. Every deployment combines the shipped Git sources with these database
+articles, updating the index, search, sitemap, and Markdown URLs. A page added
+deliberately to `pages/` with the same slug supersedes the generated version.
+Back up the database to retain generated articles and their audit history.
+Public releases are under `published/releases/`, with an atomic `published/current`
+symlink; the existing `current` path points to that symlink. The worker can write
+only the private data and publication directories under systemd's sandbox.
+
+For local processing after setting private credentials:
+
+```sh
+CHAINLORE_AUTOMATION_ENABLED=1 uv run --locked python manage.py process_requests
+```
+
+`manage.py publish_site --base-release dist` rebuilds the publication from Git
+sources and database articles without calling a model. It uses the same lock as
+the worker. A failed build leaves the previous public site intact.
 
 ## Deploy to Brick
 
