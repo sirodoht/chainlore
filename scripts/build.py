@@ -4,6 +4,7 @@ import copy
 import hashlib
 import html
 import json
+import random
 import re
 import shutil
 import sys
@@ -29,7 +30,6 @@ ARTICLE_FIELDS = ('title', 'ticker', 'category', 'status', 'updated')
 STATUS_FIELDS = {'ai-fact-checked': ('checked', 'checked_by'),
                  'human-reviewed': ('checked', 'checked_by', 'reviewed', 'reviewed_by')}
 TEMPLATE = Template((ROOT / 'site/template.html').read_text())
-ARTICLE_LINKS = ''  # Sidebar links to every article, set once all articles are rendered.
 
 
 def serialize(node):
@@ -126,7 +126,7 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
         tabs += '<a href="/all-articles/">All articles</a>'
     output = TEMPLATE.substitute(title=html.escape(title + ' — Chainlore') if route != '/' else 'Chainlore — The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
-        source='/sources/' + source, toc=toc, tabs=tabs, articles=ARTICLE_LINKS,
+        source='/sources/' + source, toc=toc, tabs=tabs,
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -184,14 +184,16 @@ def homepage(pages):
                 summary = ' '.join((link.tail or '').split()).lstrip(': ')
                 summaries[link.get('href').strip('/').split('/')[-1]] = summary[:1].upper() + summary[1:]
             index_html += '<p>' + ' · '.join(f'<a href="{html.escape(link.get("href"))}">{html.escape(plain(link))}</a>' for link in links) + '</p>'
-    rows = ''.join(f'<div class="article-row"><span class="article-number">{i:02}</span><div><h3><a href="/p/{slug}/">{p["title"]}</a><span>{p["meta"]["ticker"]} · {p["meta"]["category"]}</span></h3><p>{html.escape(summaries.get(slug, p["description"][:150]))}</p></div></div>' for i, (slug, p) in enumerate(pages.items(), 1))
+    # A fresh random pick of other articles on each build.
+    picks = random.sample([slug for slug in pages if slug != 'hyperliquid'], 5)
+    rows = ''.join(f'<div class="article-row"><h3><a href="/p/{slug}/">{pages[slug]["title"]}</a><span>{pages[slug]["meta"]["ticker"]} · {pages[slug]["meta"]["category"]}</span></h3><p>{html.escape(summaries.get(slug, pages[slug]["description"][:150]))}</p></div>' for slug in picks)
     counts = Counter(p['meta']['status'] for p in pages.values())
     statuses = ', '.join(f'{label} ({counts[key]})' for key, (label, _) in STATUSES.items() if counts[key])
     references = sum(len(re.findall(r'^\[\^[^\]]+\]:', p['source'].read_text(), re.M)) for p in pages.values())
     content = f'''<section class="welcome"><h1><span>Chainlore</span></h1><p>An AI native encyclopedia of crypto.</p><p class="subline"><a href="/all-articles/">{len(pages)} articles</a> · {references} references</p></section>
 <div class="home-grid">
 <section class="panel"><h2>Featured article</h2><div class="eyebrow">{feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/p/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/p/hyperliquid/">Full article →</a></div></section>
-<section class="panel blue"><h2>Articles</h2>{rows}</section>
+<section class="panel blue"><h2>More articles</h2>{rows}<p class="more-link"><a href="/all-articles/">All {len(pages)} articles →</a></p></section>
 </div>
 <div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a></p></section></div>'''
     write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on blockchains, stablecoins, protocols, and incidents.', active='Main page')
@@ -205,10 +207,8 @@ def main():
         shutil.rmtree(OUT)
     OUT.mkdir()
     shutil.copytree(ROOT / 'site/assets', OUT / 'assets')
-    global ARTICLE_LINKS
     # Alphabetical browsing is stable as new articles are added.
     pages = {path.stem: render(path) for path in sources}
-    ARTICLE_LINKS = ''.join(f'<a href="/p/{slug}/">{html.escape(page["title"])}</a>' for slug, page in pages.items())
     for page in pages.values():
         article(page)
     for name in SUPPORTING:
