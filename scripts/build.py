@@ -221,11 +221,9 @@ def main():
     (OUT / 'search-index.json').write_text(json.dumps([{'title': p['title'], 'ticker': p['meta']['ticker'], 'url': f'/p/{slug}/', 'description': p['description'], 'text': p['text']} for slug, p in pages.items()], ensure_ascii=False))
     all_sources = sources + [ROOT / name for name in ('README.md',) + SUPPORTING]
     for path in all_sources:
-        destination = OUT / 'sources' / path.relative_to(ROOT)
+        destination = OUT / 'p' / path.name if path.parent == ROOT / 'pages' else OUT / 'sources' / path.relative_to(ROOT)
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, destination)
-        if path.parent == ROOT / 'pages':
-            shutil.copyfile(path, OUT / 'p' / path.name)
     urls = ['/'] + sorted(route for key, route in ROUTES.items() if key != 'README.md')
     (OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>https://chainlore.xyz{route}</loc></url>' for route in urls) + '</urlset>\n')
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://chainlore.xyz/sitemap.xml\n')
