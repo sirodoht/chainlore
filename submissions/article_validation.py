@@ -38,10 +38,10 @@ def public_url(value):
 def evidence_urls(response):
     urls = set()
     for block in response.get('content', []):
-        if block.get('type') == 'web_search_tool_result' and isinstance(block.get('content'), list):
-            for result in block['content']:
-                if result.get('type') == 'web_search_result' and public_url(result.get('url', '')):
-                    urls.add(result['url'])
+        if block.get('type') == 'web_fetch_tool_result' and isinstance(block.get('content'), dict):
+            result = block['content']
+            if result.get('type') == 'web_fetch_result' and public_url(result.get('url', '')):
+                urls.add(result['url'])
     return urls
 
 

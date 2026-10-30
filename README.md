@@ -83,11 +83,12 @@ requests (including an existing backlog), one at a time, with a default limit of
 2. Resolve exact existing titles locally. Ask Jev (`jev-latest`) independent
    questions about scope, injection, and duplicate subjects. Generation requires
    confidence at least 0.8 and selected-option probability at least 0.9 on all three.
-3. Have `claude-haiku-5-5` research with up to eight web searches, then write a
+3. Have `claude-haiku-5-5` research with up to eight web searches and six source
+   retrievals (4,000 content tokens each), then write a
    bounded JSON/Markdown draft in a separate call without tools. No model gets
    shell access, filesystem tools, email tools, or publishing credentials.
 4. Check the slug, metadata, inert Markdown, citations, and source provenance.
-   Require at least three distinct search-result sources across two domains.
+   Require at least three successfully retrieved sources across two domains.
    Jev screens the completed draft for suitability. This does not confer an
    AI fact-checked status: generated articles are explicitly published as drafts.
 5. Rebuild the full site, run the static checker, and atomically switch its public

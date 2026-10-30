@@ -17,8 +17,8 @@ from .publication import publication_lock, publish_site
 URLS = ['https://docs.example.com/design', 'https://docs.example.com/history', 'https://news.example.org/report']
 RESEARCH = {'stop_reason': 'end_turn', 'content': [
     {'type': 'text', 'text': 'Research evidence for the fictional test protocol.'},
-    {'type': 'web_search_tool_result', 'content': [
-        {'type': 'web_search_result', 'url': url, 'title': 'Test source'} for url in URLS]}]}
+    *[{'type': 'web_fetch_tool_result', 'content': {
+        'type': 'web_fetch_result', 'url': url, 'content': {'title': 'Test source', 'source': {'type': 'text', 'data': 'Example evidence'}}}} for url in URLS]]}
 DRAFT = {'title': 'Test Protocol', 'slug': 'test-protocol', 'ticker': 'TEST', 'category': 'DeFi', 'markdown': '''Test Protocol is a fictional protocol used to test the publishing process. Its documentation describes a network and a set of rules for recording transactions. The example article includes references so that the validator can check their relationship with the research evidence.[^1]
 
 | Fact | Value |
@@ -221,10 +221,12 @@ class ValidationTests(TestCase):
                 with self.assertRaises(InvalidArticle):
                     validate_draft({**DRAFT, **replacement}, RESEARCH)
 
-    def test_only_search_results_count_as_evidence(self):
+    def test_only_opened_pages_count_as_evidence(self):
         evidence = copy.deepcopy(RESEARCH)
-        evidence['content'][-1]['content'] = []
+        evidence['content'] = evidence['content'][:1]
         evidence['content'][0]['text'] = json.dumps(URLS)
+        evidence['content'].append({'type': 'web_search_tool_result', 'content': [
+            {'type': 'web_search_result', 'url': url} for url in URLS]})
         with self.assertRaises(InvalidArticle):
             validate_draft(DRAFT, evidence)
 
