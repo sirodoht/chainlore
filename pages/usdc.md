@@ -17,7 +17,7 @@ and redeem it for dollars one for one. Launched in September 2018 and
 governed until 2023 through the Centre Consortium, a joint venture with
 Coinbase, USDC is now issued natively on dozens of blockchains and can be
 moved between them with Circle's Cross-Chain Transfer
-Protocol.[^s1][^transparency][^coindesk-launch][^usdc-terms]
+Protocol.[^s1][^transparency][^coindesk-launch][^usdc-terms][^addresses][^cctp]
 
 | | |
 |---|---|
@@ -47,13 +47,13 @@ network.[^coindesk-coinbase-2018]
 Circle announced USDC at CoinDesk's Consensus conference in May 2018 and
 released it for limited trading on 26 September 2018. It was first issued
 to partner institutions and was available at launch on several exchanges,
-including Poloniex, which Circle had acquired earlier that year.[^coindesk-launch]
+including Poloniex, which Circle had acquired earlier that year.[^coindesk-launch][^circle-launch]
 
 On 23 October 2018 Circle and Coinbase launched the Centre Consortium, a
 joint venture to set standards for stablecoins, with USDC as its first
 product. The same day Coinbase began supporting USDC, an ERC-20 token on
 [Ethereum](ethereum.md); it was the exchange's first
-stablecoin.[^circle-centre][^coindesk-coinbase-2018]
+stablecoin.[^circle-centre][^coindesk-coinbase-2018][^circle-launch]
 
 ### SPAC merger attempt
 
@@ -89,7 +89,7 @@ in 2024.[^s1]
 
 ### Public listing and US regulation
 
-Circle filed publicly for an initial public offering in 2025.[^s1] It priced
+Circle filed publicly for an initial public offering on 1 April 2025.[^s1] It priced
 34 million shares, including shares sold by existing shareholders, at
 US$31 each, raising about US$1.1 billion, and its stock began trading on
 the New York Stock Exchange under the ticker CRCL in June
@@ -137,17 +137,19 @@ and Circle took a stake in Hyperliquid's HYPE token.[^theblock-hl] In May
 2026 Coinbase became Hyperliquid's official USDC treasury deployer, and
 the rival USDH stablecoin was set to be phased out.[^theblock-coinbase-hl]
 
-In late June 2026 Open Standard announced Open USD, a stablecoin network
-backed by Coinbase, Visa, and Mastercard that shares its economics among
-members. Coinbase said it had met the conditions to renew its commercial
-agreement with Circle and would continue to grow USDC.[^coindesk-openusd]
+In late June 2026 Open Standard announced Open USD, a stablecoin backed
+by Coinbase, Visa, and Mastercard, which Mastercard's chief executive
+described as a payments utility with "shared economics". Coinbase said
+it had met the conditions to renew its commercial agreement with Circle
+and would continue to grow USDC.[^coindesk-openusd]
 In October 2026 Circle published a defence of its economics, stating that
 distribution and transaction costs took US$819 million of about US$1.4
 billion in revenue in the first half of 2026.[^coindesk-economics]
 
 In September 2026 Binance bought US$100 million of Circle shares as part
 of a five-year agreement to promote USDC, under which Circle pays Binance
-a monthly fee based on USDC held through Circle's wallet service.[^coindesk-binance]
+a monthly incentive fee based on USDC held through Circle's Modular Smart
+Contract Wallet service.[^coindesk-binance]
 
 ## Reserves and attestations
 
@@ -166,11 +168,11 @@ designated as global systemically important banks.[^s1] Circle
 publishes reserve holdings weekly, and BlackRock publishes daily data on
 the fund's portfolio.[^transparency]
 
-Grant Thornton issued the first attestation of the USDC reserve in
+Grant Thornton issued an attestation of the USDC reserve in
 November 2018, reporting US$127,412,240.89 in custody against 127,408,827
 USDC in circulation at the end of October 2018. An attestation checks a
 specific statement, such as that reserves cover tokens in circulation, and
-is narrower than a full audit.[^coindesk-attestation][^bitcoinmagazine-attestation]
+is narrower than a full audit.[^coindesk-attestation]
 In January 2023 Circle said Deloitte would replace Grant Thornton as the
 auditor of its financial statements and of the USDC
 reserve.[^bloomberglaw-deloitte] As of October 2026 Circle's transparency
@@ -215,7 +217,7 @@ Circle's terms reserve the right to block USDC addresses that Circle
 determines may be associated with illegal activity, preventing transfers
 to and from them, and to freeze USDC when it receives a legal order from a
 government authority.[^usdc-terms] Circle's accounts refer to these as
-"access denied" tokens: when an address is blocked, Circle moves the
+"access denied" tokens: when it denies access to tokens, Circle moves the
 related reserves into a segregated account. Such balances were US$91.8
 million at the end of 2024.[^s1]
 
@@ -224,7 +226,7 @@ million at the end of 2024.[^s1]
 Arc is a layer 1 blockchain developed by Circle that uses USDC to pay
 transaction fees. Its public testnet launched in October 2025 and its
 mainnet on 16 September 2026.[^decrypt-arc][^theblock-arc] Arc is
-compatible with the Ethereum Virtual Machine and runs Malachite, a
+compatible with the Ethereum Virtual Machine[^arc-docs] and runs Malachite, a
 consensus engine based on Tendermint, under proof of
 authority.[^decrypt-arc][^theblock-arc] Circle named 11 founding validators, among them BlackRock, DTCC, ICE, Mastercard,
 and Visa, and is exploring a move to proof of stake in 2027. Circle minted
@@ -248,7 +250,7 @@ to a public token launch.[^theblock-arc]
   temporarily suspended USDC conversions during the
   episode.[^decrypt-svb]
 - **Drift exploit (April 2026).** On 1 April 2026 the Solana exchange
-  Drift was drained of between about US$270 million and US$285 million in
+  Drift was drained of about US$285 million in
   an attack that security firms suspected was the work of North Korean
   hackers. The attacker used CCTP to move about US$232 million in USDC
   from Solana to Ethereum. The investigator ZachXBT said Circle could have
@@ -260,13 +262,14 @@ to a public token launch.[^theblock-arc]
   School adjunct professor Omid Malekan warned that discretionary freezes
   would concentrate control in one company. Allaire said Circle freezes
   wallets "at the direction of law enforcement or the courts", not at its
-  own discretion during an exploit.[^coindesk-allaire] Drift later
-  relaunched using Tether's USDT with funding mostly from
-  Tether.[^coindesk-drift-usdt]
+  own discretion during an exploit.[^coindesk-allaire] On 16 April
+  2026 Drift announced it would relaunch using Tether's USDT, with up to
+  US$147.5 million in funding, mostly from Tether.[^coindesk-drift-usdt]
 - **Bitget hack (September 2026).** After an exploit of the Bitget
   exchange on 24 September 2026, Circle blacklisted a wallet holding about
-  100,000 USDC, and Tether followed. Most of the stolen funds were in ether, which cannot be
-  frozen.[^coindesk-bitget]
+  100,000 USDC, and Tether followed. Other addresses linked to the
+  US$351.6 million exploit held more than 63,000 ether, which no issuer can
+  freeze.[^coindesk-bitget]
 - **Dependence on an issuer.** USDC relies on Circle as a central issuer:
   Circle can block addresses, and the reserve is held at banks and in a
   single money market fund. Circle's IPO filing lists risks tied to the
@@ -288,7 +291,7 @@ to a public token launch.[^theblock-arc]
 | 2022-08-08 | Tornado Cash addresses blacklisted after US sanctions |
 | 2022-12-05 | SPAC deal terminated |
 | 2023-01 | Deloitte named to replace Grant Thornton |
-| 2023-03-10 | US$3.3 billion stuck at Silicon Valley Bank; USDC loses peg |
+| 2023-03-10 | Circle discloses US$3.3 billion held at Silicon Valley Bank; USDC loses peg |
 | 2023-03-13 | Peg restored as Circle processes redemptions |
 | 2023-04 | Cross-Chain Transfer Protocol unveiled |
 | 2023-08-21 | Centre to be dissolved; Coinbase takes stake in Circle |
@@ -320,6 +323,7 @@ to a public token launch.[^theblock-arc]
 [^s1]: Circle Internet Group (2025). *Form S-1 registration statement*. US Securities and Exchange Commission. <https://www.sec.gov/Archives/edgar/data/1876042/000119312525070481/d737521ds1.htm>
 [^coindesk-launch]: CoinDesk (2018). *USD Coin arrives: Circle's crypto stablecoin is now trading*. <https://www.coindesk.com/markets/2018/09/26/usd-coin-arrives-circles-crypto-stablecoin-is-now-trading>
 [^usdc-terms]: Circle. *USDC terms*. <https://www.circle.com/legal/usdc-terms>
+[^circle-launch]: Circle (2018). *Introducing USD Coin*. <https://www.circle.com/blog/introducing-usd-coin>
 [^fortune-neville]: Fortune (2025). *Exclusive: Circle cofounder raises $18 million to build "AI-native bank"*. <https://fortune.com/crypto/2025/05/20/sean-neville-catena-labs-18-million-a16z-breyer-circle-coinbase-tom-brady/>
 [^coindesk-coinbase-2018]: CoinDesk (2018). *Coinbase adds its first stablecoin tied to the US dollar*. <https://www.coindesk.com/markets/2018/10/23/coinbase-adds-its-first-stablecoin-tied-to-the-us-dollar>
 [^circle-centre]: Circle (2018). *Coinbase and Circle co-found the CENTRE Consortium*. <https://www.circle.com/blog/coinbase-and-circle-co-found-the-centre-consortium>
@@ -342,13 +346,13 @@ to a public token launch.[^theblock-arc]
 [^usdc-what]: Circle developer documentation. *What is USDC?* <https://developers.circle.com/stablecoins/what-is-usdc>
 [^transparency]: Circle. *Transparency and stability*. <https://www.circle.com/transparency>
 [^coindesk-attestation]: CoinDesk (2018). *Circle's dollar-tied stablecoin fully backed, auditor's "attestation" says*. <https://www.coindesk.com/markets/2018/11/21/circles-dollar-tied-stablecoin-fully-backed-auditors-attestation-says>
-[^bitcoinmagazine-attestation]: Van Wirdum, A. and Harper, C. (2018). *Top 5 CPA firm confirms funds in first attestation of Circle's USDC*. Bitcoin Magazine. <https://bitcoinmagazine.com/business/top-5-cpa-firm-confirms-funds-first-attestation-circles-usdc>
 [^bloomberglaw-deloitte]: Bloomberg Law (2023). *Stablecoin issuer Circle adds Big Four firm Deloitte for audits*. <https://news.bloomberglaw.com/crypto/stablecoin-issuer-circle-adds-big-four-firm-deloitte-for-audits>
 [^addresses]: Circle developer documentation. *USDC contract addresses*. <https://developers.circle.com/stablecoins/usdc-contract-addresses>
 [^fortune-chains]: Fortune (2023). *USDC to be available on 15 blockchains after adding 6, including Base, Optimism, and Polygon PoS, over next 2 months*. <https://fortune.com/crypto/2023/08/23/usdc-base-cosmos-near-optimism-polkadot-polygon-pos-circle/>
 [^etherscan]: Etherscan. *USDC token contract*. <https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48>
 [^bridged]: Circle (2023). *Introducing Bridged USDC Standard*. <https://www.circle.com/blog/bridged-usdc-standard>
 [^cctp]: Circle developer documentation. *Cross-Chain Transfer Protocol*. <https://developers.circle.com/cctp>
+[^arc-docs]: Arc documentation. *Welcome to Arc*. <https://docs.arc.io/arc/concepts/welcome-to-arc>
 [^decrypt-arc]: Decrypt (2026). *What is Arc? The stablecoin blockchain from USDC issuer Circle*. <https://decrypt.co/340212/what-is-arc-the-stablecoin-blockchain-from-usdc-issuer-circle>
 [^theblock-arc]: The Block (2026). *Circle launches Arc mainnet with BlackRock and Visa among validators, mints 10 billion ARC tokens*. <https://www.theblock.co/news/ecosystems/2026-09-16-circle-launches-arc-mainnet-with-blackrock-and-visa-among-validators-mints-10-billion-arc-tokens-415250>
 [^fed-svb]: Du, C., Sonawane, R., and Watsky, C. (2025). *In the shadow of bank runs: Lessons from the Silicon Valley Bank failure and its impact on stablecoins*. FEDS Notes, Board of Governors of the Federal Reserve System. <https://www.federalreserve.gov/econres/notes/feds-notes/in-the-shadow-of-bank-run-lessons-from-the-silicon-valley-bank-failure-and-its-impact-on-stablecoins-20251217.html>
