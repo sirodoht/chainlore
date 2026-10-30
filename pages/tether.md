@@ -2,7 +2,9 @@
 title: Tether
 ticker: USDT
 category: Stablecoin
-status: draft
+status: ai-fact-checked
+checked: 2026-10-30
+checked_by: Opus 5.5 High
 updated: 2026-10-30
 ---
 
