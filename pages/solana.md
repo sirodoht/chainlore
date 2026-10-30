@@ -60,7 +60,8 @@ Francisco.[^sec-coinbase]
 
 The SEC stated that between May 2018 and early March 2020 Solana Labs
 sold about 177 million SOL through Simple Agreements for Future Tokens,
-raising over US$23 million in offerings it said were exempt from registration. In
+raising over US$23 million in offerings Solana Labs said were exempt
+from registration. In
 March 2020 it sold about 8 million SOL in a Dutch auction on CoinList at
 US$0.22 each, raising about US$1.76 million.[^sec-coinbase][^coinlist]
 In July 2019 Solana announced a US$20 million round led by Multicoin
@@ -220,8 +221,9 @@ Roger Wattenhofer, replaces this layer. It finalises a block in one round of
 voting if 80% of stake votes for it, or in two rounds with 60%. It is
 designed to tolerate 20% adversarial stake plus a further 20% offline,
 whereas Tower BFT needed a supermajority of more than two-thirds of
-stake.[^simd-0326][^alpenglow] Validators approved it in a stake-weighted
-vote that closed in early September 2025, with 98.27% of the stake that
+stake to confirm a block.[^simd-0326][^alpenglow] Validators approved it
+in a stake-weighted vote whose result CoinDesk reported on 2 September
+2025, with 98.27% of the stake that
 voted in favour and 52% of stake taking part.[^coindesk-alpenglow] Its first phase,
 Votor, activated at epoch 1064 on 21 October 2026, targeting finality of
 about 150 milliseconds. Validators now exchange votes directly and
@@ -283,7 +285,7 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 - Wormhole bridge (February 2022). An attacker exploited a
   signature-verification flaw in the Solana side of the Wormhole bridge
   to mint about 120,000 wrapped ETH without backing, worth about US$326
-  million.[^halborn] Jump Crypto replaced the 120,000 ETH the next
+  million.[^halborn][^theblock-wormhole] Jump Crypto replaced the 120,000 ETH the next
   day.[^theblock-wormhole]
 - Slope wallet (August 2022). On 2 August 2022 attackers drained
   9,231 wallets of about US$4.1 million in assets. The Solana Foundation
