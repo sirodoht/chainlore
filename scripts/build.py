@@ -124,10 +124,13 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
     tabs = f'<a class="active" href="{route}" aria-current="page">{html.escape(active)}</a>'
     if route != '/all-articles/':
         tabs += '<a href="/all-articles/">All articles</a>'
+    report_error_link = ''
+    if source.startswith('pages/'):
+        report_error_link = '<a href="/submit/correction/?' + urlencode({'article': Path(source).stem}) + '">Report an error</a>'
     output = TEMPLATE.substitute(title=html.escape(title + ' - Chainlore') if route != '/' else 'Chainlore - The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
         source='/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source,
-        toc=toc, tabs=tabs,
+        toc=toc, tabs=tabs, report_error_link=report_error_link,
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)

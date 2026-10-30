@@ -24,9 +24,13 @@
   </header>
   <div class="layout">
     <aside class="sidebar" aria-label="Site navigation">
-      <nav><span class="sidebar-heading">Articles</span><a href="/">Main page</a><a href="/all-articles/">All articles</a><span class="sidebar-heading">Chainlore</span><a href="/about/">About</a><a href="/policy/">Editorial policy</a><a href="/vision/">Editorial scope</a></nav>
-      <nav class="submission-nav" aria-label="Submissions"><span class="sidebar-heading">Submissions</span><a href="/submit/request/">Request an article</a><a href="/submit/correction/">Report an error</a></nav>
-      $toc
+      <div class="sidebar-inner">
+        $toc
+        <div class="sidebar-bottom">
+          <nav aria-label="Chainlore"><span class="sidebar-heading">Chainlore</span><a href="/about/">About</a><a href="/policy/">Editorial policy</a><a href="/vision/">Editorial scope</a></nav>
+          <nav class="submission-nav" aria-label="Submissions"><span class="sidebar-heading">Submissions</span><a href="/submit/request/">Request an article</a>$report_error_link</nav>
+        </div>
+      </div>
     </aside>
     <div class="page">
       <nav class="page-tabs" aria-label="Page tools"><div>$tabs</div><a href="$source">View Markdown source <span aria-hidden="true">↗</span></a></nav>
