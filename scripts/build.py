@@ -127,9 +127,11 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
     report_error_link = ''
     if source.startswith('pages/'):
         report_error_link = '<a href="/submit/correction/?' + urlencode({'article': Path(source).stem}) + '">Report an error</a>'
+    source_url = '/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source
+    source_link = f'<a href="{html.escape(source_url, quote=True)}">View Markdown source <span aria-hidden="true">↗</span></a>' if route != '/' else ''
     output = TEMPLATE.substitute(title=html.escape(title + ' - Chainlore') if route != '/' else 'Chainlore - The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
-        source='/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source,
+        source_link=source_link,
         toc=toc, tabs=tabs, report_error_link=report_error_link,
         sidebar_class='sidebar sidebar-home' if route == '/' else 'sidebar',
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
