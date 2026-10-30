@@ -172,6 +172,17 @@ class AutomationTests(TestCase):
         self.assertEqual(run.state, 'published')
         self.write_article.assert_called_once()
 
+    def test_failed_rebuild_keeps_active_publication_intact(self):
+        run_worker()
+        current = self.root / 'published/current'
+        previous = current.resolve()
+        with patch('submissions.publication.subprocess.run') as build:
+            build.return_value.returncode = 1
+            with publication_lock(), self.assertRaisesRegex(ValueError, 'site_build_failed'):
+                publish_site()
+        self.assertEqual(current.resolve(), previous)
+        self.assertTrue((current / 'p/test-protocol/index.html').is_file())
+
     def test_notifications_retry_three_times_without_regenerating(self):
         self.submission.title = 'Bitcoin'
         self.submission.save()
@@ -235,3 +246,27 @@ class ValidationTests(TestCase):
                        {'choice': 'yes', 'confidence': '1', 'probabilities': {'yes': 1}},
                        {'choice': 'yes', 'confidence': 0.99, 'probabilities': {'yes': float('nan')}}]:
             self.assertFalse(ai.confident({'answers': {'suitable': answer}}, 'suitable', 'yes'))
+
+    def test_failed_fetch_is_not_evidence(self):
+        evidence = copy.deepcopy(RESEARCH)
+        evidence['content'][-1]['content']['type'] = 'web_fetch_tool_result_error'
+        with self.assertRaises(InvalidArticle):
+            validate_draft(DRAFT, evidence)
+
+    def test_research_handoff_keeps_fetched_sources_and_discards_encrypted_payloads(self):
+        research = copy.deepcopy(RESEARCH)
+        research['content'][1]['content']['content']['source']['data'] = 'x' * 7000 + 'Important evidence at the end'
+        research['content'].append({'type': 'web_search_tool_result', 'content': [
+            {'type': 'web_search_result', 'url': URLS[0], 'encrypted_content': 'opaque ciphertext'}]})
+        context = ai.research_context(research)
+        self.assertEqual({item['url'] for item in context['opened_sources']}, set(URLS))
+        self.assertNotIn('opaque ciphertext', json.dumps(context))
+        self.assertTrue(context['opened_sources'][0]['text'].endswith('Important evidence at the end'))
+
+    def test_unreadable_pdf_and_empty_fetch_cannot_count_as_writer_evidence(self):
+        for source in [{'type': 'base64', 'data': 'cGRm'}, {'type': 'text', 'data': ''}]:
+            evidence = copy.deepcopy(RESEARCH)
+            evidence['content'][-1]['content']['content']['source'] = source
+            self.assertEqual(len(ai.research_context(evidence)['opened_sources']), 2)
+            with self.assertRaises(InvalidArticle):
+                validate_draft(DRAFT, evidence)

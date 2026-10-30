@@ -40,7 +40,9 @@ def evidence_urls(response):
     for block in response.get('content', []):
         if block.get('type') == 'web_fetch_tool_result' and isinstance(block.get('content'), dict):
             result = block['content']
-            if result.get('type') == 'web_fetch_result' and public_url(result.get('url', '')):
+            source = result.get('content', {}).get('source', {})
+            if (result.get('type') == 'web_fetch_result' and public_url(result.get('url', ''))
+                    and source.get('type') == 'text' and source.get('data', '').strip()):
                 urls.add(result['url'])
     return urls
 
