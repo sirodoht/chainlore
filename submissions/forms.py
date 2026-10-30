@@ -20,7 +20,7 @@ class SubmissionForm(forms.Form):
     details = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'rows': 7}))
     correction = forms.CharField(max_length=3000, required=False, widget=forms.Textarea(attrs={'rows': 4}), label='Proposed correction (optional)')
     sources = forms.CharField(max_length=10000, required=False, widget=forms.Textarea(attrs={'rows': 3}), label='Source links (optional)', help_text='One http:// or https:// URL per line, up to 10 links.')
-    email = forms.EmailField(max_length=254, required=False, label='Email for a reply (optional)', help_text='Used only to contact you about this submission.')
+    email = forms.EmailField(max_length=254, required=False, label='Email for a reply (optional)', help_text='Never published. Used only to contact you about this submission.')
     website = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'tabindex': '-1', 'autocomplete': 'off'}))
     form_token = forms.CharField(widget=forms.HiddenInput)
 
@@ -33,7 +33,8 @@ class SubmissionForm(forms.Form):
         if kind == 'request':
             for field in ('article', 'section', 'claim', 'correction'):
                 self.fields.pop(field)
-            self.fields['details'].label = 'What should the article cover?'
+            self.fields['details'].label = 'What should the article cover? (optional)'
+            self.fields['details'].required = False
         else:
             self.fields.pop('title')
             self.fields['details'].label = 'What is incorrect, and why?'

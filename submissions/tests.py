@@ -61,6 +61,24 @@ class SubmissionsTests(TestCase):
         self.assertEqual(record.title, 'A new protocol')
         self.assertEqual(record.article, '')
         self.assertEqual(record.status, 'new')
+        receipt = self.client.get(response.url)
+        self.assertNotContains(receipt, record.email)
+        self.assertNotContains(self.client.get('/submit/'), record.email)
+
+    def test_article_request_accepts_only_a_title(self):
+        response = self.client.post('/submit/request/', {'title': 'A new protocol', 'form_token': new_token()})
+        self.assertEqual(response.status_code, 302)
+        record = Submission.objects.get()
+        self.assertEqual(record.details, '')
+        self.assertEqual(record.sources, '')
+        self.assertEqual(record.email, '')
+        form = self.client.get('/submit/request/').context['form']
+        self.assertEqual([field.name for field in form.visible_fields() if field.field.required], ['title'])
+
+    def test_article_request_still_requires_a_title(self):
+        response = self.client.post('/submit/request/', {'details': 'Some scope', 'form_token': new_token()})
+        self.assertIn('title', response.context['form'].errors)
+        self.assertFalse(Submission.objects.exists())
 
     def test_correction_requires_claim_and_valid_sources(self):
         response = self.client.post('/submit/correction/', self.data(claim='', sources=''))
@@ -147,7 +165,7 @@ class SubmissionsTests(TestCase):
         self.assertEqual(self.client.post('/admin/login/', {}).status_code, 429)
 
     def test_user_text_is_escaped(self):
-        response = self.client.post('/submit/request/', self.data(title='<script>alert(1)</script>', details=''))
+        response = self.client.post('/submit/request/', self.data(title='', details='<script>alert(1)</script>'))
         self.assertContains(response, '&lt;script&gt;')
         self.assertNotContains(response, '<script>alert(1)</script>')
 

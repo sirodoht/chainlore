@@ -1,6 +1,6 @@
 {% extends 'submissions/base.html' %}
 {% block content %}
-<p>Submissions are private and reviewed before any article is changed. An email address is optional.</p>
+{% if kind == 'request' %}<p>Only an article title is required. Other fields are optional.</p>{% else %}<p>Reports are reviewed before any article is changed. An email address is optional.</p>{% endif %}
 <form method="post" class="submission-form">
   {% csrf_token %}
   {% if form.errors %}<div class="notice" role="alert"><p>Please correct the errors below.</p>{{ form.non_field_errors }}{% for error in form.form_token.errors %}<p>{{ error }} <a href="{{ request.path }}">Open a new form</a>.</p>{% endfor %}</div>{% endif %}
@@ -9,7 +9,7 @@
     {% if field.name == 'website' %}<div class="form-trap" aria-hidden="true">{{ field.label_tag }}{{ field }}</div>
     {% else %}<div class="form-field">{{ field.label_tag }}{% if field.field.required %}<span class="field-required">Required</span>{% endif %}{{ field }}{% if field.help_text %}<div class="helptext" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}{{ field.errors }}</div>{% endif %}
   {% endfor %}
-  <p class="submission-privacy">Your text, source links, and any email address you provide are stored for editorial review. They are not published automatically. Source links are checked during review.</p>
+  <p class="submission-privacy">Submissions are stored privately for editorial review. Email addresses are never published.</p>
   <button type="submit" class="submit-button">Submit</button>
 </form>
 {% endblock %}

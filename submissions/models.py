@@ -22,7 +22,7 @@ class Submission(models.Model):
     section = models.CharField(max_length=200, blank=True)
     article_revision = models.CharField(max_length=40, blank=True)
     title = models.CharField(max_length=200, blank=True)
-    details = models.TextField(max_length=5000)
+    details = models.TextField(max_length=5000, blank=True)
     claim = models.TextField(max_length=3000, blank=True)
     correction = models.TextField(max_length=3000, blank=True)
     sources = models.TextField(max_length=10000, blank=True)

@@ -43,12 +43,13 @@ spam controls, private receipts, and admin access and review operations.
 
 ## Submissions
 
-- `/submit/request/`: suggested article title, scope, and optional sources.
+- `/submit/request/`: required article title, with optional scope, sources, and email.
 - `/submit/correction/`: quoted claim, explanation, source links, and optional replacement text.
 - `/admin/`: authenticated review queue with filters, search, internal notes,
   duplicate links, and a URL for the resulting article change.
 
-Email is optional. No emails are sent automatically. Submissions are private;
+Email is optional and never published. It is available only in the authenticated
+editorial queue for replying to the submitter. No emails are sent automatically. Submissions are private;
 receipt pages show a reference number without exposing submitted text or email.
 Source URLs are validated but never fetched by the submission endpoint.
 
