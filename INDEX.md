@@ -1,6 +1,6 @@
 # Index
 
-All pages in ChainLore.
+All pages in Chainlore.
 
 ## Layer 1 blockchains
 

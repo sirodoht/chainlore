@@ -19,7 +19,7 @@ The crypto-native alternatives each solve a different problem:
 
 There is no clean, neutral, well-referenced encyclopedia of crypto.
 
-## What ChainLore is
+## What Chainlore is
 
 An encyclopedia of crypto, written with AI from the start, in the
 tradition of Wikipedia and Grokipedia.
@@ -30,7 +30,7 @@ tradition of Wikipedia and Grokipedia.
   whitepapers, specs, docs, governance proposals, and onchain data, which
   Wikipedia cannot cite and we can.
 - **Signal.** No filler, no hype, no "to the moon", no price predictions.
-- **Clean.** Plain text, black on white. No ads, no colours, no banners,
+- **Clean.** Readable text, white space, and restrained sage and blue accents. No ads, no banners,
   no sponsored listings, no affiliate links.
 - **AI-native.** Pages are drafted and maintained by AI, then checked
   against their references. This is how a small project can cover a large
@@ -38,7 +38,7 @@ tradition of Wikipedia and Grokipedia.
 - **Neutral.** Incidents, exploits, and controversies are recorded as
   plainly as launches and upgrades.
 
-## What ChainLore is not
+## What Chainlore is not
 
 - Not a price ticker or a trading terminal.
 - Not a news site.
@@ -47,7 +47,7 @@ tradition of Wikipedia and Grokipedia.
 
 ## Better than IQ.wiki
 
-IQ.wiki is the closest existing project. ChainLore aims to beat it by
-being cleaner (no ads, no token, no colour), stricter about sources, and
+IQ.wiki is the closest existing project. Chainlore aims to beat it by
+being cleaner (no ads, no token, no visual clutter), stricter about sources, and
 more willing to record the parts of a project's history that the project
 itself would rather leave out.
