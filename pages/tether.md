@@ -17,8 +17,7 @@ exchange Bitfinex.[^cftc-order] Its claim that each token was backed by a
 dollar in reserve led to settlements with the New York Attorney General
 in 2021 and the US Commodity Futures Trading Commission (CFTC) in the same
 year.[^nyag-2021][^cftc] Its reserves are now held mostly in US Treasury
-bills, with smaller amounts in gold, bitcoin and secured
-loans.[^fy-2025]
+bills, with smaller amounts in gold and bitcoin.[^fy-2025]
 
 | | |
 |---|---|
@@ -92,7 +91,8 @@ audit was "unattainable in a reasonable time frame".[^friedman][^friedman-sec]
 
 Bitfinex from about 2014, and Tether from October 2017, relied on a
 payment processor registered in Panama, which the New York Attorney
-General identified as Crypto Capital, to hold customer and reserve money.[^nyag-2021][^cftc-order] In
+General identified as Crypto Capital, to hold customer money, and from
+August 2018 some of Tether's reserves.[^nyag-2021][^cftc-order] In
 April 2018 media reported that authorities had seized funds held by the
 processor, and Bitfinex had growing difficulty withdrawing money it had
 placed there.[^cftc-order] In November 2018 Tether moved $625 million of reserve funds to Bitfinex, later formalised
@@ -291,7 +291,7 @@ about $475 million in USDT linked to Iran's central bank.[^iran-freeze]
 | 2026-03-24 | Big Four audit engagement announced |
 | 2026-08-13 | KPMG audit of 2025 accounts announced |
 | 2026-09-28 | Senate Democrats' report on Iran |
-| 2026-10-22 | Utexo opens early access to USDT on Bitcoin via RGB |
+| 2026-10-22 | Utexo opens early access to bridged USDT on Bitcoin's Signet test network |
 
 ## See also
 
