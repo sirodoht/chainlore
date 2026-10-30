@@ -27,7 +27,7 @@ staked to validators.[^fidelity][^whitepaper]
 | Genesis supply | 500,000,000 SOL |
 | Maximum supply | None (inflationary issuance) |
 | Slot time | 200 ms (since 2026-10-09) |
-| Validator clients | Agave, Jito-Solana, Harmonic Salsa, Firedancer |
+| Validator clients | Agave, Jito-Solana, Harmonic Salsa; Firedancer (not supported under Alpenglow as of October 2026) |
 | Live data | [Solana Explorer](https://explorer.solana.com), [DefiLlama](https://defillama.com/chain/Solana), [CoinGecko](https://www.coingecko.com/en/coins/solana) |
 
 ## History
@@ -35,7 +35,7 @@ staked to validators.[^fidelity][^whitepaper]
 ### Origins
 
 Yakovenko moved from Ukraine to the United States as a child and worked
-at Qualcomm for nearly 13 years, mostly on distributed systems, leaving
+at Qualcomm for nearly 13 years, including on distributed systems, leaving
 in 2016. According to Fortune, the idea for Proof of History came to him
 in 2017 while he and a friend were mining cryptocurrency to offset the
 cost of hardware they were building for deep learning: he realised that
@@ -60,7 +60,7 @@ Francisco.[^sec-coinbase]
 
 The SEC stated that between May 2018 and early March 2020 Solana Labs
 sold about 177 million SOL through Simple Agreements for Future Tokens,
-raising over US$23 million under exemptions from registration. In
+raising over US$23 million in offerings it said were exempt from registration. In
 March 2020 it sold about 8 million SOL in a Dutch auction on CoinList at
 US$0.22 each, raising about US$1.76 million.[^sec-coinbase][^coinlist]
 In July 2019 Solana announced a US$20 million round led by Multicoin
@@ -84,7 +84,7 @@ as:[^fidelity]
 | Strategic sale | 9,400,000 |
 | CoinList auction | 8,200,000 |
 
-The SEC complaint instead quotes Solana Labs as stating that 12.5% of
+The SEC complaint instead cites Solana Labs as having stated that 12.5% of
 the initial supply went to its founders and 12.5% to the Solana
 Foundation.[^sec-coinbase]
 
@@ -93,14 +93,14 @@ Foundation.[^sec-coinbase]
 The Solana Foundation, a Swiss non-profit, was created in June 2019 to
 oversee governance and coordination of the protocol.[^recap-2019] On 8
 April 2020 Solana Labs transferred 167 million SOL to it.[^sec-coinbase]
-Mainnet beta launched on 16 March 2020.[^fidelity]
+Mainnet beta launched on 16 March 2020.[^helius-inflation]
 
 Weeks later, users found an account holding more than 13 million SOL.
 The foundation said on 27 April 2020 that it had lent 11,365,067 SOL to a
 market maker without disclosing the loan during the CoinList auction and
-Binance listing, and apologised.[^market-maker] On 22 May 2020 it moved
-that amount out of the circulating supply, with the stated intention of
-burning it.[^supply-removal] Inflationary staking rewards were activated
+Binance listing, and apologised.[^market-maker] On 22 May 2020 it removed
+that amount from the token supply, and the tokens were burned on 25 May
+2020.[^supply-removal] Inflationary staking rewards were activated
 on 10 February 2021.[^helius-inflation]
 
 ### FTX and Alameda
@@ -114,7 +114,7 @@ and Solana Labs sold Alameda a further 7.5 million SOL in February
 2021.[^ftx-facts]
 
 When FTX and Alameda filed for bankruptcy in November 2022 (see
-[FTX](ftx.md)), SOL fell sharply, and Fortune reported analysts' view
+[FTX](ftx.md)), SOL fell sharply, and Fortune reported an analyst's view
 that its close association with Sam Bankman-Fried was weighing on it.
 Yakovenko said Solana Labs held no assets on FTX.[^fortune-ftx] The
 Solana Foundation disclosed about US$1 million in cash on FTX, together
@@ -130,8 +130,9 @@ forked that client into a new repository and named it
 Agave.[^anza-fork] Jump Crypto has been building
 Firedancer, an independent client written in C, since 2022; a first
 version went live on testnet in October 2023.[^firedancer-jump][^bp23][^fidelity]
-The Solana Foundation announced that Firedancer was live on mainnet in
-December 2025.[^firedancer-live] The Jito Foundation maintains Jito-Solana,
+A hybrid version, Frankendancer, reached mainnet in September
+2024,[^theblock-frankendancer] and the Solana Foundation announced that
+Firedancer was live on mainnet in December 2025.[^firedancer-live] The Jito Foundation maintains Jito-Solana,
 a fork of the validator that it describes as an MEV client, and Jito
 offers transaction bundles used by traders seeking maximal extractable
 value (MEV).[^jito][^jito-docs]
@@ -149,9 +150,9 @@ Pump.fun, launched in January 2024, lets anyone create a Solana token in
 a few clicks.[^gizmodo-pump] It paused its livestreaming feature on 25
 November 2024, citing moderation problems, amid criticism of stunts and threats made
 on streams.[^gizmodo-stream] In July 2025 it
-raised US$600 million in 12 minutes in a public sale of its PUMP token,
+raised US$600 million in 12 minutes in a public sale of its token,
 plus about US$720 million privately.[^fortune-pump] In January 2025 the
-launch of a memecoin by US President Donald Trump drove a surge in
+launch of a memecoin by Donald Trump drove a surge in
 Solana activity; Coinbase users saw delayed Solana withdrawals, which
 Coinbase attributed to its own systems.[^fortune-trump]
 
@@ -169,7 +170,7 @@ In June 2023 the SEC alleged in its complaint against Coinbase that SOL
 was offered and sold as a security.[^sec-coinbase] The SEC dismissed that
 case in February 2025, saying the dismissal was not a judgement on the
 merits.[^sec-dismissal] On 17 March 2026 the SEC issued an interpretation,
-joined by the Commodity Futures Trading Commission, that listed SOL among
+with guidance from the Commodity Futures Trading Commission, that listed SOL among
 its examples of digital commodities, which it does not treat as
 securities.[^sec-interp]
 
@@ -218,9 +219,10 @@ Alpenglow, specified in SIMD-0326 by Quentin Kniep, Kobi Sliwinski and
 Roger Wattenhofer, replaces this layer. It finalises a block in one round of
 voting if 80% of stake votes for it, or in two rounds with 60%. It is
 designed to tolerate 20% adversarial stake plus a further 20% offline,
-rather than the one-third Byzantine fault tolerance of classical
-protocols.[^simd-0326] Validators approved it in a stake-weighted vote
-that closed in early September 2025.[^ct-alpenglow] Its first phase,
+whereas Tower BFT needed a supermajority of more than two-thirds of
+stake.[^simd-0326][^alpenglow] Validators approved it in a stake-weighted
+vote that closed in early September 2025, with 98.27% of the stake that
+voted in favour and 52% of stake taking part.[^coindesk-alpenglow] Its first phase,
 Votor, activated at epoch 1064 on 21 October 2026, targeting finality of
 about 150 milliseconds. Validators now exchange votes directly and
 aggregate them into certificates, vote transactions no longer appear in
@@ -254,7 +256,7 @@ rate of decline to 30% a year, which its authors estimate would reach
 Protocol changes are proposed as Solana Improvement Documents (SIMDs),
 discussed off-chain, and implemented by the client teams. Changes with
 economic effects, such as SIMD-0096 and Alpenglow, have been put to
-stake-weighted votes.[^fidelity] Fidelity Digital Assets described the
+stake-weighted votes.[^fidelity][^coindesk-alpenglow] Fidelity Digital Assets described the
 system as one in which validators cast the votes, and noted the
 criticism that SOL holders who do not stake are not
 represented.[^fidelity] By August 2026 holders who stake directly could
@@ -273,16 +275,17 @@ override their validator's vote on a proposal.[^simd-0550-forum]
   stopped for about eight hours.[^outage-2022-09][^fortune-outage] In
   each case validators coordinated a restart of the
   network.[^outage-2021][^outage-2022-06]
-- Degradation in February 2023. On 25 February 2023 an oversized block
-  overwhelmed Turbine; validators restarted the cluster with downgraded
-  software.[^outage-2023]
+- Degradation in February 2023. On 25 February 2023 block-forwarding services
+  repeatedly re-sent an unusually large block, overwhelming Turbine;
+  validators restarted the cluster with downgraded software.[^outage-2023]
 - Outage in February 2024. On 6 February 2024 a bug in the program
   cache halted finalisation for about five hours.[^outage-2024]
 - Wormhole bridge (February 2022). An attacker exploited a
   signature-verification flaw in the Solana side of the Wormhole bridge
   to mint about 120,000 wrapped ETH without backing, worth about US$326
-  million. The ETH backing was restored within a day.[^halborn][^rekt]
-- Slope wallet (August 2022). On 2 August 2022 attackers drained about
+  million.[^halborn] Jump Crypto replaced the 120,000 ETH the next
+  day.[^theblock-wormhole]
+- Slope wallet (August 2022). On 2 August 2022 attackers drained
   9,231 wallets of about US$4.1 million in assets. The Solana Foundation
   said the affected keys had been created or imported in Slope's mobile
   wallet, which had sent private key material to an application
@@ -315,9 +318,9 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 | 2024-01 | Pump.fun launches |
 | 2024-02-06 | Five-hour outage |
 | 2024-03-02 | Anza forks the validator as Agave |
-| 2025-01 | TRUMP memecoin launch drives activity |
+| 2025-01 | Trump memecoin launch drives activity |
 | 2025-02-27 | SEC dismisses Coinbase case |
-| 2025-07 | Pump.fun PUMP token sale |
+| 2025-07 | Pump.fun token sale |
 | 2025-09 | Alpenglow approved by validator vote |
 | 2025-10-28 | Bitwise BSOL begins trading |
 | 2025-12 | Firedancer live on mainnet |
@@ -352,6 +355,7 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 [^anza-fork]: Anza (2024). *Learn more about the Solana Labs to Agave fork*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/solana-labs-anza-fork.mdx>
 [^firedancer-jump]: Jump Crypto. *Firedancer*. <https://jumpcrypto.com/firedancer/>
 [^bp23]: Solana Foundation (2023). *Day 1 at Breakpoint: Firedancer, AWS, Google Cloud, and more!* <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/breakpoint-2023-day-1-firedancer-aws-google-cloud.mdx>
+[^theblock-frankendancer]: The Block (2024). *Jump Crypto's Frankendancer client launches on Solana mainnet; Firedancer on testnet*. <https://www.theblock.co/post/317490/jump-frankendancer-launches-on-solana-mainnet>
 [^firedancer-live]: Solana Foundation (2025). *Firedancer validator client goes live on Mainnet*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/links/firedancer-mainnet-live.mdx>
 [^jito]: Jito Foundation. *jito-solana* (source repository). <https://github.com/jito-foundation/jito-solana>
 [^jito-docs]: Jito documentation. *Jito*. <https://docs.jito.wtf/>
@@ -376,7 +380,7 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 [^tower-bft]: Solana (2019). *Tower BFT: Solana's high performance implementation of PBFT*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/tower-bft--solana-s-high-performance-implementation-of-pbft.mdx>
 [^alpenglow]: Solana Foundation (2026). *Alpenglow*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/upgrades/alpenglow.mdx>
 [^simd-0326]: Kniep, Q., Sliwinski, K., and Wattenhofer, R. (2025). *SIMD-0326: Alpenglow*. <https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0326-alpenglow.md>
-[^ct-alpenglow]: Cointelegraph (2025). *99% of Solana voters favor Alpenglow upgrade*. <https://cointelegraph.com/news/99-percent-solana-voters-favor-alpenglow-upgrade>
+[^coindesk-alpenglow]: CoinDesk (2025). *Solana set for major overhaul after 98% votes to approve historic 'Alpenglow' upgrade*. <https://www.coindesk.com/tech/2025/09/02/solana-set-for-major-overhaul-after-98-votes-to-approve-historic-alpenglow-upgrade>
 [^fees]: Solana documentation. *Fee structure*. <https://github.com/solana-foundation/solana-com/blob/main/apps/docs/content/docs/en/core/fees/fee-structure.mdx>
 [^anza-inflation]: Anza documentation. *State-validation protocol-based rewards*. <https://docs.anza.xyz/implemented-proposals/ed_overview/ed_validation_client_economics/ed_vce_state_validation_protocol_based_rewards>
 [^outage-2021]: Solana Foundation (2021). *9-14 network outage initial overview*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/9-14-network-outage-initial-overview.mdx>
@@ -387,5 +391,5 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 [^outage-2023]: Solana Foundation (2023). *02-25-23 Solana mainnet beta outage report*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/02-25-23-solana-mainnet-beta-outage-report.mdx>
 [^outage-2024]: Anza (2024). *02-06-24 Solana mainnet beta outage report*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/02-06-24-solana-mainnet-beta-outage-report.mdx>
 [^halborn]: Halborn (2022). *Explained: The Wormhole hack (February 2022)*. <https://www.halborn.com/blog/post/explained-the-wormhole-hack-february-2022>
-[^rekt]: Rekt News (2022). *Wormhole – REKT*. <https://rekt.news/wormhole-rekt/>
+[^theblock-wormhole]: The Block (2022). *Wormhole replenishes its blockchain bridge after $325 million exploit*. <https://www.theblock.co/post/132909/wormhole-replenishes-its-blockchain-bridge-after-325-million-exploit>
 [^slope]: Solana Foundation (2022). *8/2/2022 Slope wallet incident update*. <https://github.com/solana-foundation/solana-com/blob/main/apps/media/content/posts/8-2-2022-application-wallet-incident.mdx>
