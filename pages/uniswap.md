@@ -219,8 +219,8 @@ allows any fee level, including dynamic fees.[^v4-vision]
 Hooks are external contracts that a pool can call at points such as
 before or after a swap or a change in liquidity. They let developers add
 features such as dynamic fees, custom pricing curves or automatic
-rebalancing of positions. Each pool
-can use its own hook, set when the pool is created.[^v4-vision][^v4-launch-uf] According
+rebalancing of positions. Each pool can use its own hook contract, whose
+permissions are determined when the pool is created.[^v4-vision] According
 to The Block, v4 went through nine audits and a security competition,
 and had a US$15.5 million bug bounty.[^v4-launch-theblock] Like v3 before
 it, v4 was released under the Business Source License, with exceptions
