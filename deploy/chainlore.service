@@ -1,0 +1,23 @@
+[Unit]
+Description=Chainlore submissions
+After=network.target
+
+[Service]
+User=deploy
+Group=deploy
+WorkingDirectory=/var/www/chainlore/app-current
+Environment=CHAINLORE_PRODUCTION=1
+Environment=CHAINLORE_DATA_DIR=/var/www/chainlore/private
+Environment=CHAINLORE_SITE_ROOT=/var/www/chainlore/current
+ExecStart=/var/www/chainlore/app-current/.venv/bin/gunicorn service.wsgi:application --bind 127.0.0.1:5011 --workers 2 --threads 2 --timeout 30 --max-requests 1000 --max-requests-jitter 100
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/chainlore/private
+
+[Install]
+WantedBy=multi-user.target

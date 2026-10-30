@@ -2,9 +2,11 @@
 name = "chainlore"
 version = "0.1.0"
 description = "Static crypto encyclopedia built from Markdown"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "Markdown==3.9",
+    "Django>=5.2.18,<5.3",
+    "gunicorn>=23",
 ]
 
 [tool.uv]

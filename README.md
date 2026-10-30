@@ -9,29 +9,61 @@ preserved separately in the editorial record.
 
 ## Build and preview
 
-Requires uv and Python 3.9 or newer. Dependencies are declared in
-`pyproject.toml` and locked in `uv.lock`.
+Requires uv and Python 3.11 or newer. Dependencies are declared in
+`pyproject.toml` and locked in `uv.lock`. The encyclopedia is generated
+HTML; Django 5.2 LTS handles submissions and the private review queue.
 
 ```sh
 uv sync --locked
 uv run --locked python scripts/build.py
 uv run --locked python scripts/check.py
-uv run --locked python -m http.server 8000 --directory dist
+uv run --locked python manage.py migrate
+uv run --locked python manage.py createsuperuser
+uv run --locked python manage.py runserver 8000
 ```
 
-Open http://localhost:8000. The build reads `pages/*.md`, `INDEX.md`,
-`VISION.md`, `ABOUT.md`, and `POLICY.md`, then writes `dist/`.
-Article links become HTML routes; tables, footnotes, and contents are
-rendered from Markdown. The check script verifies all internal links,
-assets, unique IDs, and citation anchors. Search uses a generated JSON
-index in the browser. Articles and navigation work without JavaScript.
+Open http://localhost:8000. In development, Django serves both the generated
+site and the forms. Local data and the generated secret key live in `.data/`,
+which is ignored by Git. Production serves the generated site directly from
+Caddy.
 
-Add an article in `pages/` with the front matter below and link it from
-`INDEX.md`. It will be included in the build, search, and sitemap.
+The build reads `pages/*.md`, `INDEX.md`, `VISION.md`, `ABOUT.md`, and
+`POLICY.md`. It writes `dist/`, including the search index and an article
+catalog used to preselect articles and sections in forms. Add articles to
+`pages/` and link them from `INDEX.md`.
+
+```sh
+uv run --locked python manage.py test submissions
+uv run --locked python manage.py makemigrations --check --dry-run
+```
+
+The static checker validates article metadata, internal links, and citation
+anchors. Django tests cover form validation, CSRF, duplicate submissions,
+spam controls, private receipts, and admin access and review operations.
+
+## Submissions
+
+- `/submit/question/`: question about an existing article.
+- `/submit/request/`: suggested article title, scope, and optional sources.
+- `/submit/correction/`: quoted claim, explanation, source links, and optional replacement text.
+- `/admin/`: authenticated review queue with filters, search, internal notes,
+  duplicate links, and a URL for the resulting article change.
+
+Email is optional. No emails are sent automatically. Submissions are private;
+receipt pages show a reference number without exposing submitted text or email.
+Source URLs are validated but never fetched by the submission endpoint.
+
+Article and section links prefill the forms. Each form has CSRF protection,
+a hidden spam field, and a signed token to prevent repeated posts from creating
+duplicate records. Limits are 10 submissions per connection per hour and
+10 admin login attempts per connection per 15 minutes. Rate-limit keys use
+hashed addresses and expire at the end of their window; raw addresses are not
+stored in the submission database.
 
 ## Deploy to Brick
 
-With SSH access to `root@01z.io`, and `uv`, `rsync`, `scp`, and `curl` installed:
+Requires SSH access to `root@01z.io`, plus local uv, rsync, and curl.
+Brick needs `/home/deploy/.local/bin/uv` and Python 3.11 or newer.
 
 ```sh
 git add <changed-files>
@@ -39,34 +71,55 @@ git commit -m "Describe the update"
 ./deploy.sh
 ```
 
-The script requires a clean, committed checkout, builds and checks locally,
-and uploads only `dist/` via rsync to `/var/www/chainlore/releases/`.
-It atomically switches `/var/www/chainlore/current`, installs the checked-in
-Caddy snippet, validates the entire Caddy configuration, and reloads Caddy.
-No application service, database, GitHub remote, or CI is needed.
+The script requires a clean checkout, builds the static site, runs checks and
+tests, and uploads versioned releases with rsync. Application code runs as
+`deploy`. Caddy serves articles directly and proxies `/submit/` and `/admin/`
+to Gunicorn on `127.0.0.1:5011`. Django admin assets are served by Caddy under
+`/service-static/`. The health endpoint is loopback-only through Caddy routing.
 
-The first deployment adds `import /etc/caddy/chainlore.caddy` to the live
-Caddyfile, preserving existing routes. The same import must be retained
-in Brick's `Caddyfile.j2` before any future infrastructure deployment.
-DNS is managed separately in Hetzner: `chainlore.xyz` points to Brick.
+Paths on Brick:
 
-Each release records its commit in `/build-info.json`. Previous releases
-are retained. Caddy configuration and the previous release path are saved
-in `/var/www/chainlore/backups/<release>/`. Configuration failures restore
-the previous route and release automatically. A public HTTPS check runs
-after deployment; if it fails, inspect DNS and certificate issuance before
-deciding whether to roll back.
+| Path under `/var/www/chainlore/` | Contents |
+|---|---|
+| `releases/<release>/` | Public HTML, assets, article catalog, and commit metadata |
+| `current` | Symlink to the active public release |
+| `app-releases/<release>/` | Django code, uv environment, and admin static assets |
+| `app-current` | Symlink to the active service release |
+| `private/` | SQLite database, secret key, and initial admin credentials; mode 700 |
+| `backups/<release>/` | Previous release paths, configuration, service unit, and database snapshot |
 
-For a manual content rollback, choose a known release on Brick, then run:
+The private directory is outside all Caddy document roots and rsync destinations.
+Before migrations, the script backs up an existing database using SQLite's
+backup API and checks the backup's integrity. Dependencies, migrations, and
+static collection run before switching releases. Activation installs the
+systemd unit and app-owned Caddy snippet, checks the complete Caddy config,
+restarts the service, checks its health, and reloads Caddy.
 
-```sh
-ssh root@01z.io
-ln -s /var/www/chainlore/releases/<previous-release> /var/www/chainlore/rollback
-mv -Tf /var/www/chainlore/rollback /var/www/chainlore/current
-```
+The main Caddyfile is owned by the Brick repository. Its Chainlore import
+must already be committed, pushed, and deployed through Brick CI; this script
+does not edit the main Caddyfile. Chainlore itself deploys without GitHub.
 
-No Caddy reload is needed for a content-only rollback. Config backups are
-available if routing also needs restoring; validate before reloading.
+### Admin access
+
+The first deployment creates an `admin` account with a random password and
+writes its credentials to `private/admin-initial-credentials.txt` with mode 600.
+Later deployments leave existing accounts and passwords unchanged. Retrieve
+that file privately over SSH; do not add it to Git. Passwords can be changed
+through the admin's Change password page. After recording the password in a
+password manager, the initial credentials file can be removed.
+
+### Rollback
+
+Activation failures restore the previous public and app symlinks, Caddy snippet,
+and systemd unit. The database is never automatically reversed. Migrations
+must be reviewed for compatibility with the previous app before deploying;
+stop for migrations that need a different rollback procedure.
+
+For a manual content-only rollback, switch `current` to a retained public
+release. For a service rollback, also switch `app-current` to the matching
+app release and restart `chainlore.service`, after checking database
+compatibility. Configuration and database snapshots are in `backups/<release>/`.
+Do not restore a database over newer submissions without a recovery plan.
 
 ## Why
 

@@ -10,7 +10,22 @@ chainlore.xyz {
     redir @legacy /p/{re.legacy.1}/ permanent
     @assets path /assets/*
     header @assets Cache-Control "public, max-age=3600"
-    file_server
+    @service path /submit /submit/* /admin /admin/*
+    handle @service {
+        request_body {
+            max_size 64KB
+        }
+        reverse_proxy 127.0.0.1:5011 {
+            header_up X-Chainlore-IP {remote_host}
+        }
+    }
+    handle_path /service-static/* {
+        root * /var/www/chainlore/app-current/staticfiles
+        file_server
+    }
+    handle {
+        file_server
+    }
     handle_errors {
         rewrite * /404/index.html
         file_server

@@ -8,6 +8,7 @@ from build import load, validate
 
 SOURCE = Path(__file__).resolve().parent.parent
 ROOT = SOURCE / 'dist'
+DYNAMIC_ROUTES = {'/submit/', '/submit/question/', '/submit/request/', '/submit/correction/'}
 
 
 class Page(HTMLParser):
@@ -40,6 +41,8 @@ def main():
         for link in page.links:
             url = urlsplit(urljoin(base, link))
             if url.scheme or url.netloc:
+                continue
+            if url.path in DYNAMIC_ROUTES:
                 continue
             target = ROOT / unquote(url.path).lstrip('/')
             if target.is_dir():

@@ -12,7 +12,7 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 from string import Template
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import markdown
 
@@ -152,7 +152,20 @@ def article(page):
     content = f'<header class="article-header"><h1>{html.escape(title)}</h1><div class="article-meta">{details}</div></header>'
     if meta.get('status') == 'draft':
         content += '<p class="notice">This article is a draft. It has not yet passed a fact-check under the <a href="/policy/">editorial policy</a> and may contain errors.</p>'
+    if meta:
+        slug = page['source'].stem
+        for heading in page['tree'].findall('h2'):
+            link = ET.SubElement(heading, 'a', {
+                'class': 'section-report',
+                'href': '/submit/correction/?' + urlencode({'article': slug, 'section': heading.get('id', '')}),
+                'aria-label': f'Report an error in {plain(heading)}',
+            })
+            link.text = 'Report an error'
     content += '<article class="article-body">' + ''.join(serialize(node) for node in page['tree']) + '</article>'
+    if meta:
+        content += f'<nav class="article-actions" aria-label="Questions and corrections"><a href="/submit/question/?article={slug}">Ask about this article</a><a href="/submit/correction/?article={slug}">Report an error</a><a href="/submit/request/">Request an article</a></nav>'
+    elif route == '/all-articles/':
+        content += '<p><a href="/submit/request/">Request an article</a></p>'
     toc = '<details class="contents" open><summary>Contents</summary><ul>' + ''.join(f'<li><a href="#{html.escape(anchor)}">{html.escape(label)}</a></li>' for anchor, label in page['toc']) + '</ul></details>' if page['toc'] else ''
     write_page(route, title, content, page['source'].relative_to(ROOT).as_posix(), page['description'], toc)
 
@@ -201,6 +214,7 @@ def main():
     for name in SUPPORTING:
         article(render(ROOT / name))
     homepage(pages)
+    (OUT / 'article-catalog.json').write_text(json.dumps({slug: {'title': p['title'], 'sections': dict(p['toc'])} for slug, p in pages.items()}, ensure_ascii=False))
     write_page('/search/', 'Search', '<header class="article-header"><h1>Search Chainlore</h1></header><p id="search-status" role="status">Loading search…</p><noscript><p>Search requires JavaScript. You can browse every article in the index.</p></noscript><ul id="search-results" class="search-results"></ul><p><a href="/all-articles/">Browse all articles →</a></p>', description='Search the Chainlore encyclopedia.', active='Search')
     write_page('/404/', 'Page not found', '<h1>Page not found</h1><p>This page is not in the encyclopedia yet.</p><p><a href="/">Return to the main page</a> or <a href="/all-articles/">browse all articles</a>.</p>', active='Page not found')
     (OUT / 'search-index.json').write_text(json.dumps([{'title': p['title'], 'ticker': p['meta']['ticker'], 'url': f'/p/{slug}/', 'description': p['description'], 'text': p['text']} for slug, p in pages.items()], ensure_ascii=False))
