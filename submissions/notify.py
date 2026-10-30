@@ -1,9 +1,32 @@
+import logging
+import smtplib
+from django.conf import settings
 from django.core.mail import send_mail
+from django.urls import reverse
 from django.utils import timezone
 from .catalog import articles
 from .models import Submission
 
 FINAL = {Submission.Status.RESOLVED, Submission.Status.DECLINED}
+logger = logging.getLogger(__name__)
+
+
+def notify_admin(submission):
+    if not settings.NOTIFICATIONS_ENABLED or not settings.ADMIN_NOTIFICATION_EMAIL:
+        return
+    kind = submission.get_kind_display().lower()
+    review_url = 'https://chainlore.xyz' + reverse('admin:submissions_submission_change', args=[submission.pk])
+    body = '\n'.join([
+        f'A new {kind} is ready for review.', '',
+        f'Subject: {submission.title or submission.article}',
+        f'Reference: {submission.reference}', '',
+        f'Review the submission: {review_url}',
+    ])
+    try:
+        send_mail(f'New Chainlore {kind}', body, None, [settings.ADMIN_NOTIFICATION_EMAIL])
+    except (smtplib.SMTPException, OSError):
+        # Keep the saved submission and avoid logging addresses or SMTP credentials.
+        logger.error('Admin notification failed for submission %s', submission.reference)
 
 
 def pending(submission):

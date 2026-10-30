@@ -79,7 +79,10 @@ X_FRAME_OPTIONS = 'DENY'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 65536
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 30
 FILE_UPLOAD_MAX_MEMORY_SIZE = 0
-# Postmark emails submitters about decisions. The token lives only in DATA_DIR on the server.
+# Email secrets live in the environment or private DATA_DIR, outside the repository.
+admin_email_file = DATA_DIR / 'admin-email'
+ADMIN_NOTIFICATION_EMAIL = os.environ.get('CHAINLORE_ADMIN_EMAIL',
+    admin_email_file.read_text().strip() if admin_email_file.exists() else '').strip()
 postmark_token_file = DATA_DIR / 'postmark-token'
 POSTMARK_TOKEN = postmark_token_file.read_text().strip() if postmark_token_file.exists() else ''
 if POSTMARK_TOKEN:

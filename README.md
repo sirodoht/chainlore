@@ -52,9 +52,18 @@ spam controls, private receipts, and admin access and review operations.
   duplicate links, and a URL for the resulting article change.
 
 Email is optional and never published. It is available only in the authenticated
-editorial queue for replying to the submitter. No emails are sent automatically. Submissions are private;
+editorial queue for replying to the submitter. New submissions notify the configured
+admin; resolving or declining a submission emails the submitter if they supplied an address.
+Submissions are private;
 receipt pages show a reference number without exposing submitted text or email.
 Source URLs are validated but never fetched by the submission endpoint.
+
+Configure the admin recipient with `CHAINLORE_ADMIN_EMAIL` or a private
+`admin-email` file in `CHAINLORE_DATA_DIR`. On Brick, the file belongs to `deploy`
+with mode `600`, outside the repository and public site. Email delivery uses the
+existing private `postmark-token` file. Duplicate form posts and discarded spam
+do not trigger admin emails. Delivery failures are logged with the submission
+reference, and the submission remains saved for review; there is no automatic retry.
 
 Article and section links prefill the forms. Each form has CSRF protection,
 a hidden spam field, and a signed token to prevent repeated posts from creating

@@ -1,6 +1,6 @@
 import hashlib
 from django.conf import settings
-from django.db import connection
+from django.db import connection, transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
@@ -9,6 +9,7 @@ from .catalog import articles, revision
 from .forms import SubmissionForm
 from .limits import allow
 from .models import Submission
+from .notify import notify_admin
 
 TITLES = {'request': 'Request an article', 'correction': 'Report an error'}
 
@@ -46,9 +47,11 @@ def submit(request, kind):
         reference = data.pop('form_token')
         honeypot = data.pop('website')
         if not honeypot:
-            Submission.objects.get_or_create(reference=reference, defaults={
+            submission, created = Submission.objects.get_or_create(reference=reference, defaults={
                 **data, 'kind': kind, 'article_revision': revision() if kind != 'request' else '',
             })
+            if created:
+                transaction.on_commit(lambda: notify_admin(submission))
         return redirect('submission-received', reference=reference)
     return render(request, 'submissions/form.html', context(title=TITLES[kind], form=form, kind=kind))
 

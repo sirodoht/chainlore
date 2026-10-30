@@ -1,8 +1,10 @@
 import json
+import smtplib
 import tempfile
 import uuid
 from io import StringIO
 from pathlib import Path
+from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.management import call_command
@@ -21,7 +23,7 @@ class SubmissionsTests(TestCase):
         (root / 'article-catalog.json').write_text(json.dumps({'bitcoin': {'title': 'Bitcoin', 'sections': {'history': 'History'}}}))
         (root / 'build-info.json').write_text(json.dumps({'revision': 'a' * 40}))
         self.root = root
-        override = override_settings(DATA_DIR=root, SITE_ROOT=root, ARTICLE_CATALOG=root / 'article-catalog.json', PRODUCTION=False, SECURE_SSL_REDIRECT=False)
+        override = override_settings(DATA_DIR=root, SITE_ROOT=root, ARTICLE_CATALOG=root / 'article-catalog.json', PRODUCTION=False, SECURE_SSL_REDIRECT=False, ADMIN_NOTIFICATION_EMAIL='', NOTIFICATIONS_ENABLED=True)
         override.enable()
         self.addCleanup(override.disable)
 
@@ -105,6 +107,60 @@ class SubmissionsTests(TestCase):
         second = self.client.post('/submit/correction/', data)
         self.assertEqual(first.url, second.url)
         self.assertEqual(Submission.objects.count(), 1)
+
+    @override_settings(ADMIN_NOTIFICATION_EMAIL='editor@example.com')
+    def test_new_submissions_notify_admin_once_after_commit(self):
+        for kind in ('request', 'correction'):
+            with self.subTest(kind=kind):
+                data = self.data(title='New protocol', email='reader@example.com')
+                before = len(mail.outbox)
+                with self.captureOnCommitCallbacks(execute=True) as callbacks:
+                    response = self.client.post(f'/submit/{kind}/', data)
+                    self.assertEqual(len(mail.outbox), before)
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(len(callbacks), 1)
+                message = mail.outbox[-1]
+                record = Submission.objects.get(kind=kind)
+                self.assertEqual(message.to, ['editor@example.com'])
+                self.assertEqual(message.subject, f'New Chainlore {record.get_kind_display().lower()}')
+                self.assertIn(f'https://chainlore.xyz/admin/submissions/submission/{record.pk}/change/', message.body)
+                self.assertIn(record.title or record.article, message.body)
+                self.assertNotContains(self.client.get(response.url), 'editor@example.com')
+                with self.captureOnCommitCallbacks(execute=True) as callbacks:
+                    duplicate = self.client.post(f'/submit/{kind}/', data)
+                self.assertEqual(duplicate.url, response.url)
+                self.assertEqual(callbacks, [])
+                self.assertEqual(len(mail.outbox), before + 1)
+
+    @override_settings(ADMIN_NOTIFICATION_EMAIL='editor@example.com')
+    def test_spam_and_invalid_submissions_do_not_notify_admin(self):
+        with self.captureOnCommitCallbacks(execute=True) as callbacks:
+            self.client.post('/submit/correction/', self.data(website='https://spam.example'))
+            self.client.post('/submit/request/', {'title': '', 'form_token': new_token()})
+        self.assertEqual(callbacks, [])
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertFalse(Submission.objects.exists())
+
+    def test_admin_notification_requires_recipient_and_email_configuration(self):
+        for options in ({'ADMIN_NOTIFICATION_EMAIL': ''},
+                        {'ADMIN_NOTIFICATION_EMAIL': 'editor@example.com', 'NOTIFICATIONS_ENABLED': False}):
+            with override_settings(**options), self.captureOnCommitCallbacks(execute=True):
+                response = self.client.post('/submit/correction/', self.data())
+            self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(Submission.objects.count(), 2)
+
+    @override_settings(ADMIN_NOTIFICATION_EMAIL='editor@example.com')
+    def test_admin_email_failure_preserves_submission_and_private_configuration(self):
+        for error in (smtplib.SMTPException('editor@example.com secret-token'), OSError('connection failed')):
+            with patch('submissions.notify.send_mail', side_effect=error):
+                with self.assertLogs('submissions.notify', level='ERROR') as logs:
+                    with self.captureOnCommitCallbacks(execute=True):
+                        response = self.client.post('/submit/correction/', self.data())
+            self.assertEqual(response.status_code, 302)
+            self.assertNotIn('editor@example.com', '\n'.join(logs.output))
+            self.assertNotIn('secret-token', '\n'.join(logs.output))
+        self.assertEqual(Submission.objects.count(), 2)
 
     def test_tampered_token_rejected(self):
         response = self.client.post('/submit/correction/', self.data(form_token=str(uuid.uuid4())))
