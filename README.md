@@ -43,7 +43,6 @@ spam controls, private receipts, and admin access and review operations.
 
 ## Submissions
 
-- `/submit/question/`: question about an existing article.
 - `/submit/request/`: suggested article title, scope, and optional sources.
 - `/submit/correction/`: quoted claim, explanation, source links, and optional replacement text.
 - `/admin/`: authenticated review queue with filters, search, internal notes,

@@ -163,7 +163,7 @@ def article(page):
             link.text = 'Report an error'
     content += '<article class="article-body">' + ''.join(serialize(node) for node in page['tree']) + '</article>'
     if meta:
-        content += f'<nav class="article-actions" aria-label="Questions and corrections"><a href="/submit/question/?article={slug}">Ask about this article</a><a href="/submit/correction/?article={slug}">Report an error</a><a href="/submit/request/">Request an article</a></nav>'
+        content += f'<nav class="article-actions" aria-label="Requests and corrections"><a href="/submit/correction/?article={slug}">Report an error</a><a href="/submit/request/">Request an article</a></nav>'
     elif route == '/all-articles/':
         content += '<p><a href="/submit/request/">Request an article</a></p>'
     toc = '<details class="contents" open><summary>Contents</summary><ul>' + ''.join(f'<li><a href="#{html.escape(anchor)}">{html.escape(label)}</a></li>' for anchor, label in page['toc']) + '</ul></details>' if page['toc'] else ''

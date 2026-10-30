@@ -48,5 +48,5 @@ rsync -az --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r --exclude '__pycache__/' \
 ssh "$host" bash -s -- "$release" < deploy/activate.sh
 curl --fail --silent --show-error --retry 3 --retry-delay 2 --retry-all-errors \
     https://chainlore.xyz/build-info.json
-curl --fail --silent --show-error -o /dev/null https://chainlore.xyz/submit/question/
+curl --fail --silent --show-error -o /dev/null https://chainlore.xyz/submit/request/
 printf '\nLive: https://chainlore.xyz\nAdmin: https://chainlore.xyz/admin/\n'

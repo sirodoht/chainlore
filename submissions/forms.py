@@ -25,6 +25,8 @@ class SubmissionForm(forms.Form):
     form_token = forms.CharField(widget=forms.HiddenInput)
 
     def __init__(self, *args, kind, **kwargs):
+        if kind not in ('request', 'correction'):
+            raise ValueError('Unsupported submission type')
         super().__init__(*args, **kwargs)
         self.fields['article'].choices = [('', 'Select an article')] + [(slug, page['title']) for slug, page in articles().items()]
         self.fields['form_token'].initial = new_token()
@@ -34,14 +36,9 @@ class SubmissionForm(forms.Form):
             self.fields['details'].label = 'What should the article cover?'
         else:
             self.fields.pop('title')
-            if kind == 'question':
-                for field in ('claim', 'correction', 'section'):
-                    self.fields.pop(field)
-                self.fields['details'].label = 'Question'
-            else:
-                self.fields['details'].label = 'What is incorrect, and why?'
-                self.fields['sources'].required = True
-                self.fields['sources'].label = 'Source links'
+            self.fields['details'].label = 'What is incorrect, and why?'
+            self.fields['sources'].required = True
+            self.fields['sources'].label = 'Source links'
         for name, field in self.fields.items():
             if isinstance(field.widget, forms.Textarea):
                 field.widget.attrs['maxlength'] = field.max_length

@@ -25,10 +25,10 @@ class SubmissionsTests(TestCase):
         self.addCleanup(override.disable)
 
     def data(self, **kwargs):
-        return {'article': 'bitcoin', 'details': 'How does mining work?', 'form_token': new_token(), **kwargs}
+        return {'article': 'bitcoin', 'details': 'The stated date is incorrect.', 'claim': 'The stated date', 'sources': 'https://example.com/reference', 'form_token': new_token(), **kwargs}
 
-    def test_three_forms_and_prefill(self):
-        for kind in ('question', 'request', 'correction'):
+    def test_two_forms_and_prefill(self):
+        for kind in ('request', 'correction'):
             response = self.client.get(f'/submit/{kind}/?article=bitcoin&section=history')
             self.assertEqual(response.status_code, 200)
             if kind != 'request':
@@ -37,11 +37,16 @@ class SubmissionsTests(TestCase):
                 self.assertEqual(response.context['form']['section'].value(), 'History')
         self.assertEqual(self.client.get('/submit/unknown/').status_code, 404)
 
-    def test_question_without_email_and_private_receipt(self):
-        response = self.client.post('/submit/question/', self.data())
+    def test_removed_question_route_rejects_get_and_post(self):
+        self.assertEqual(self.client.get('/submit/question/').status_code, 404)
+        self.assertEqual(self.client.post('/submit/question/', self.data()).status_code, 404)
+        self.assertFalse(Submission.objects.exists())
+
+    def test_correction_without_email_and_private_receipt(self):
+        response = self.client.post('/submit/correction/', self.data())
         self.assertEqual(response.status_code, 302)
         record = Submission.objects.get()
-        self.assertEqual(record.kind, 'question')
+        self.assertEqual(record.kind, 'correction')
         self.assertEqual(record.email, '')
         self.assertEqual(record.article_revision, 'a' * 40)
         receipt = self.client.get(response.url)
@@ -58,7 +63,7 @@ class SubmissionsTests(TestCase):
         self.assertEqual(record.status, 'new')
 
     def test_correction_requires_claim_and_valid_sources(self):
-        response = self.client.post('/submit/correction/', self.data())
+        response = self.client.post('/submit/correction/', self.data(claim='', sources=''))
         self.assertIn('claim', response.context['form'].errors)
         self.assertIn('sources', response.context['form'].errors)
         response = self.client.post('/submit/correction/', self.data(claim='Incorrect claim', sources='javascript:alert(1)'))
@@ -69,32 +74,32 @@ class SubmissionsTests(TestCase):
         self.assertEqual(Submission.objects.get().section, 'History')
 
     def test_invalid_article_and_length_are_rejected(self):
-        response = self.client.post('/submit/question/', self.data(article='../../private'))
+        response = self.client.post('/submit/correction/', self.data(article='../../private'))
         self.assertIn('article', response.context['form'].errors)
-        response = self.client.post('/submit/question/', self.data(details='x' * 5001))
+        response = self.client.post('/submit/correction/', self.data(details='x' * 5001))
         self.assertIn('details', response.context['form'].errors)
         self.assertFalse(Submission.objects.exists())
 
     def test_duplicate_post_does_not_duplicate_submission(self):
         data = self.data()
-        first = self.client.post('/submit/question/', data)
-        second = self.client.post('/submit/question/', data)
+        first = self.client.post('/submit/correction/', data)
+        second = self.client.post('/submit/correction/', data)
         self.assertEqual(first.url, second.url)
         self.assertEqual(Submission.objects.count(), 1)
 
     def test_tampered_token_rejected(self):
-        response = self.client.post('/submit/question/', self.data(form_token=str(uuid.uuid4())))
+        response = self.client.post('/submit/correction/', self.data(form_token=str(uuid.uuid4())))
         self.assertIn('form_token', response.context['form'].errors)
         self.assertFalse(Submission.objects.exists())
 
     def test_honeypot_discards_spam(self):
-        response = self.client.post('/submit/question/', self.data(website='https://spam.example'))
+        response = self.client.post('/submit/correction/', self.data(website='https://spam.example'))
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Submission.objects.exists())
 
     def test_rate_limit_is_shared_by_submission_types(self):
         for _ in range(10):
-            self.assertEqual(self.client.post('/submit/question/', self.data()).status_code, 302)
+            self.assertEqual(self.client.post('/submit/correction/', self.data()).status_code, 302)
         response = self.client.post('/submit/request/', self.data(title='Another article'))
         self.assertEqual(response.status_code, 429)
         self.assertEqual(Submission.objects.count(), 10)
@@ -103,14 +108,14 @@ class SubmissionsTests(TestCase):
 
     def test_csrf_is_enforced_and_valid_form_works(self):
         client = Client(enforce_csrf_checks=True)
-        self.assertEqual(client.post('/submit/question/', self.data()).status_code, 403)
-        response = client.get('/submit/question/')
+        self.assertEqual(client.post('/submit/correction/', self.data()).status_code, 403)
+        response = client.get('/submit/correction/')
         token = response.context['form']['form_token'].value()
-        response = client.post('/submit/question/', self.data(form_token=token, csrfmiddlewaretoken=client.cookies['csrftoken'].value))
+        response = client.post('/submit/correction/', self.data(form_token=token, csrfmiddlewaretoken=client.cookies['csrftoken'].value))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Submission.objects.count(), 1)
 
-    def test_admin_requires_login_and_can_review(self):
+    def test_admin_can_still_review_legacy_questions(self):
         record = Submission.objects.create(kind='question', article='bitcoin', details='Question')
         url = f'/admin/submissions/submission/{record.pk}/change/'
         self.assertEqual(self.client.get(url).status_code, 302)
@@ -147,7 +152,7 @@ class SubmissionsTests(TestCase):
         self.assertNotContains(response, '<script>alert(1)</script>')
 
     def test_unknown_prefill_does_not_inject_markup(self):
-        response = self.client.get('/submit/question/?article=%22%3E%3Cscript%3E')
+        response = self.client.get('/submit/correction/?article=%22%3E%3Cscript%3E')
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, '<script>')
 

@@ -8,7 +8,7 @@ from build import load, validate
 
 SOURCE = Path(__file__).resolve().parent.parent
 ROOT = SOURCE / 'dist'
-DYNAMIC_ROUTES = {'/submit/', '/submit/question/', '/submit/request/', '/submit/correction/'}
+DYNAMIC_ROUTES = {'/submit/', '/submit/request/', '/submit/correction/'}
 
 
 class Page(HTMLParser):

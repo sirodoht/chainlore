@@ -10,7 +10,7 @@ from .forms import SubmissionForm
 from .limits import allow
 from .models import Submission
 
-TITLES = {'question': 'Ask about an article', 'request': 'Request an article', 'correction': 'Report an error'}
+TITLES = {'request': 'Request an article', 'correction': 'Report an error'}
 
 
 def context(**kwargs):
@@ -21,7 +21,7 @@ def context(**kwargs):
 @require_GET
 @never_cache
 def index(request):
-    return render(request, 'submissions/index.html', context(title='Questions and corrections'))
+    return render(request, 'submissions/index.html', context(title='Requests and corrections'))
 
 
 @require_http_methods(['GET', 'POST'])

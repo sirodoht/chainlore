@@ -5,6 +5,7 @@ from django.db import models
 
 class Submission(models.Model):
     class Kind(models.TextChoices):
+        # Retained only for reviewing historical records; no public question form.
         QUESTION = 'question', 'Article question'
         REQUEST = 'request', 'Article request'
         CORRECTION = 'correction', 'Error report'
