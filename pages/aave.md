@@ -14,7 +14,7 @@ collateral worth more than the loan; positions whose health factor falls
 below 1 can be liquidated.[^v3-docs] It grew out of ETHLend, a
 peer-to-peer lending platform founded by Stani Kulechov, and is
 governed by the Aave DAO, whose members vote with the AAVE
-token.[^aci-2020][^governance-docs]
+token.[^aci-2020][^ethlend-ico][^governance-docs]
 
 | | |
 |---|---|
@@ -40,7 +40,7 @@ lock ERC-20 tokens as collateral and borrow Ether from individual
 lenders. Its LEND token was sold in a presale that reached a 2,000 ETH
 cap in September 2017 and a public sale that began on 25 November 2017;
 Finance Magnates reported that the public sale raised US$10 million
-within its first hour.[^ethlend-ico]
+in its first half-hour.[^ethlend-ico]
 
 In September 2018 Aave was established as the parent company of
 ETHLend. When the Aave Protocol launched, ETHLend stopped taking new
@@ -69,8 +69,8 @@ Version 2 launched in early December 2020. It represented debts as
 tokens, which allowed native credit delegation (lending one's borrowing
 power to another address), and let users trade collateral or repay loans
 with it. It added batch flash loans and a reserve factor that directs
-part of borrowers' interest to the DAO. A flash-loan-based tool let users
-move from V1 to V2 without closing positions.[^v2]
+part of borrowers' interest to the DAO. A planned flash-loan-based tool
+was to let users move from V1 to V2 without closing positions.[^v2]
 
 ### V3
 
@@ -87,9 +87,9 @@ institutions at launch.[^arc]
 
 On 18 May 2022 Aave launched Lens Protocol, a social graph on Polygon in
 which profiles and content are held as NFTs in users' wallets, so that
-any app can build on them.[^lens-launch] On 20 January 2026 Kulechov
-announced that Mask Network would take over stewardship of
-Lens.[^lens-mask]
+any app can build on them.[^lens-launch] On 20 January 2026 Lens
+announced that Mask Network would take over its
+stewardship.[^lens-mask]
 
 ### GHO
 
@@ -178,7 +178,7 @@ falls.[^v4-docs]
 
 ### Safety Module and Umbrella
 
-From the 2020 migration, AAVE holders could stake in the Safety Module
+From late 2020, AAVE holders could stake in the Safety Module
 and earn rewards. In return, up to 30% of the staked assets could be
 used to cover a shortfall in the protocol.[^migration] Umbrella,
 proposed by BGD Labs in March 2025, lets users stake aTokens and GHO
@@ -193,7 +193,7 @@ be disabled once Umbrella is large enough.[^umbrella-docs]
 
 Holders of AAVE, staked AAVE (stkAAVE) and supplied AAVE (aAAVE) can
 vote or delegate. Ethereum holds voting power, but voting can take place
-on cheaper networks such as Polygon and Avalanche. In the standard
+on other networks such as Polygon and Avalanche. In the standard
 process, a proposal is discussed on the forum as an Aave Request for
 Comments (ARFC), passes a binding Snapshot vote, and is then submitted
 on-chain as an Aave Improvement Proposal (AIP). Most AIPs use a short
@@ -247,27 +247,28 @@ technical service provider.[^governance-docs]
   about US$124 million to US$230 million.[^rseth-report] TokenLogic
   proposed that the treasury contribute 25,000 ETH, alongside
   donations and a credit facility from Mantle, in a "DeFi United"
-  recovery effort.[^rseth-funding] The attacker's positions were later
-  liquidated. WETH was unfrozen on 10 May 2026, with rsETH still frozen
-  as a precaution.[^weth-unfreeze][^al-may]
+  recovery effort.[^rseth-funding] The attacker's positions were
+  liquidated on 6 May 2026. By 10 May WETH had been unfrozen on all
+  active markets, with rsETH still frozen as a
+  precaution.[^weth-unfreeze][^al-may]
 - Binance hot wallet hack (October 2026). Binance said a hack on 29
   October 2026 affected about US$6.3 billion in assets.[^binance-ct] A
   wallet linked to the attacker supplied 60 million USDT to Aave and
   borrowed 19,762 WETH. Guardian multisigs then froze 175 V3 reserves
   on 16 networks and 117 V4 reserves on four networks; Horizon stayed
   open. LlamaRisk said the position was over-collateralised and did not
-  put suppliers at risk.[^binance-response] As withdrawals pushed the
-  largest stablecoin pools to 92–100% utilisation, LlamaRisk proposed
-  lower borrow caps and temporary rate limits before a staged
-  unfreeze.[^binance-caps] As of 30 October 2026 the markets remain
-  frozen.
+  put suppliers at risk.[^binance-response] As supplier withdrawals
+  pushed the largest stablecoin pools to 92–100% utilisation, LlamaRisk
+  proposed temporary cuts to their interest-rate slopes,[^binance-caps]
+  and cut borrow caps ahead of a staged unfreeze. As of 30 October 2026
+  the markets remain frozen.[^binance-draw]
 - Aave Labs and the DAO (2025–2026). In December 2025 a delegate found
   that fees from a new CoW Swap integration in Aave Labs' interface went
-  to a wallet controlled by Aave Labs rather than the DAO. Zeller called
-  this "stealth privatization". Aave Labs said the integration was not a
-  fee switch, and that it owned the website while the DAO owned the
-  smart contracts.[^cow] Aave Labs then put to a Snapshot vote a
-  proposal, written by Ernesto Boado of BGD Labs, to move the brand's
+  to Aave Labs rather than the DAO. Zeller said Aave Labs had acted "in
+  the pursuit of their own monetization". Aave Labs said the integration
+  was not a fee switch, and that it owned the website while the DAO owned
+  the smart contracts.[^cow-forum][^cow-tl][^cow] Aave Labs then put to
+  a Snapshot vote a proposal, written by Ernesto Boado of BGD Labs, to move the brand's
   domains, social accounts and code repositories under DAO control.
   Boado said it had been submitted without his knowledge; Aave Labs said
   the rules did not require his permission.[^brand-block] The vote
@@ -314,7 +315,7 @@ technical service provider.[^governance-docs]
 | 2026-04-06 | Chaos Labs announces departure |
 | 2026-04-12 | DAO approves Aave Labs funding |
 | 2026-04-18 | rsETH exploit; rsETH markets frozen |
-| 2026-05-10 | WETH unfrozen |
+| 2026-05-10 | WETH unfreeze completed |
 | 2026-10-29 | Markets frozen after Binance hack |
 
 ## See also
@@ -364,9 +365,12 @@ technical service provider.[^governance-docs]
 [^rseth-report]: LlamaRisk et al. (2026). *rsETH incident report (April 20, 2026)*. Aave governance forum. <https://governance.aave.com/t/rseth-incident-report-april-20-2026/24580>
 [^rseth-funding]: TokenLogic (2026). *[ARFC] rsETH incident funding update*. Aave governance forum. <https://governance.aave.com/t/arfc-rseth-incident-funding-update/24740>
 [^weth-unfreeze]: LlamaRisk (2026). *[Direct to AIP] WETH unfreeze and LTV restoration across Aave V3 instances*. Aave governance forum. <https://governance.aave.com/t/direct-to-aip-weth-unfreeze-and-ltv-restoration-across-aave-v3-instances/24878>
-[^binance-ct]: Cointelegraph (2026). *Binance investigates multibillion-dollar security breach*. <https://cointelegraph.com/news/binance-linked-wallet-faces-possible-exploit-blockchain-researcher-warns>
+[^binance-ct]: Cointelegraph (2026). *Binance hit by $6.3B hack, the largest in cryptocurrency history*. <https://cointelegraph.com/news/binance-linked-wallet-faces-possible-exploit-blockchain-researcher-warns>
 [^binance-response]: LlamaRisk (2026). *Binance hot wallet exploit: Aave's response*. Aave governance forum. <https://governance.aave.com/t/binance-hot-wallet-exploit-aaves-response/25954>
 [^binance-caps]: LlamaRisk (2026). *Risk Stewards: temporary Slope2 reductions on Aave V3 and Aave V4 / 2026.10.30*. Aave governance forum. <https://governance.aave.com/t/risk-stewards-temporary-slope2-reductions-on-aave-v3-and-aave-v4-2026-10-30/25955>
+[^binance-draw]: LlamaRisk (2026). *Risk Stewards: borrow and draw cap reductions on Aave V3 and Aave V4 / 2026.10.30*. Aave governance forum. <https://governance.aave.com/t/risk-stewards-borrow-and-draw-cap-reductions-on-aave-v3-and-aave-v4-2026-10-30/25960>
+[^cow-forum]: EzR3aL et al. (2025). *Aave CowSwap integration – tokenholder questions*. Aave governance forum. <https://governance.aave.com/t/aave-cowswap-integration-tokenholder-questions/23530>
+[^cow-tl]: TokenLogic (2025). *Velora & CowSwap integration analysis*. Aave governance forum. <https://governance.aave.com/t/velora-cowswap-integration-analysis/23620>
 [^cow]: crypto.news (2025). *Aave DAO clashes with Aave Labs over CoW Swap fees and control of protocol IP*. <https://crypto.news/aave-dao-clashes-with-aave-labs-over-cow-swap-fees-and-control-of-protocol-ip/>
 [^brand-block]: The Block (2025). *'A hostile takeover attempt': Aave Labs' unilateral push to vote on brand-rights proposal sparks community outcry*. <https://www.theblock.co/post/383464/aave-labs-vote-sparks-community-outcry>
 [^brand-ct]: Cointelegraph (2025). *Aave founder says $15M token buy wasn't used in controversial DAO vote*. <https://cointelegraph.com/news/aave-founder-tokens-influence-failed-dao-vote>
