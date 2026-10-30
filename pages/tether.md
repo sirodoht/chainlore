@@ -25,7 +25,7 @@ loans.[^fy-2025]
 | Type | Fiat-backed stablecoin |
 | Peg | 1 USDT = 1 US dollar |
 | Issuer | Tether International and affiliates (Tether group) |
-| Founders | Brock Pierce, Reeve Collins, Craig Sellars |
+| Founders | Brock Pierce, Reeve Collins, Craig Sellars, William Quigley |
 | Launched | 2014 (as Realcoin, on Omni) |
 | Headquarters | El Salvador (since 2025) |
 | CEO | Paolo Ardoino (since 2023) |
@@ -47,7 +47,8 @@ and Craig Sellars of Mastercoin.[^realcoin] On 20 November 2014 the
 project was renamed Tether as it entered private beta. Collins was its
 chief executive and Sellars, a co-founder, was also chief technology
 officer of Mastercoin. Bitfinex, then based in Hong Kong, was among the
-first exchanges to sign on.[^rebrand]
+first exchanges to sign on.[^rebrand] Pierce's founding team, which also
+included William Quigley, stepped away from the project early on.[^ardoino-profile]
 
 ### Bitfinex and shared management
 
@@ -58,10 +59,11 @@ executive, chief financial officer, chief technology officer and general
 counsel of both.[^cftc-order] Jean-Louis van der Velde was chief
 executive of Tether until October 2023 and remained chief executive of
 Bitfinex.[^ardoino-ceo] Giancarlo Devasini, who was running Bitfinex in
-2014, became Tether's chief financial officer.[^ardoino-profile] Paolo
-Ardoino joined Bitfinex in 2014, became chief technology officer of
-both companies, and was promoted to chief executive of Tether on 13
-October 2023 while keeping his Bitfinex role.[^ardoino-ceo][^ardoino-profile]
+2014, was by 2023 Tether's chief financial officer.[^ardoino-profile] Paolo
+Ardoino, whom Devasini hired after they met in 2014, became chief
+technology officer of both companies, and was promoted to chief executive
+of Tether on 13 October 2023 while remaining Bitfinex's chief technology
+officer.[^ardoino-ceo][^ardoino-profile]
 Stuart Hoegner was general counsel to both.[^hoegner]
 
 In April 2017 Bitfinex's parent iFinex and Tether sued Wells Fargo, which
@@ -88,9 +90,9 @@ newly opened bank account that day.[^cftc-order] On 27 January 2018
 Tether said its relationship with Friedman had "dissolved" and that an
 audit was "unattainable in a reasonable time frame".[^friedman][^friedman-sec]
 
-From 2017 Bitfinex and Tether relied on a payment processor registered
-in Panama, which the New York Attorney General identified as Crypto
-Capital, to hold customer and reserve money.[^nyag-2021][^cftc-order] In
+Bitfinex from about 2014, and Tether from October 2017, relied on a
+payment processor registered in Panama, which the New York Attorney
+General identified as Crypto Capital, to hold customer and reserve money.[^nyag-2021][^cftc-order] In
 April 2018 media reported that authorities had seized funds held by the
 processor, and Bitfinex had growing difficulty withdrawing money it had
 placed there.[^cftc-order] In November 2018 Tether moved $625 million of reserve funds to Bitfinex, later formalised
@@ -98,7 +100,7 @@ as a credit facility.[^cftc-order]
 
 ### New York and CFTC cases
 
-On 25 April 2019 the New York Attorney General obtained a court order
+On 25 April 2019 the New York Attorney General announced a court order
 against iFinex, alleging that Bitfinex had lost about $850 million held
 with Crypto Capital and had used Tether's reserves to cover the
 shortfall without telling investors. Bitfinex said the filings were
@@ -107,16 +109,18 @@ said that cash and short-term securities backed about 74% of tethers in
 circulation.[^hoegner]
 
 On 23 February 2021 the companies settled. They agreed to pay $18.5
-million, stop trading with New Yorkers, and publish quarterly reports on
-the categories of assets backing USDT. The Attorney
-General said Tether's claim of full dollar backing had been false and
-that at times it held no reserves.[^nyag-2021]
+million, stop trading with New Yorkers, and for two years publish
+quarterly reports on the categories of assets backing USDT. They neither
+admitted nor denied the Attorney General's findings, which said Tether's
+claim of full dollar backing had been false and that for periods it held
+no reserves.[^nyag-2021][^nyag-settlement]
 
 On 15 October 2021 the CFTC fined Tether $41 million and Bitfinex $1.5
 million. It found that between 2 September 2016 and 1 November 2018
 Tether held enough fiat in its own bank accounts to back the tokens in
 circulation on only 27.6% of days. It also found that the reserves had
-never been audited.[^cftc][^cftc-order] Tether told the CFTC that it had
+never been audited. Tether settled without admitting or denying the
+findings.[^cftc][^cftc-order] Tether told the CFTC that it had
 never failed to honour a redemption request.[^cftc-order]
 
 ### Chains
@@ -132,15 +136,17 @@ On 17 August 2023 Tether stopped issuing USDT on Omni, Kusama and the
 Bitcoin Cash SLP protocol, citing low use.[^omni-end] In July 2025 it
 said it would end redemptions on these chains and on EOS and Algorand
 from 1 September 2025, and freeze the remaining tokens.[^legacy] In
-October 2026 Utexo, a project backed by Tether, was expected to begin
-issuing USDT on Bitcoin again through the RGB protocol, a return Ardoino
-described as "coming home".[^bitcoin-return]
+September 2026 Ardoino said USDT was "coming home" to Bitcoin through
+Utexo, a Tether-backed project using the RGB protocol.[^bitcoin-return] On
+22 October 2026 Utexo opened early access to a bridged version of USDT on
+a Bitcoin test network, with a public launch scheduled for 28
+November 2026.[^utexo-mint]
 
 ### Relocation and the US market
 
 On 13 January 2025 Tether said it would move its group headquarters to
 El Salvador, after two Tether companies received licences from the
-country's digital asset regulator. Most of its entities had previously
+country's digital asset regulator. Most of its entities had reportedly
 been incorporated in the British Virgin Islands.[^el-salvador]
 
 The US GENIUS Act, signed on 18 July 2025, set federal rules for
@@ -155,7 +161,8 @@ business.[^usat-announce] USAT launched on 27 January
 2026.[^usat-launch]
 
 USDT itself is a foreign-issued stablecoin under the Act. As of July
-2026, analysts noted that up to a quarter of its reserves were in assets,
+2026, CoinDesk estimated from Tether's disclosures that up to a quarter of
+its reserves were in assets,
 such as gold, loans and bitcoin, that did not meet the Act's standards,
 and lawyers disagreed on whether Tether must comply by January 2027 or
 July 2028.[^genius-countdown]
@@ -191,16 +198,17 @@ On 24 March 2026 Tether said it had engaged a Big Four firm for its first
 full audit; the *Financial Times* reported that it was
 KPMG.[^audit-hire][^kpmg] On 13 August 2026 Tether said KPMG had issued
 an unqualified opinion on Tether International's financial statements
-for 2025, which a KPMG spokesperson confirmed. As of the report, Tether
-had not published the audited statements.[^audit-done]
+for the year ended 31 December 2025, which a KPMG spokesperson
+confirmed. Tether had not said whether it would publish KPMG's
+findings.[^audit-done]
 
 ## Profits and investments
 
-Tether earns most of its income from interest on its
-reserves.[^profit-2024] It reported net profit of $13 billion for 2024 and more than $10 billion
-for 2025.[^profit-2024][^fy-2025] It invests profits outside the reserve
-through Tether Capital, which describes stakes in artificial
-intelligence, energy, commodities, media and sport.[^tether-capital]
+Tether reported group net profit of $13 billion for 2024, about $7
+billion of it from its Treasury and repo holdings, and more than $10
+billion for 2025.[^profit-2024][^fy-2025] It invests profits and excess
+reserves through Tether Capital, which describes stakes in artificial
+intelligence, energy, commodities, digital media and sport.[^tether-capital]
 
 In September 2025 Bloomberg reported that Tether sought to raise up to
 $20 billion at a valuation of about $500 billion.[^fundraise] In
@@ -229,15 +237,17 @@ owner, rejected it.[^juventus][^juventus-reject]
   2022.[^celsius] Tether settled for $299.5 million in October
   2025.[^celsius-settle]
 - **Illicit use.** In January 2024 the UN Office on Drugs and Crime
-  said USDT on Tron was popular with money launderers in Southeast Asia.
+  said USDT on Tron was popular with money launderers in East and Southeast Asia.
   Tether said the report ignored its law enforcement
-  work.[^unodc] In September 2026 Democrats on a Senate subcommittee
-  called USDT "a significant financial lifeline" for Iran. Ardoino
+  work.[^unodc] On 28 September 2026 Democrats on a Senate subcommittee,
+  led by its top Democrat, Senator Richard Blumenthal, said USDT had become "a significant
+  financial lifeline" within Iran's shadow banking network. Ardoino
   replied that Tether's actions had cut Iran-linked stablecoin volumes
   by 94%.[^iran-report][^iran-response]
-- **Political ties.** In October 2026 Senator Richard Blumenthal began
-  examining Tether's relationship with Cantor Fitzgerald, which was
-  formerly led by Commerce Secretary Howard Lutnick.[^iran-response][^audit-hire]
+- **Political ties.** In October 2026 Blumenthal wrote to Cantor
+  Fitzgerald, which manages Tether's US reserves, asking about its
+  relationship with Tether. Cantor was formerly led by Commerce Secretary
+  Howard Lutnick and is now run by his son Brandon.[^blumenthal-cantor][^audit-hire]
 
 ## Freezing and law enforcement
 
@@ -246,8 +256,8 @@ them.[^freeze-israel] In December 2023 it began freezing addresses on the
 US Treasury sanctions list voluntarily.[^freeze-2023] With Tron and TRM
 Labs it formed the T3 Financial Crime Unit, which said it had frozen
 $300 million in its first year. Ardoino said Tether worked with more
-than 280 law enforcement agencies.[^t3] In 2026 Tether froze about $475
-million in USDT linked to Iran's central bank.[^iran-freeze]
+than 280 law enforcement agencies.[^t3] By July 2026 Tether had frozen
+about $475 million in USDT linked to Iran's central bank.[^iran-freeze]
 
 ## Timeline
 
@@ -260,7 +270,7 @@ million in USDT linked to Iran's central bank.[^iran-freeze]
 | 2017-11 | Paradise Papers show shared ownership with Bitfinex |
 | 2018-01-27 | Relationship with Friedman LLP ends |
 | 2019-03-04 | Tron version announced |
-| 2019-04-25 | New York Attorney General obtains court order |
+| 2019-04-25 | New York Attorney General announces court order |
 | 2020-08 | Griffin and Shams paper published |
 | 2021-02-23 | New York settlement, $18.5 million |
 | 2021-05-13 | First reserve breakdown published |
@@ -281,6 +291,7 @@ million in USDT linked to Iran's central bank.[^iran-freeze]
 | 2026-03-24 | Big Four audit engagement announced |
 | 2026-08-13 | KPMG audit of 2025 accounts announced |
 | 2026-09-28 | Senate Democrats' report on Iran |
+| 2026-10-22 | Utexo opens early access to USDT on Bitcoin via RGB |
 
 ## See also
 
@@ -294,6 +305,7 @@ million in USDT linked to Iran's central bank.[^iran-freeze]
 [^realcoin]: CoinDesk (2014). *Brock Pierce announces dollar-backed cryptocurrency 'Realcoin'*. <https://www.coindesk.com/markets/2014/07/09/brock-pierce-announces-dollar-backed-cryptocurrency-realcoin>
 [^rebrand]: CoinDesk (2014). *Realcoin rebrands as 'Tether' to avoid altcoin association*. <https://www.coindesk.com/markets/2014/11/20/realcoin-rebrands-as-tether-to-avoid-altcoin-association>
 [^protocols]: Tether. *Supported protocols*. <https://tether.to/en/supported-protocols/>
+[^nyag-settlement]: New York State Attorney General (2021). *Settlement agreement: In the matter of investigation of iFinex Inc. et al.* <https://ag.ny.gov/sites/default/files/2021.02.17_-_settlement_agreement_-_execution_version.b-t_signed-c2_oag_signed.pdf>
 [^cftc-order]: Commodity Futures Trading Commission (2021). *Order instituting proceedings: In the matter of Tether Holdings Limited et al.* <https://www.cftc.gov/media/6646/enftetherholdingsorder101521/download>
 [^cftc]: Commodity Futures Trading Commission (2021). *CFTC orders Tether and Bitfinex to pay fines totaling $42.5 million*. <https://www.cftc.gov/PressRoom/PressReleases/8450-21>
 [^nyag-2021]: New York State Attorney General (2021). *Attorney General James ends virtual currency trading platform Bitfinex's illegal activities in New York*. <https://ag.ny.gov/press-release/2021/attorney-general-james-ends-virtual-currency-trading-platform-bitfinexs-illegal>
@@ -307,11 +319,12 @@ million in USDT linked to Iran's central bank.[^iran-freeze]
 [^friedman]: CoinDesk (2018). *Tether confirms its relationship with auditor has 'dissolved'*. <https://www.coindesk.com/markets/2018/01/27/tether-confirms-its-relationship-with-auditor-has-dissolved>
 [^friedman-sec]: CoinDesk (2022). *Tether's former auditor fined $1M by SEC for sloppy accounting*. <https://coindesk.com/policy/2022/09/26/tethers-former-auditor-fined-1m-by-sec-for-sloppy-accounting>
 [^nyag-2019]: CoinDesk (2019). *Bitfinex covered $850 million loss using Tether funds, NY prosecutors allege*. <https://www.coindesk.com/markets/2019/04/25/bitfinex-covered-850-million-loss-using-tether-funds-ny-prosecutors-allege>
-[^erc20]: PaymentsJournal (2017). *Tether and Ethfinex enable tokenized USD on Ethereum network*. <https://www.paymentsjournal.com/tether-ethfinex-enable-tokenized-usd-ethereum-network/>
+[^erc20]: Tether, press release via PaymentsJournal (2017). *Tether and Ethfinex enable tokenized USD on Ethereum network*. <https://www.paymentsjournal.com/tether-ethfinex-enable-tokenized-usd-ethereum-network/>
 [^tron]: The Block (2019). *Tether to launch on the TRON blockchain*. <https://www.theblock.co/linked/14417/tether-to-launch-on-the-tron-blockchain>
 [^omni-end]: The Block (2023). *Tether discontinues USDT support on Bitcoin, Kusama and Bitcoin Cash*. <https://www.theblock.co/post/245976/tether-discontinues-usdt-bitcoin-kusama-bitcoin-cash>
 [^legacy]: The Block (2025). *Tether to sunset USDT on five legacy blockchains, including Algorand and Omni*. <https://www.theblock.co/post/362269/tether-to-sunset-usdt-on-five-legacy-blockchains-including-algorand-and-omni>
 [^bitcoin-return]: CoinDesk (2026). *Tether's USDT is 'coming home' to Bitcoin after more than a decade*. <https://www.coindesk.com/tech/2026/09/29/tether-s-usdt-is-coming-home-to-bitcoin-this-month-after-more-than-a-decade>
+[^utexo-mint]: Utexo (2026). *Utexo opens early access to USD₮ on Bitcoin through Utexo Mint*. <https://utexo.com/blog/utexo-opens-early-access-to-usdmnt-on-bitcoin-through-utexo-mint>
 [^el-salvador]: CoinDesk (2025). *Tether group to establish headquarters in El Salvador in emerging markets push*. <https://www.coindesk.com/business/2025/01/13/tether-group-to-establish-headquarters-in-el-salvador-in-emerging-markets-push>
 [^genius]: The White House (2025). *Fact sheet: President Donald J. Trump signs GENIUS Act into law*. <https://www.whitehouse.gov/fact-sheets/2025/07/fact-sheet-president-donald-j-trump-signs-genius-act-into-law/>
 [^usat-announce]: CoinDesk (2025). *Tether unveils USAT stablecoin for U.S. market, names Bo Hines to lead new division*. <https://www.coindesk.com/business/2025/09/12/tether-unveils-usat-stablecoin-for-u-s-market-names-bo-hines-to-lead-new-division>
@@ -345,4 +358,5 @@ million in USDT linked to Iran's central bank.[^iran-freeze]
 [^freeze-israel]: CoinDesk (2023). *Tether freezes 32 crypto addresses linked to terrorism, warfare in Israel and Ukraine*. <https://www.coindesk.com/business/2023/10/16/tether-freezes-32-addresses-linked-to-terrorism-and-warfare-in-israel-and-ukraine>
 [^freeze-2023]: CoinDesk (2023). *Tether freezes 41 crypto wallets tied to sanctions*. <https://www.coindesk.com/business/2023/12/09/tether-freezes-41-crypto-wallets-tied-to-sanctions>
 [^t3]: CoinDesk (2025). *T3 Financial Crime Unit, backed by Tron, Tether, TRM Labs, has now frozen $300M in assets*. <https://www.coindesk.com/policy/2025/10/31/t3-financial-crime-unit-backed-by-tron-tether-trm-labs-has-now-frozen-usd300m-in-assets>
+[^blumenthal-cantor]: CoinDesk (2026). *Top Democrat among Senate investigators probes ties between Cantor Fitzgerald, Tether*. <https://www.coindesk.com/policy/2026/10/08/top-democrat-among-senate-investigators-probes-ties-between-cantor-fitzgerald-tether>
 [^iran-freeze]: CoinDesk (2026). *U.S. adds four Iran central bank crypto wallets to sanctions, Tether freezes $131 million of contents*. <https://www.coindesk.com/business/2026/07/16/u-s-adds-four-iran-central-bank-crypto-wallets-to-sanctions-tether-freezes-usd131-million-of-contents>
