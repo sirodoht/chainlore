@@ -32,6 +32,9 @@ The build reads `pages/*.md`, `INDEX.md`, `VISION.md`, `ABOUT.md`, and
 catalog used to preselect articles and sections in forms. Add articles to
 `pages/` and link them from `INDEX.md`.
 
+Each article links to its Markdown at `/p/<slug>.md`, alongside its HTML page
+at `/p/<slug>/`. The original `/sources/pages/<slug>.md` URLs remain available.
+
 ```sh
 uv run --locked python manage.py test submissions
 uv run --locked python manage.py makemigrations --check --dry-run

@@ -126,7 +126,8 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
         tabs += '<a href="/all-articles/">All articles</a>'
     output = TEMPLATE.substitute(title=html.escape(title + ' - Chainlore') if route != '/' else 'Chainlore - The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
-        source='/sources/' + source, toc=toc, tabs=tabs,
+        source='/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source,
+        toc=toc, tabs=tabs,
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -223,6 +224,8 @@ def main():
         destination = OUT / 'sources' / path.relative_to(ROOT)
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, destination)
+        if path.parent == ROOT / 'pages':
+            shutil.copyfile(path, OUT / 'p' / path.name)
     urls = ['/'] + sorted(route for key, route in ROUTES.items() if key != 'README.md')
     (OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>https://chainlore.xyz{route}</loc></url>' for route in urls) + '</urlset>\n')
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://chainlore.xyz/sitemap.xml\n')
