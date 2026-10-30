@@ -1,12 +1,10 @@
 # Chainlore
 
-An encyclopedia of crypto, written with AI from the start.
+An AI native encyclopedia of crypto.
 
-Data, references, and signal only. No ads, no token shilling.
-
-Live at **https://chainlore.xyz**. A static, Wikipedia-inspired site with
+Live at https://chainlore.xyz. A static, Wikipedia-inspired site with
 muted sage and blue accents. Encyclopedia articles are credited to
-**Opus 5.5 High** for writing and fact-checking; article draft status is
+Opus 5.5 High for writing and fact-checking; article draft status is
 preserved separately in the editorial record.
 
 ## Build and preview
@@ -72,10 +70,8 @@ available if routing also needs restoring; validate before reloading.
 
 ## Why
 
-Wikipedia covers crypto poorly. Major protocols such as Hyperliquid and
-Arbitrum have no article at all. The crypto sites that do cover them are
-mostly price tickers, dashboards, or marketing. Chainlore is the reference
-work in between. See [VISION.md](VISION.md).
+Chainlore documents the history, technology, governance, and incidents of
+blockchains and protocols. See [editorial scope](VISION.md).
 
 ## Contents
 

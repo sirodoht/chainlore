@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build Chainlore from Markdown. No server or JavaScript framework required."""
 import copy
+import hashlib
 import html
 import json
 import re
@@ -95,7 +96,8 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
         tabs += '<a href="/all-articles/">All articles</a>'
     output = TEMPLATE.substitute(title=html.escape(title + ' — Chainlore') if route != '/' else 'Chainlore — The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
-        source='/sources/' + source, toc=toc, tabs=tabs)
+        source='/sources/' + source, toc=toc, tabs=tabs,
+        css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(output)
@@ -121,9 +123,9 @@ def article(page):
 def homepage(pages):
     feature = pages['hyperliquid']
     summaries = {
-        'bitcoin': 'Peer-to-peer electronic cash. The first cryptocurrency and the origin of the blockchain.',
+        'bitcoin': 'A proof-of-work blockchain and peer-to-peer electronic cash system.',
         'ethereum': 'A programmable blockchain for smart contracts, secured by proof of stake.',
-        'hyperliquid': 'An onchain order book, perpetual futures, and a purpose-built layer 1.',
+        'hyperliquid': 'A layer 1 blockchain with an onchain order book for perpetual futures and spot trading.',
         'arbitrum': 'Optimistic rollups that scale Ethereum, with governance through the Arbitrum DAO.',
     }
     rows = ''.join(f'<div class="article-row"><span class="article-number">{i:02}</span><div><h3><a href="/{slug}/">{p["title"]}</a><span>{p["meta"]["ticker"]} · {p["meta"]["category"]}</span></h3><p>{summaries.get(slug, html.escape(p["description"][:150]))}</p></div></div>' for i, (slug, p) in enumerate(pages.items(), 1))
@@ -131,14 +133,13 @@ def homepage(pages):
     index_html = ''.join(serialize(node) for node in index['tree'] if node.tag != 'p')
     index_html = index_html.replace('<h2', '<h3').replace('</h2>', '</h3>')
     references = sum(len(re.findall(r'^\[\^[^\]]+\]:', p['source'].read_text(), re.M)) for p in pages.values())
-    content = f'''<section class="welcome"><h1>Welcome to <span>Chainlore</span></h1><p>The AI native encyclopedia of crypto.</p><p class="subline"><a href="/all-articles/">{len(pages)} articles</a> · {references} references · Knowledge, without the noise.</p></section>
+    content = f'''<section class="welcome"><h1><span>Chainlore</span></h1><p>An AI native encyclopedia of crypto.</p><p class="subline"><a href="/all-articles/">{len(pages)} articles</a> · {references} references</p></section>
 <div class="home-grid">
-<section class="panel"><h2>Featured article</h2><div class="eyebrow">A closer look · {feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/hyperliquid/">Read the full article →</a></div></section>
-<section class="panel blue"><h2>Explore the encyclopedia</h2>{rows}</section>
+<section class="panel"><h2>Featured article</h2><div class="eyebrow">{feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/hyperliquid/">Full article →</a></div></section>
+<section class="panel blue"><h2>Articles</h2>{rows}</section>
 </div>
-<section class="principles" aria-label="Our principles"><div><h3>Data.</h3><p>Dates, specifications, supply, and governance. The facts that help you understand a protocol.</p></div><div><h3>References.</h3><p>Follow the citations to whitepapers, documentation, governance proposals, and onchain records.</p></div><div><h3>Signal.</h3><p>Launches and upgrades. Incidents and controversies. No hype, ads, or sponsored listings.</p></div></section>
-<div class="home-bottom"><section><h2>Browse by subject</h2>{index_html}<p><a href="/all-articles/">View the complete index →</a></p></section><section><h2>An encyclopedia, from the start</h2><p>Crypto deserves a clear reference work. Chainlore brings the history, technology, and people behind each protocol into one readable, referenced place.</p><p class="credit-note">AI native by design. Encyclopedia articles written and fact-checked by <strong>Opus 5.5 High</strong>.</p><p>Inspired by Wikipedia’s structure, the depth of Bitcoin Wiki, and the precision of onchain data.</p><p><a href="/about/">About Chainlore</a> · <a href="/vision/">Our vision</a> · <a href="/inspiration/">Our inspiration</a></p></section></div>'''
-    write_page('/', 'Chainlore', content, description='The AI native encyclopedia of crypto. Referenced articles on Bitcoin, Ethereum, Hyperliquid, and Arbitrum. Data, references, and signal.', active='Main page')
+<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. The current articles retain draft status in their source metadata.</p><p><a href="/about/">Authorship and review</a> · <a href="/vision/">Editorial scope</a> · <a href="/inspiration/">Reference sites</a></p></section></div>'''
+    write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on Bitcoin, Ethereum, Hyperliquid, and Arbitrum.', active='Main page')
 
 
 def main():
