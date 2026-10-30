@@ -109,7 +109,7 @@ def render(path):
             box = ET.Element('aside', {'class': 'infobox', 'aria-label': f'{title} facts'})
             ET.SubElement(box, 'div', {'class': 'infobox-title'}).text = title
             box.append(table)
-            tree.insert(1, box)
+            tree.insert(0, box)
     for table in list(tree.findall('table')):
         index = list(tree).index(table)
         tree.remove(table)
