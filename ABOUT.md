@@ -36,5 +36,7 @@ AI fact-checking does not constitute independent human verification.
 Articles are stored in Markdown and published as static HTML. Each page
 links to its Markdown source. Search runs in the browser.
 
+The [source code is available on GitHub](https://github.com/sirodoht/chainlore).
+
 See the [article index](INDEX.md), [editorial policy](POLICY.md), and
 [editorial scope](VISION.md).
