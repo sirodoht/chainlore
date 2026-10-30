@@ -76,8 +76,8 @@ the time.[^decrypt-friendtech]
 Under an agreement announced in August 2023, Base could earn up to 118
 million OP tokens over six years. In return, Base would contribute to the
 Optimism Collective the greater of 2.5% of its total sequencer revenue or
-15% of its profit after the cost of posting data to Ethereum. The
-proposal described the arrangement as part of a "shared commitment to
+15% of its profit after the cost of posting data to Ethereum. An
+Optimism Collective proposal described the arrangement as part of a "shared commitment to
 the rules for upgrades and sequencing of OP Chains", with upgrades
 decided by Optimism governance.[^theblock-op-grant][^base-superchain] Base's voting power
 in Optimism governance was capped at 9%.[^base-superchain][^op-forum]
@@ -133,15 +133,15 @@ created as smart wallets called Base Accounts. Coinbase also described
 Base as three parts: Base Chain, Base Build for developers, and the Base
 App.[^theblock-baseapp]
 
-On 9 February 2026 Base said the Base App would remove its
-Farcaster-powered feed and wind down its creator rewards programme.
+On 9 February 2026 the Base App removed its Farcaster-powered feed, and
+Coinbase began winding down its creator rewards programme.
 Pollak said that "the app needs to have one primary focus, and that thing
 is trading".[^theblock-talk] In a podcast interview reported on 3 March
 2026, Coinbase chief executive Brian Armstrong said that the app's social features "didn't quite
-work".[^theblock-socialfi] On 13 July 2026 he wrote on X that content
+work".[^theblock-socialfi] In July 2026 he said that content
 coins "didn't work" and that Base had pivoted away from them early in the
 year, while defending its focus on AI agents.[^defiant-armstrong][^cryptonews-armstrong]
-Two days later Pollak handed leadership of the app to Jordan "Cobie" Fish
+On 15 July 2026 Pollak handed leadership of the app to Jordan "Cobie" Fish
 to focus on the Base chain, saying its social bets, including creator
 coins, had "disintegrated completely".[^theblock-cobie] On 10 September
 2026 Coinbase renamed the Base App back to Coinbase Wallet, describing it
@@ -247,8 +247,9 @@ required.[^theblock-stage1][^theblock-unified]
 
 - **Centralisation.** At launch critics argued that Coinbase's sole
   control of the sequencer made Base centralised, and Gnosis founder Martin
-  Köppelmann said Coinbase needed to give more details about the lack of
-  fraud proofs. Pollak said that Coinbase
+  Köppelmann pointed to Base's lack of fraud proofs, saying the Coinbase
+  team would need to provide more details about measures that might reduce
+  Coinbase's control. Pollak said that Coinbase
   "cannot unilaterally upgrade contracts or land invalid output
   proposals".[^theblock-permissionless] As of October 2026 the sequencer is
   still centralised, and L2Beat rates it as having no real-time
@@ -261,7 +262,7 @@ required.[^theblock-stage1][^theblock-unified]
   by Coinbase for "security and auditing purposes".[^theblock-fees]
 - **"Base is for everyone" (April 2025).** DL News reported that onchain
   records showed a few buyers bought early and sold at a profit.
-  Critics called the post "deeply disappointing", while Base defended it
+  Blockchain developer Suhail Kakar called it "deeply disappointing", while Base defended it
   as an experiment in public.[^dlnews-coin][^decrypt-coin]
 - **Sequencer outage (August 2025).** On 5 August 2025 block production
   stopped for 33 minutes after the active sequencer fell behind and
@@ -297,12 +298,12 @@ required.[^theblock-stage1][^theblock-unified]
 | 2025-07-16 | Coinbase Wallet renamed Base App |
 | 2025-08-05 | 33-minute sequencer outage |
 | 2025-09-15 | Base says it is exploring a network token |
-| 2026-02-09 | Base App to drop social feed to focus on trading |
+| 2026-02-09 | Base App drops social feed to focus on trading |
 | 2026-02-18 | Base announces move to its own stack |
 | 2026-05-28 | Azul upgrade: TEE and ZK multi-proofs |
 | 2026-06-25 | Beryl upgrade: B20 tokens; 116-minute outage |
 | 2026-06-26 | 20-minute outage |
-| 2026-07-13 | Armstrong says content coins "didn't work" |
+| 2026-07 | Armstrong says content coins "didn't work" |
 | 2026-07-15 | Pollak hands Base App leadership to Cobie |
 | 2026-08-24 | Coinbase tokenised stocks launch on Base |
 | 2026-09-10 | Base App renamed back to Coinbase Wallet |
