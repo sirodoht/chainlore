@@ -139,7 +139,7 @@ the rival USDH stablecoin was set to be phased out.[^theblock-coinbase-hl]
 
 In late June 2026 Open Standard announced Open USD, a stablecoin backed
 by Coinbase, Visa, and Mastercard, which Mastercard's chief executive
-described as a payments utility with "shared economics". Coinbase said
+described as a payments-focused utility with shared economics. Coinbase said
 it had met the conditions to renew its commercial agreement with Circle
 and would continue to grow USDC.[^coindesk-openusd]
 In October 2026 Circle published a defence of its economics, stating that
