@@ -76,8 +76,8 @@ the time.[^decrypt-friendtech]
 Under an agreement announced in August 2023, Base could earn up to 118
 million OP tokens over six years. In return, Base would contribute to the
 Optimism Collective the greater of 2.5% of its total sequencer revenue or
-15% of its profit after the cost of posting data to Ethereum. An
-Optimism Collective proposal described the arrangement as part of a "shared commitment to
+15% of its profit after the cost of posting data to Ethereum. According
+to The Block, the agreement was part of a "shared commitment to
 the rules for upgrades and sequencing of OP Chains", with upgrades
 decided by Optimism governance.[^theblock-op-grant][^base-superchain] Base's voting power
 in Optimism governance was capped at 9%.[^base-superchain][^op-forum]

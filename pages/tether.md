@@ -16,8 +16,7 @@ Tron.[^rebrand][^protocols] Tether shares owners and executives with the
 exchange Bitfinex.[^cftc-order] Its claim that each token was backed by a
 dollar in reserve led to settlements with the New York Attorney General
 in 2021 and the US Commodity Futures Trading Commission (CFTC) in the same
-year.[^nyag-2021][^cftc] Its reserves are now held mostly in US Treasury
-bills, with smaller amounts in gold and bitcoin.[^fy-2025]
+year.[^nyag-2021][^cftc] Its reserves are now held mostly in US Treasuries, with smaller amounts in gold and bitcoin.[^fy-2025]
 
 | | |
 |---|---|
