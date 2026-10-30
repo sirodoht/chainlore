@@ -79,3 +79,18 @@ X_FRAME_OPTIONS = 'DENY'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 65536
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 30
 FILE_UPLOAD_MAX_MEMORY_SIZE = 0
+# Postmark emails submitters about decisions. The token lives only in DATA_DIR on the server.
+postmark_token_file = DATA_DIR / 'postmark-token'
+POSTMARK_TOKEN = postmark_token_file.read_text().strip() if postmark_token_file.exists() else ''
+if POSTMARK_TOKEN:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.postmarkapp.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = EMAIL_HOST_PASSWORD = POSTMARK_TOKEN
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Without a token, production skips notifications rather than logging addresses to the console.
+NOTIFICATIONS_ENABLED = bool(POSTMARK_TOKEN) or not PRODUCTION
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = 'Chainlore <notifications@chainlore.xyz>'

@@ -4,6 +4,7 @@ import uuid
 from io import StringIO
 from pathlib import Path
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.core.management import call_command
 from django.test import Client, TestCase, override_settings
 from .forms import new_token
@@ -158,6 +159,38 @@ class SubmissionsTests(TestCase):
         response = self.client.post(url, {'status': 'declined', 'duplicate_of': duplicate.pk})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'cannot be a duplicate of itself')
+
+    def test_admin_decision_emails_submitter_once(self):
+        record = Submission.objects.create(kind='correction', article='bitcoin', claim='Claim', email='reader@example.com')
+        self.client.force_login(get_user_model().objects.create_superuser('editor', password='test-long-password'))
+        url = f'/admin/submissions/submission/{record.pk}/change/'
+        self.client.post(url, {'status': 'reviewing'})
+        self.assertEqual(len(mail.outbox), 0)
+        self.client.post(url, {'status': 'resolved', 'resulting_url': 'https://chainlore.xyz/p/bitcoin/'})
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(message.to, ['reader@example.com'])
+        self.assertEqual(message.subject, 'Update on your Chainlore error report')
+        self.assertIn('the Bitcoin article', message.body)
+        self.assertIn('https://chainlore.xyz/p/bitcoin/', message.body)
+        self.assertIn(str(record.reference), message.body)
+        self.client.post(url, {'status': 'resolved', 'internal_notes': 'Edited again.'})
+        self.assertEqual(len(mail.outbox), 1)
+        record.refresh_from_db()
+        self.assertEqual(record.notified_status, 'resolved')
+        self.assertIsNotNone(record.notified_at)
+
+    def test_admin_decision_without_email_or_configuration_sends_nothing(self):
+        silent = Submission.objects.create(kind='request', title='Topic')
+        self.client.force_login(get_user_model().objects.create_superuser('editor', password='test-long-password'))
+        self.client.post(f'/admin/submissions/submission/{silent.pk}/change/', {'status': 'declined'})
+        record = Submission.objects.create(kind='request', title='Topic', email='reader@example.com')
+        with override_settings(NOTIFICATIONS_ENABLED=False):
+            response = self.client.post(f'/admin/submissions/submission/{record.pk}/change/', {'status': 'declined'}, follow=True)
+        self.assertContains(response, 'Email is not configured')
+        self.assertEqual(len(mail.outbox), 0)
+        record.refresh_from_db()
+        self.assertEqual(record.notified_status, '')
 
     def test_admin_login_throttled(self):
         for _ in range(10):

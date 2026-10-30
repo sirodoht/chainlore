@@ -31,6 +31,8 @@ class Submission(models.Model):
     internal_notes = models.TextField(blank=True)
     resulting_url = models.URLField(blank=True, verbose_name='Resulting article or change URL')
     duplicate_of = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='duplicates')
+    notified_status = models.CharField(max_length=12, choices=Status.choices, blank=True, verbose_name='Submitter emailed about')
+    notified_at = models.DateTimeField(null=True, blank=True, verbose_name='Submitter emailed at')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
