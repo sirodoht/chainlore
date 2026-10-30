@@ -20,12 +20,12 @@ OP Labs, and the network is governed by the Optimism Collective through the
 |---|---|
 | Type | Optimistic rollup on Ethereum (OP Mainnet); rollup software framework (OP Stack) |
 | Developer | OP Labs PBC (formerly Optimism PBC); Optimism Foundation |
-| Founding team | Jinglan (Jing) Wang, Karl Floersch, Ben Jones, Kevin Ho, Mark Tyneway, Kelvin Fichter[^coindesk-wang] |
+| Founding team | Jinglan (Jing) Wang, Karl Floersch, Ben Jones, Kevin Ho, Mark Tyneway, Kelvin Fichter (as listed by CoinDesk)[^coindesk-wang] |
 | Mainnet | 2021-01-15 (limited); open to all deployers 2021-12-16 |
 | Chain ID | 10[^connect] |
 | Gas token | ETH |
 | Governance token | OP |
-| Initial OP supply | 4,294,967,296 (2^32) |
+| Initial OP supply | 4,294,967,296 (2^32)[^token-live][^allocation] |
 | Governance | Optimism Collective (Token House and Citizens' House); Security Council |
 | Proof system | Permissionless fault proofs (since 2024-06-10) |
 | Withdrawal delay | About 7 days |
@@ -44,16 +44,16 @@ group moved from Plasma designs to optimistic rollups as demand for cheap
 transactions grew. It lists the founding team as Wang, Ben Jones, Floersch,
 Mark Tyneway, Kelvin Fichter and Kevin Ho.[^coindesk-wang] Plasma Group
 shut down on its first anniversary and donated its remaining funds to
-Gitcoin. Its members founded Optimism, a public benefit corporation, in
-December 2019, with Wang as chief executive.[^seed]
+Gitcoin. Its members founded Optimism, a for-profit company later known as
+Optimism PBC, in December 2019, with Wang as chief executive.[^seed][^collective]
 
 ### Funding
 
 In January 2020 the new company raised a US$3.5 million seed round from
 Paradigm and IDEO CoLab Ventures.[^seed] Andreessen Horowitz (a16z) led a
 US$25 million Series A, announced on 23 February 2021. a16z's post named
-Jing, Karl and Ben as the core team and traced the work to "the team's
-research at Plasma".[^a16z][^series-a] On 17 March 2022 Optimism announced
+"Jing, Karl, Ben and the rest of the team" and traced the work to "the
+team's research at Plasma".[^a16z][^series-a] On 17 March 2022 Optimism announced
 a US$150 million Series B co-led by Paradigm and a16z at a US$1.65 billion
 valuation.[^series-b][^series-b-decrypt]
 
@@ -98,9 +98,9 @@ The initial allocation was:[^allocation]
 | Investors | 17% |
 
 Further airdrops followed, starting with 11.7 million OP to more than
-300,000 addresses on 9 February 2023.[^airdrop-2] In 2026 the Foundation
-proposed re-designating the remaining user airdrop allocation as a
-"Strategic Ecosystem Fund".[^budget-y5]
+300,000 addresses on 9 February 2023.[^airdrop-2] In August 2026 governance
+approved a Foundation proposal to re-designate the unspent 546.9 million OP
+of the user airdrop allocation as a "Strategic Ecosystem Fund".[^airdrop-fund]
 
 ### Retroactive Public Goods Funding
 
@@ -119,7 +119,7 @@ committed.[^season-9][^budget-y5]
 On 17 October 2022 Optimism introduced the OP Stack, a modular framework for
 building rollups, and described a future "Superchain" of interconnected
 chains sharing it. Bedrock, a rewrite of the OP Mainnet codebase, was to be
-its first release; Optimism says it is about a hundredth the size of the
+its flagship release; Optimism says it is about a hundredth the size of the
 original OVM code.[^op-stack-intro] OP Mainnet migrated to Bedrock on 6
 June 2023, with several hours of planned downtime. The Foundation stated the
 upgrade would lower fees and make the bridge more secure.[^bedrock][^upgrades]
@@ -150,9 +150,10 @@ built on the OP Stack as of October 2026.[^ecosystem-2026]
 Permissionless fault proofs went live on OP Mainnet on 10 June 2024,
 allowing anyone to propose and challenge state claims used to prove
 withdrawals. L2Beat then classed OP Mainnet as Stage 1.[^fault-proofs][^l2beat]
-In August 2024 fault proofs were disabled as a precaution after a bug was
-found, and withdrawals fell back to permissioned proposals; they were
-re-enabled with the Granite upgrade.[^l2beat]
+On 16 August 2024 fault proofs were disabled as a precaution after a bug was
+found, and OP Mainnet fell back to permissioned dispute games; L2Beat
+records the suspension as lasting 26 days, ending with the Granite upgrade
+in September 2024.[^l2beat][^upgrades]
 
 The Security Council began signing OP Mainnet upgrades on 9 February 2024,
 initially in a 2-of-2 multisig with the Optimism Foundation.[^security-council]
@@ -176,8 +177,8 @@ through over-the-counter swaps.[^buyback-vote] The Foundation reported
 buying more than 9 million OP by August 2026.[^budget-y5]
 
 On 18 February 2026 Base announced it would move from the OP Stack to its
-own codebase, base/base, and said it planned to replace Optimism's proof
-system with its own.[^decrypt-base]
+own codebase, base/base, and said it planned to switch from optimistic
+proofs to TEE and ZK proofs.[^base-stack]
 The Foundation confirmed that Base's revenue share would not continue and
 that Base would not receive the unvested part of its OP grant; Base remained
 a customer of OP Enterprise.[^forum-base][^dlnews-base] DL News reported
@@ -189,16 +190,18 @@ said the cut was "not about finances".[^layoffs]
 ### Interoperability
 
 Optimism's plan for the Superchain includes native message passing between
-OP Stack chains. Interop ships in the Lagoon network upgrade. As of October
-2026, OP Labs documentation targets a first two-chain interop set of OP
-Mainnet and Unichain in December 2026, subject to governance
-approval.[^lagoon][^interop-prep]
+OP Stack chains. Interop ships in the Lagoon network upgrade, which as of
+October 2026 was still in development. Optimism's documentation targets a
+first two-chain interop set of OP Sepolia and Unichain Sepolia on 3
+December 2026, followed by OP Mainnet and Unichain subject to governance
+approval; it gives both 15 December 2026 and 11 January 2027 as the mainnet
+date.[^lagoon][^interop-prep]
 
 ## Technology
 
 A single sequencer orders OP Mainnet transactions and posts them to
-Ethereum, using blobs since March 2024. The operator can be changed through
-a contract controlled by the Foundation. Users can force transactions
+Ethereum, using blobs since March 2024. A Foundation multisig can change the
+sequencer through the SystemConfig contract. Users can force transactions
 through Ethereum if the sequencer censors them, with a delay of up to 12
 hours.[^l2beat]
 
@@ -211,7 +214,7 @@ through the DisputeGameFactory contract. Anyone can submit or challenge a
 proposal. Disputes are resolved by an interactive bisection game that ends
 in a one-step proof of a single MIPS instruction on Ethereum; Cannon is the
 fault proof virtual machine used for this. The system is designed to support further proof
-systems, including zero-knowledge proofs.[^fp-explainer][^fault-proofs]
+systems, including zero-knowledge proofs.[^fp-explainer][^cannon][^fault-proofs]
 L2Beat lists a challenge period of 3.5 days followed by a 3.5-day execution
 delay.[^l2beat]
 
@@ -222,7 +225,7 @@ than 30 days to exit. Emergency upgrades can be executed immediately.[^l2beat]
 ## Governance
 
 The Token House votes with OP, directly or by delegation, on protocol
-upgrades, treasury grants and other proposals. Most votes need a quorum of
+upgrades, treasury grants and other proposals. Votes require a quorum of
 30% of votable OP supply.[^gov-faq] The Citizens' House is a one-person,
 one-vote body whose members hold non-transferable badges; its first version
 launched in December 2022 to vote on Retro Funding.[^collective][^retro-2]
@@ -240,8 +243,8 @@ legal entity such as a DUNA.[^season-9]
 ## Incidents and controversies
 
 - **Wintermute loss (June 2022).** The Foundation sent 20 million OP to an
-  address supplied by the market maker Wintermute, which was the address of
-  a Wintermute multisig on Ethereum that had not been deployed on Optimism.
+  address supplied by the market maker Wintermute, which was Wintermute's
+  Ethereum address and had not been deployed on Optimism.
   Wintermute took responsibility. An unknown attacker gained control of
   the address on Optimism and took the tokens, then sold 1 million and sent
   1 million to Vitalik Buterin's address. Wintermute bought back the tokens sold.
@@ -250,19 +253,22 @@ legal entity such as a DUNA.[^season-9]
   contract while the team was still testing, and some users reported
   being shown as ineligible after earlier being eligible.[^coindesk-airdrop]
 - **ETH duplication bug (2022).** On 2 February 2022 the researcher Jay
-  Freeman (saurik) reported a bug in which `SELFDESTRUCT` could duplicate
-  ETH. He found no evidence of malicious use. Optimism paid a bounty of
-  US$2,000,042, and forks of its code were also patched.[^saurik]
+  Freeman (saurik) reported a bug in Optimism's Geth fork in which
+  `SELFDESTRUCT` could duplicate ETH. Optimism said it had not been
+  exploited, apart from one accidental trigger by an Etherscan employee.
+  Freeman received a bounty of US$2,000,042, and forks of the code were
+  also patched.[^saurik][^bug-theblock]
 - **Fault proof suspension (August 2024).** Fault proofs were disabled for
-  several weeks after a bug was found, as described [above](#fault-proofs-and-decentralisation).[^l2beat]
+  26 days after a bug was found, as described [above](#fault-proofs-and-decentralisation).[^l2beat]
 - **Lost early data.** OP Labs states that data directories holding event
   logs and transaction status for January to July 2021 were deleted in
   error in August 2023. Balances were unaffected.[^lost-data]
 - **Fraud proofs removed (2021–2024).** From the November 2021 regenesis to
   June 2024, OP Mainnet ran without working fault proofs.[^l2beat]
-- **Token grants.** CoinDesk reported criticism from competitors that
-  Optimism did not disclose how much OP was set aside for chains joining
-  the Superchain.[^coindesk-wang]
+- **Token grants.** CoinDesk reported that unnamed competitors criticised
+  Optimism for using large OP grants to win adoption; the Foundation said
+  chains decide whether to disclose their grant amounts, and several did
+  not.[^coindesk-wang]
 - **Base revenue and OP Enterprise.** After Base's departure, the delegate
   GFXlabs argued that Base was now paying OP Labs while token holders
   received nothing. The Foundation said OP Enterprise revenue goes to the
@@ -292,12 +298,12 @@ legal entity such as a DUNA.[^season-9]
 | 2024-02-09 | Security Council begins signing upgrades |
 | 2024-03-14 | Ecotone upgrade: blob data |
 | 2024-06-10 | Permissionless fault proofs; Stage 1 |
-| 2024-08 | Fault proofs temporarily disabled |
+| 2024-08-16 | Fault proofs temporarily disabled |
 | 2024-09-11 | Granite upgrade |
 | 2026-01-28 | OP buyback programme approved |
 | 2026-01-29 | OP Enterprise launched |
 | 2026-02-18 | Base announces move off the OP Stack |
-| 2026-03-12 | OP Labs lays off about 20 staff |
+| 2026-03-12 | OP Labs lays off 20 staff |
 | 2026-07-08 | Karst upgrade |
 
 ## See also
@@ -329,6 +335,7 @@ legal entity such as a DUNA.[^season-9]
 [^token-live]: The Block (2022). *Optimism's governance token officially goes live*. <https://www.theblock.co/post/149464/optimisms-governance-token-officially-goes-live>
 [^allocation]: Optimism Foundation (2023). *Treasury appropriation proposal: Foundation Year 2 budget*. Optimism governance forum. <https://gov.optimism.io/t/treasury-appropriation-proposal-foundation-year-2-budget/5979>
 [^airdrop-2]: Optimism (2023). *OP Drop #2*. <https://optimism.io/blog/op-drop-2>
+[^airdrop-fund]: Optimism governance forum (2026). *Re-designating the User Airdrop Allocation as the Strategic Ecosystem Fund*. <https://gov.optimism.io/t/re-designating-the-user-airdrop-allocation-as-the-strategic-ecosystem-fund/10797>
 [^budget-y5]: Optimism Foundation (2026). *Collective Year 4 budget update and Year 5 budget outlook*. Optimism governance forum. <https://gov.optimism.io/t/collective-year-4-budget-update-and-year-5-budget-outlook/10796>
 [^retro-numbers]: Optimism governance forum (2025). *RetroPGF/RF evolution & numbers*. <https://gov.optimism.io/t/retropgf-rf-evolution-numbers/10128>
 [^retro-2]: Optimism (2022). *Introducing the Citizens' House: 10M OP to public goods*. <https://optimism.io/blog/introducing-the-citizens-house-10m-op-to-public-goods>
@@ -349,14 +356,16 @@ legal entity such as a DUNA.[^season-9]
 [^op-enterprise]: Optimism (2026). *Introducing OP Enterprise*. <https://optimism.io/blog/introducing-op-enterprise>
 [^buyback-proposal]: Optimism (2026). *OP token buybacks*. <https://optimism.io/blog/op-token-buybacks>
 [^buyback-vote]: The Block (2026). *OP token holders approve buyback plan redirecting 50% of Optimism protocol revenue to OTC swaps*. <https://www.theblock.co/post/387660/op-token-holders-approve-buyback-plan-50-optimism-protocol-revenue-otc-swaps>
-[^decrypt-base]: Decrypt (2026). *Morning Minute: Base breaks up with Optimism*. <https://decrypt.co/358722/morning-minute-base-breaks-up-with-optimism>
+[^base-stack]: Base (2026). *A new, unified stack for Base Chain*. <https://base.org/blog/next-chapter-for-base-chain-1>
 [^forum-base]: Optimism governance forum (2026). *Base, the Superchain, and governance: questions that merit answers*. <https://gov.optimism.io/t/base-the-superchain-and-governance-questions-that-merit-answers/10612>
 [^layoffs]: The Block (2026). *Optimism's OP Labs cuts 20% of staff to 'do fewer things well'*. <https://www.theblock.co/news/ecosystems/2026-03-12-optimism-op-labs-layoff-393339>
 [^lagoon]: Optimism documentation. *Lagoon*. <https://docs.optimism.io/op-stack/protocol/hardforks/lagoon>
 [^interop-prep]: Optimism documentation. *Prepare for interop on OP Mainnet and Unichain*. <https://docs.optimism.io/notices/interop-prep>
+[^cannon]: Optimism documentation. *Fault proof VM: Cannon*. <https://docs.optimism.io/op-stack/fault-proofs/cannon>
 [^gov-faq]: Optimism documentation. *FAQs* (governance). <https://docs.optimism.io/governance/gov-faq>
 [^wintermute-decrypt]: Decrypt (2022). *Ethereum layer-2 solution Optimism loses 20 million tokens in interlayer snafu*. <https://decrypt.co/102377/ethereum-layer-2-solution-optimism-loses-20-million-tokens-in-interlayer-snafu>
 [^wintermute-return]: The Block (2022). *Hacker returns 17 million OP tokens*. <https://www.theblock.co/post/151344/hacker-returns-17-million-op-tokens>
 [^coindesk-airdrop]: CoinDesk (2022). *Optimism tokens claimed by some users ahead of official airdrop announcement*. <https://www.coindesk.com/markets/2022/05/31/optimism-tokens-claimed-by-users-ahead-of-official-airdrop-announcement/>
 [^saurik]: Freeman, J. (2022). *Attacking an Ethereum L2 with unbridled Optimism*. <https://www.saurik.com/optimism.html>
+[^bug-theblock]: The Block (2022). *Ethereum scaling startup Optimism discloses 'critical bug' fix*. <https://www.theblock.co/news/ecosystems/2022-02-10-ethereum-scaling-startup-optimism-discloses-critical-bug-fix-133846>
 [^lost-data]: Optimism documentation. *Lost pre-regenesis data*. <https://docs.optimism.io/op-mainnet/pre-bedrock-history/lost-pre-regenesis-data>
