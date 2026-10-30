@@ -29,6 +29,7 @@ ARTICLE_FIELDS = ('title', 'ticker', 'category', 'status', 'updated')
 STATUS_FIELDS = {'ai-fact-checked': ('checked', 'checked_by'),
                  'human-reviewed': ('checked', 'checked_by', 'reviewed', 'reviewed_by')}
 TEMPLATE = Template((ROOT / 'site/template.html').read_text())
+ARTICLE_LINKS = ''  # Sidebar links to every article, set once all articles are rendered.
 
 
 def serialize(node):
@@ -125,7 +126,7 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
         tabs += '<a href="/all-articles/">All articles</a>'
     output = TEMPLATE.substitute(title=html.escape(title + ' — Chainlore') if route != '/' else 'Chainlore — The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
-        source='/sources/' + source, toc=toc, tabs=tabs,
+        source='/sources/' + source, toc=toc, tabs=tabs, articles=ARTICLE_LINKS,
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -158,16 +159,19 @@ def article(page):
 
 def homepage(pages):
     feature = pages['hyperliquid']
-    summaries = {
-        'bitcoin': 'A proof-of-work blockchain and peer-to-peer electronic cash system.',
-        'ethereum': 'A programmable blockchain for smart contracts, secured by proof of stake.',
-        'hyperliquid': 'A layer 1 blockchain with an onchain order book for perpetual futures and spot trading.',
-        'arbitrum': 'Optimistic rollups that scale Ethereum, with governance through the Arbitrum DAO.',
-    }
-    rows = ''.join(f'<div class="article-row"><span class="article-number">{i:02}</span><div><h3><a href="/p/{slug}/">{p["title"]}</a><span>{p["meta"]["ticker"]} · {p["meta"]["category"]}</span></h3><p>{summaries.get(slug, html.escape(p["description"][:150]))}</p></div></div>' for i, (slug, p) in enumerate(pages.items(), 1))
+    # INDEX.md is the single source of article summaries and subject groups.
     index = render(ROOT / 'INDEX.md')
-    index_html = ''.join(serialize(node) for node in index['tree'] if node.tag != 'p')
-    index_html = index_html.replace('<h2', '<h3').replace('</h2>', '</h3>')
+    summaries, index_html = {}, ''
+    for node in index['tree']:
+        if node.tag == 'h2':
+            index_html += f'<h3>{html.escape(plain(node))}</h3>'
+        elif node.tag == 'ul':
+            links = [item.find('a') for item in node.findall('li')]
+            for link in links:
+                summary = ' '.join((link.tail or '').split()).lstrip(': ')
+                summaries[link.get('href').strip('/').split('/')[-1]] = summary[:1].upper() + summary[1:]
+            index_html += '<p>' + ' · '.join(f'<a href="{html.escape(link.get("href"))}">{html.escape(plain(link))}</a>' for link in links) + '</p>'
+    rows = ''.join(f'<div class="article-row"><span class="article-number">{i:02}</span><div><h3><a href="/p/{slug}/">{p["title"]}</a><span>{p["meta"]["ticker"]} · {p["meta"]["category"]}</span></h3><p>{html.escape(summaries.get(slug, p["description"][:150]))}</p></div></div>' for i, (slug, p) in enumerate(pages.items(), 1))
     counts = Counter(p['meta']['status'] for p in pages.values())
     statuses = ', '.join(f'{label} ({counts[key]})' for key, (label, _) in STATUSES.items() if counts[key])
     references = sum(len(re.findall(r'^\[\^[^\]]+\]:', p['source'].read_text(), re.M)) for p in pages.values())
@@ -177,7 +181,7 @@ def homepage(pages):
 <section class="panel blue"><h2>Articles</h2>{rows}</section>
 </div>
 <div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a></p></section></div>'''
-    write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on Bitcoin, Ethereum, Hyperliquid, and Arbitrum.', active='Main page')
+    write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on blockchains, stablecoins, protocols, and incidents.', active='Main page')
 
 
 def main():
@@ -188,11 +192,11 @@ def main():
         shutil.rmtree(OUT)
     OUT.mkdir()
     shutil.copytree(ROOT / 'site/assets', OUT / 'assets')
-    pages = {}
+    global ARTICLE_LINKS
     # Alphabetical browsing is stable as new articles are added.
-    for path in sources:
-        page = render(path)
-        pages[path.stem] = page
+    pages = {path.stem: render(path) for path in sources}
+    ARTICLE_LINKS = ''.join(f'<a href="/p/{slug}/">{html.escape(page["title"])}</a>' for slug, page in pages.items())
+    for page in pages.values():
         article(page)
     for name in SUPPORTING:
         article(render(ROOT / name))
