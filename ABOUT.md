@@ -6,7 +6,9 @@ and protocols.
 
 ## Authorship and review
 
-The encyclopedia articles were written and fact-checked by Opus 5.5 High.
+The original encyclopedia drafts were written by Opus 5.5 High.
+Completed AI fact-checks are credited separately on each article, with
+the checker and date.
 
 Each article displays an update date and one of three editorial
 statuses from its Markdown source:

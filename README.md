@@ -3,9 +3,9 @@
 An AI native encyclopedia of crypto.
 
 Live at https://chainlore.xyz. A static, Wikipedia-inspired site with
-muted sage and blue accents. Encyclopedia articles are credited to
-Opus 5.5 High for writing and fact-checking; article draft status is
-preserved separately in the editorial record.
+muted sage and blue accents. Original encyclopedia drafts are credited to
+Opus 5.5 High. Each article records its editorial status and, when
+applicable, the fact-checker and check date.
 
 ## Build and preview
 
