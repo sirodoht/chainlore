@@ -30,7 +30,7 @@ repaying creditors in February 2025.[^ca2-opinion][^bloomberglaw-ch11][^coindesk
 | Status | Bankrupt; creditor distributions under way |
 | Bankruptcy case | *In re FTX Trading Ltd.*, No. 22-11068 (Bankr. D. Del.), filed 2022-11-11 |
 | Chief executive after filing | John J. Ray III |
-| Bahamian proceeding | FTX Digital Markets Ltd.; provisional liquidators approved by 2022-11-14 |
+| Bahamian proceeding | FTX Digital Markets Ltd.; provisional liquidators approved 2022-11-14[^scb-update] |
 | Criminal case | *United States v. Bankman-Fried*, No. 22-cr-673 (S.D.N.Y.) |
 
 ## History
@@ -58,7 +58,7 @@ FTT was used as collateral for undisclosed loans from FTX to Alameda,
 and that Ellison, at Bankman-Fried's direction, bought FTT on the open
 market between 2019 and 2022 to prop up its price.[^sec-ellison-wang]
 
-Binance had invested in FTX; when the two agreed a deal in November 2022,
+Binance had invested in FTX;[^coindesk-binance-suit] when the two agreed a deal in November 2022,
 Bankman-Fried said FTX.com's "first, and last, investors are the
 same".[^coindesk-binance-deal] In July 2021
 Bankman-Fried bought out the stake held by Binance and its chief
@@ -72,7 +72,7 @@ insolvent. Binance called the claims meritless.[^coindesk-binance-suit]
 By 2022 FTX customers were trading about US$10–15 billion a day. Alameda
 was the exchange's largest customer and main market maker, and received
 a large line of credit on the platform.[^ca2-opinion] According to the
-SEC, FTX raised more than US$1.8 billion from equity investors since
+SEC, FTX raised more than US$1.8 billion from equity investors since at least May
 2019.[^sec-sbf] At its peak FTX was valued at over US$30 billion.[^fortune-ray]
 
 FTX spent heavily on marketing. In March 2021 Miami-Dade County approved
@@ -204,8 +204,8 @@ A pro se motion for a new trial, filed by his mother in February 2026,
 argued that witnesses including Salame had been deterred from
 testifying.[^coindesk-new-trial][^decrypt-new-trial] Bankman-Fried
 withdrew it in April, but Kaplan formally denied it on 28 April 2026,
-calling its claims of government retaliation "wildly conspiratorial and entirely contradicted by the
-record".[^block-new-trial][^decrypt-new-trial]
+calling its claims of government threats and retaliation "wildly
+conspiratorial and entirely contradicted by the record".[^block-new-trial][^decrypt-new-trial]
 
 On 10 September 2026 Bankman-Fried petitioned the Supreme Court to review
 the conviction and the forfeiture, which he argues violates the Excessive
@@ -251,7 +251,7 @@ pleas and the criminal forfeiture.[^cftc-2026]
 On 14 November 2022 the Securities Commission of The Bahamas announced
 that the Supreme Court of The Bahamas had approved provisional
 liquidators for FTX Digital Markets: Brian Simms and two from
-PwC.[^block-bahamas] On 17 November the Commission said it had
+PwC.[^scb-update][^block-bahamas] On 17 November the Commission said it had
 directed the transfer of FTX Digital Markets' digital assets to a wallet
 it controlled.[^elliptic] In March 2023 the US debtors sued in Delaware
 for a declaration that FTX Digital Markets owned none of their
@@ -285,7 +285,7 @@ US$1 billion from Genesis Digital Assets.[^coindesk-jan-2026]
 ### Valuation disputes
 
 Claims were valued in US dollars at the November 2022 petition
-date.[^coindesk-plan] Some creditors objected that they should
+date.[^coindesk-plan][^coindesk-second-dist] Some creditors objected that they should
 instead receive crypto in kind, and that FTT should not be valued at
 zero. Dorsey overruled the objections, accepting testimony that the
 estate did not hold the assets needed to return crypto in kind or buy it
@@ -306,8 +306,8 @@ than the same holdings at market prices.[^coindesk-march-2025]
 | 2022-11-06 | Binance announces sale of its FTT |
 | 2022-11-08 | Binance signs non-binding letter of intent |
 | 2022-11-09 | Binance withdraws |
-| 2022-11-11 | Chapter 11 filing; Ray replaces Bankman-Fried |
-| 2022-11-12 | Unauthorised transfers drain FTX wallets |
+| 2022-11-11 | Chapter 11 filing; Ray replaces Bankman-Fried; unauthorised transfers begin |
+| 2022-11-12 | Unauthorised transfers continue |
 | 2022-11-14 | Provisional liquidators of FTX Digital Markets announced |
 | 2022-12-13 | Criminal, SEC and CFTC charges against Bankman-Fried |
 | 2022-12-21 | Ellison and Wang pleas announced; Bankman-Fried extradited |
@@ -315,7 +315,7 @@ than the same holdings at market prices.[^coindesk-march-2025]
 | 2023-11-02 | Bankman-Fried convicted on all seven counts |
 | 2024-03-28 | Bankman-Fried sentenced to 25 years |
 | 2024-05-28 | Salame sentenced |
-| 2024-08-08 | US$12.7 billion CFTC consent order against FTX and Alameda |
+| 2024-08-08 | CFTC announces US$12.7 billion consent order against FTX and Alameda |
 | 2024-09-24 | Ellison sentenced to two years |
 | 2024-10-07 | Bankruptcy plan confirmed |
 | 2024-10-30 | Singh sentenced to time served |
@@ -383,6 +383,7 @@ than the same holdings at market prices.[^coindesk-march-2025]
 [^decrypt-senate]: Decrypt (2026). *US Senate unanimously opposes Sam Bankman-Fried pardon*. <https://decrypt.co/373629/us-senate-unanimously-opposes-sam-bankman-fried-pardon>
 [^block-senate]: The Block (2026). *Lummis, Gallego secure unanimous Senate approval opposing Sam Bankman-Fried clemency*. <https://www.theblock.co/post/408581/lummis-gallego-secure-unanimous-senate-approval-opposing-sam-bankman-fried-clemency>
 [^coindesk-sec-2025]: CoinDesk (2025). *SBF's cohorts at FTX take last SEC hit, Ellison banned from company roles for decade*. <https://www.coindesk.com/policy/2025/12/19/sbf-s-cohorts-at-ftx-take-last-sec-hit-ellison-banned-from-company-roles-for-decade>
+[^scb-update]: Securities Commission of The Bahamas (2022). *Securities Commission update on FTX*. <https://www.scb.gov.bs/wp-content/uploads/2022/11/Securities-Commission-Update-on-FTX-14Nov22.pdf>
 [^block-bahamas]: The Block (2022). *Bahamas approves provisional liquidators for FTX assets*. <https://www.theblock.co/post/187099/bahamas-approves-provisional-liquidators-for-ftx-assets>
 [^block-fdm-suit]: The Block (2023). *FTX sues for control of Bahamas assets, calls FTX Digital Markets 'a front' to defraud customers*. <https://www.theblock.co/post/221212/ftx-sues-for-control-of-bahamas-assets-calls-ftx-digital-markets-a-front-to-defraud-customers>
 [^coindesk-plan]: CoinDesk (2024). *Delaware judge approves FTX estate's bankruptcy plan*. <https://www.coindesk.com/policy/2024/10/07/delaware-judge-approves-ftx-estates-bankruptcy-plan>
