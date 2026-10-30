@@ -149,13 +149,7 @@ def article(page):
         errors = validate(meta, page['source'])
         if errors:
             raise ValueError('\n'.join(errors))
-        label, anchor = STATUSES[meta['status']]
-        details = f'<span>{html.escape(meta["category"])} · {html.escape(meta["ticker"])}</span><span>Updated {long_date(meta["updated"])}</span>'
-        if meta.get('checked'):
-            details += f'<span>Checked {long_date(meta["checked"])} by {html.escape(meta["checked_by"])}</span>'
-        if meta.get('reviewed'):
-            details += f'<span>Reviewed {long_date(meta["reviewed"])} by {html.escape(meta["reviewed_by"])}</span>'
-        details += f'<a class="status" href="/policy/#{anchor}">{html.escape(label)}</a>'
+        details = f'<span>Updated {long_date(meta["updated"])}</span>'
     content = f'<header class="article-header"><h1>{html.escape(title)}</h1><div class="article-meta">{details}</div></header>'
     if meta.get('status') == 'draft':
         content += '<p class="notice">This article is a draft. It has not yet passed a fact-check under the <a href="/policy/">editorial policy</a> and may contain errors.</p>'
