@@ -30,7 +30,7 @@ repaying creditors in February 2025.[^ca2-opinion][^bloomberglaw-ch11][^coindesk
 | Status | Bankrupt; creditor distributions under way |
 | Bankruptcy case | *In re FTX Trading Ltd.*, No. 22-11068 (Bankr. D. Del.), filed 2022-11-11 |
 | Chief executive after filing | John J. Ray III |
-| Bahamian proceeding | FTX Digital Markets Ltd.; provisional liquidators approved 2022-11-14[^scb-update] |
+| Bahamian proceeding | FTX Digital Markets Ltd.; provisional liquidators approved by 2022-11-14[^scb-update] |
 | Criminal case | *United States v. Bankman-Fried*, No. 22-cr-673 (S.D.N.Y.) |
 
 ## History

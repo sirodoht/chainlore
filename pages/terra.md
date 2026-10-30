@@ -167,10 +167,10 @@ validators could plan to rebuild the network.[^block-halt]
 
 On 25 May 2022 holders passed governance proposal 1623, creating a new
 chain. Its mainnet, `phoenix-1`, launched at 06:00 UTC on 28 May
-2022[^phoenix-genesis][^block-phoenix] (Terra's documentation gives 27
-May, the date in US time) without an algorithmic stablecoin, and new LUNA was airdropped to
+2022[^phoenix-genesis][^block-phoenix] without an algorithmic stablecoin, and new LUNA was airdropped to
 holders of the old chain's tokens based on snapshots taken before and
-after the depeg.[^terra-protocol][^block-phoenix] The original chain
+after the depeg.[^terra-protocol][^block-phoenix] (Terra's documentation
+gives 27 May.)[^terra-protocol] The original chain
 was renamed Terra Classic, with its tokens trading as LUNC and USTC,
 while the new chain took the LUNA name.[^block-phoenix][^defiant-lunc][^cg-lunc][^cg-ustc]
 

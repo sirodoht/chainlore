@@ -272,7 +272,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
   governance capture; opponents argued that capped stake would flow to
   centralised exchanges, which Lido had been founded to
   counter.[^self-limit-forum] A Snapshot vote ending on 1 July 2022
-  rejected self-limiting,[^block-self-limit] by about 80.5 million LDO to
+  rejected self-limiting by about 80.5 million LDO to
   156,000.[^self-limit-snapshot]
   Lido's development in the following years focused on dual governance
   and community staking, which Shapovalov said in 2025 improved Lido's
@@ -381,4 +381,3 @@ favour, just above the 50 million quorum, and concluded on 30 June
 [^ryan]: Ryan, D. (2022). *The risks of LSD*. <https://notes.ethereum.org/@djrtwo/risks-of-lsd>
 [^self-limit-forum]: Lido research forum (2022). *Should Lido on Ethereum be limited to some fixed % of stake?* <https://research.lido.fi/t/should-lido-on-ethereum-be-limited-to-some-fixed-of-stake/2225>
 [^self-limit-snapshot]: Lido DAO Snapshot (2022). *Should Lido consider self-limiting?* <https://snapshot.org/#/lido-snapshot.eth/proposal/0x10abedcc563b66b1adee60825e78c387105110fa4a1e7354ab57bc9cc1e675c2>
-[^block-self-limit]: The Block (2022). *Lido community strongly against limiting its Ethereum staking dominance*. <https://www.theblock.co/post/155070/lido-community-strongly-against-limiting-its-ethereum-staking-dominance>

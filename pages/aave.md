@@ -266,7 +266,7 @@ technical service provider.[^governance-docs]
   that fees from a new CoW Swap integration in Aave Labs' interface went
   to Aave Labs rather than the DAO. Zeller said Aave Labs, "in the
   pursuit of their own monetization", had redirected Aave user volume to
-  competitors. Aave Labs said the interface it owned sat entirely outside
+  competitors. Aave Labs said the interface it operated sat entirely outside
   the protocol the DAO stewards, and that the DAO governed the protocol's
   smart contracts.[^cow-forum][^cow-tl] Aave Labs then put to a Snapshot
   vote a proposal, written by Ernesto Boado of BGD Labs, to move the
