@@ -153,7 +153,9 @@ Paths on Brick:
 | Path under `/var/www/chainlore/` | Contents |
 |---|---|
 | `releases/<release>/` | Public HTML, assets, article catalog, and commit metadata |
-| `current` | Symlink to the active public release |
+| `current` | Symlink to `published/current` |
+| `published/releases/<publication>/` | Complete checked site, including database articles |
+| `published/current` | Atomically switched active publication |
 | `app-releases/<release>/` | Django code, uv environment, and admin static assets |
 | `app-current` | Symlink to the active service release |
 | `private/` | SQLite database, secret key, and initial admin credentials; mode 700 |
@@ -186,10 +188,14 @@ and systemd unit. The database is never automatically reversed. Migrations
 must be reviewed for compatibility with the previous app before deploying;
 stop for migrations that need a different rollback procedure.
 
-For a manual content-only rollback, switch `current` to a retained public
-release. For a service rollback, also switch `app-current` to the matching
-app release and restart `chainlore.service`, after checking database
-compatibility. Configuration and database snapshots are in `backups/<release>/`.
+Before a manual rollback, stop `chainlore-worker.timer` and `chainlore-worker.service`.
+For a content-only rollback, atomically switch `published/current` to a retained
+public release. Keep `current` pointing to `published/current`. The exact previous
+publication is recorded in `backups/<release>/previous-publication`. For a service
+rollback, also switch `app-current` to the matching app release, restore its worker
+units, and restart `chainlore.service`, after checking database compatibility.
+Restart the worker timer only when ready to process and publish requests again.
+Configuration and database snapshots are in `backups/<release>/`.
 Do not restore a database over newer submissions without a recovery plan.
 
 ## Why

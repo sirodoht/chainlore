@@ -48,6 +48,7 @@ previous_app="$(readlink "$root/app-current" || true)"
 previous_publication="$(readlink -f "$root/current" || true)"
 printf '%s\n' "$previous" > "$backup/previous-release"
 printf '%s\n' "$previous_app" > "$backup/previous-app-release"
+printf '%s\n' "$previous_publication" > "$backup/previous-publication"
 
 # sqlite3.backup() takes a consistent snapshot even while the service is running.
 if [[ -f "$root/private/submissions.sqlite3" ]]; then
