@@ -18,8 +18,8 @@ import markdown
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
-SUPPORTING = ('INDEX.md', 'VISION.md', 'INSPIRATION.md', 'ABOUT.md', 'POLICY.md')
-ROUTES = {'INDEX.md': '/all-articles/', 'VISION.md': '/vision/', 'INSPIRATION.md': '/inspiration/',
+SUPPORTING = ('INDEX.md', 'VISION.md', 'ABOUT.md', 'POLICY.md')
+ROUTES = {'INDEX.md': '/all-articles/', 'VISION.md': '/vision/',
           'ABOUT.md': '/about/', 'POLICY.md': '/policy/', 'README.md': '/'}
 # Status values, display labels, and the POLICY.md section that defines each.
 STATUSES = {'draft': ('Draft', 'statuses'),
@@ -176,7 +176,7 @@ def homepage(pages):
 <section class="panel"><h2>Featured article</h2><div class="eyebrow">{feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/p/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/p/hyperliquid/">Full article →</a></div></section>
 <section class="panel blue"><h2>Articles</h2>{rows}</section>
 </div>
-<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a> · <a href="/inspiration/">Reference sites</a></p></section></div>'''
+<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a></p></section></div>'''
     write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on Bitcoin, Ethereum, Hyperliquid, and Arbitrum.', active='Main page')
 
 

@@ -20,7 +20,7 @@ python3 -m venv .venv
 ```
 
 Open http://localhost:8000. The build reads `pages/*.md`, `INDEX.md`,
-`VISION.md`, `INSPIRATION.md`, and `ABOUT.md`, then writes `dist/`.
+`VISION.md`, `ABOUT.md`, and `POLICY.md`, then writes `dist/`.
 Article links become HTML routes; tables, footnotes, and contents are
 rendered from Markdown. The check script verifies all internal links,
 assets, unique IDs, and citation anchors. Search uses a generated JSON
