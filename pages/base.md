@@ -24,11 +24,11 @@ although Coinbase has said it is exploring one.[^theblock-launch][^theblock-toke
 | Creator | Jesse Pollak |
 | Announced | 2023-02-23 (testnet) |
 | Mainnet | 2023-08-09 (public) |
-| Chain ID | 8453 |
+| Chain ID | 8453[^base-network] |
 | Gas token | ETH |
 | Network token | None (as of October 2026) |
 | Software | OP Stack (2023–2026); base/base (from 2026) |
-| Sequencer | Single sequencer operated by Coinbase |
+| Sequencer | Single centralised sequencer |
 | Proof system | TEE and ZK multi-proofs (since 2026-05-28) |
 | Withdrawal window | 5 days with one proof; 1 day with two |
 | Data availability | Ethereum (blobs) |
@@ -65,22 +65,22 @@ official opening. Much of the early trading volume came from BALD, a
 memecoin that rose and then collapsed. Pollak called the activity an
 unplanned result of an open, permissionless network.[^techcrunch-mainnet]
 
-Friend.tech, a social app in which users buy "shares" in other users'
-accounts for access to private chats, launched on Base in August 2023.
+Friend.tech, a social app linked to Twitter in which users trade "shares"
+in other users' accounts, launched on Base in August 2023.
 Decrypt reported that on 20 August 2023 Base processed more than 900,000
 transactions, nearly double the daily totals of Arbitrum and Optimism at
 the time.[^decrypt-friendtech]
 
 ### Agreement with Optimism
 
-In August 2023 the Optimism Foundation proposed granting Base up to 118
+Under an agreement announced in August 2023, Base could earn up to 118
 million OP tokens over six years. In return, Base would contribute to the
 Optimism Collective the greater of 2.5% of its total sequencer revenue or
-15% of its net profit after the cost of posting data to Ethereum. The
-Collective described the arrangement as part of a "shared commitment to
+15% of its profit after the cost of posting data to Ethereum. The
+proposal described the arrangement as part of a "shared commitment to
 the rules for upgrades and sequencing of OP Chains", with upgrades
-decided by Optimism governance.[^theblock-op-grant] Base's voting power
-in Optimism governance was capped at 9%.[^op-forum]
+decided by Optimism governance.[^theblock-op-grant][^base-superchain] Base's voting power
+in Optimism governance was capped at 9%.[^base-superchain][^op-forum]
 
 According to DL News, Base contributed 8,387 ETH to the Collective over
 the course of the partnership, about 41% of the Collective's lifetime
@@ -95,9 +95,9 @@ rollups a separate, cheaper way to post data to Ethereum, and Base had
 predicted fee reductions of 10 to 100 times.[^theblock-4844][^base-upgrades]
 The Defiant reported that fees on the leading layer 2s that adopted
 blobs fell by between 50% and 98%.[^defiant-dencun] Research by Galaxy found that in the 150
-days after the upgrade Base bought more blobs than any other rollup, and
-that the margins of the optimistic rollups it studied, including Base,
-rose sharply. It also found that Base's transaction failure rate peaked at
+days after the upgrade Base spent more on blobs than any other rollup, and
+that the combined margins of Base, OP Mainnet and Arbitrum rose
+sharply. It also found that Base's transaction failure rate peaked at
 21%, which it attributed largely to bots.[^galaxy-dencun]
 
 Coinbase launched Smart Wallet on 5 June 2024. The wallet replaced
@@ -110,8 +110,8 @@ launch opened that year's Onchain Summer campaign.[^decrypt-smartwallet]
 At launch, proposing and challenging Base's state was permissioned. In
 August 2023 Pollak acknowledged that "the current systems' upgradability
 and challenging authorizations are still permissioned".[^theblock-permissionless]
-Base deployed permissionless fault proofs on mainnet in October 2024,
-allowing anyone to challenge invalid withdrawals. On 29 April 2025 Base
+Base deployed permissionless fault proofs on mainnet on 30 October 2024,
+allowing anyone to challenge invalid withdrawal claims.[^base-faultproofs] On 29 April 2025 Base
 said it had reached Stage 1 in the rollup decentralisation framework
 proposed by Vitalik Buterin, after adding a Security Council of 10 independent entities. Upgrades
 required 75% agreement among the council, Base and Optimism.[^theblock-stage1]
@@ -133,13 +133,19 @@ created as smart wallets called Base Accounts. Coinbase also described
 Base as three parts: Base Chain, Base Build for developers, and the Base
 App.[^theblock-baseapp]
 
-In February 2026 the Base App removed its Farcaster-based feed and
-wound down its creator rewards programme. Pollak said that "the app needs
-to have one primary focus, and that thing is trading".[^theblock-talk] On
-13 July 2026 Coinbase chief executive Brian Armstrong wrote on X that
-content coins "didn't work and we pivoted early this year. We messed up,
-time to turn the page." He said Base was focusing on trading, payments
-and AI agents, in that order.[^cryptonews-armstrong][^defiant-armstrong]
+On 9 February 2026 Base said the Base App would remove its
+Farcaster-powered feed and wind down its creator rewards programme.
+Pollak said that "the app needs to have one primary focus, and that thing
+is trading".[^theblock-talk] In a podcast interview reported on 3 March
+2026, Coinbase chief executive Brian Armstrong said that the app's social features "didn't quite
+work".[^theblock-socialfi] On 13 July 2026 he wrote on X that content
+coins "didn't work" and that Base had pivoted away from them early in the
+year, while defending its focus on AI agents.[^defiant-armstrong][^cryptonews-armstrong]
+Two days later Pollak handed leadership of the app to Jordan "Cobie" Fish
+to focus on the Base chain, saying its social bets, including creator
+coins, had "disintegrated completely".[^theblock-cobie] On 10 September
+2026 Coinbase renamed the Base App back to Coinbase Wallet, describing it
+as a multichain trading app.[^theblock-wallet]
 
 ### Token exploration
 
@@ -157,16 +163,16 @@ token has been launched.
 
 On 18 February 2026 Base announced that it would move to "a unified,
 Base-operated stack" in a single repository, base/base, built on
-open-source components such as Reth. Base said the code for components
+open-source components such as Reth.[^base-unified] Base said the code for components
 such as the sequencer had been owned by several teams across several
 repositories, creating coordination overhead. It said it would remain
 compatible with the OP Stack specification in the short term, would
 replace Optimism on its Security Council with an independent signer, and
 would require node operators to run base/base releases. It remained a
-customer of Optimism's "OP Enterprise" service.[^theblock-unified][^dlnews-op]
+customer of Optimism's "OP Enterprise" service.[^base-unified][^theblock-unified][^dlnews-op]
 Base's head of product, Wilson Cusack, said the change would give it
 "our own spec, code, and infra". Base planned six hard forks a year and
-set a target of 1 gigagas per second.[^decrypt-unified]
+set a target of 1 gigagas per second.[^base-unified][^decrypt-unified]
 
 An Optimism spokesperson said it was "grateful for our three-year
 partnership with Base". OP Labs chief executive Jing Wang wrote that the
@@ -180,21 +186,23 @@ applied.[^op-forum]
 
 Base's first independent upgrade, Azul, activated on mainnet on 28 May
 2026. It replaced optimistic fault proofs with a multi-proof system and
-made base-reth-node the only execution client.[^base-azul][^theblock-azul]
+made base-reth-node the only execution client.[^base-upgrades][^base-azul][^theblock-azul]
 Beryl followed on 25 June 2026. It introduced B20, a token standard
 compatible with ERC-20 but implemented as a native precompile inside the
 node, and shortened the single-proof withdrawal window from seven days to
-five.[^base-beryl] Cobalt, activated on 30 September 2026, extended B20,
+five.[^base-beryl] On 24 August 2026 tokenised stocks issued by Coinbase
+and built on B20 went live on Base for users outside the US.[^base-stocks] Cobalt, activated on 30 September 2026, extended B20,
 added "validity transactions" that are included only if specified
 onchain conditions hold, and moved verification of TEE signer
-registrations fully onchain.[^base-cobalt] As of October 2026 two further
-upgrades, Denim and Everest, were planned for November 2026.[^base-upgrades]
+registrations fully onchain.[^base-cobalt] As of October 2026 the next
+upgrade, Denim, was targeted for November 2026, and a further upgrade,
+Everest, had no date.[^base-upgrades]
 
 ## Technology
 
 ### Transaction flow
 
-A single sequencer run by Coinbase orders transactions. Base runs five
+A single centralised sequencer run by Base orders transactions. Base runs five
 sequencer instances coordinated by op-conductor, but only the leader
 produces blocks, and L2Beat notes that the replicas "do not create
 independent operators or censorship resistance". Blocks are sealed every
@@ -237,23 +245,24 @@ required.[^theblock-stage1][^theblock-unified]
 
 ## Incidents and controversies
 
-- **Centralisation.** At launch critics, including Gnosis founder Martin
-  Köppelmann, argued that Coinbase's sole control of the sequencer and the
-  lack of fraud proofs made Base centralised. Pollak said that Coinbase
+- **Centralisation.** At launch critics argued that Coinbase's sole
+  control of the sequencer made Base centralised, and Gnosis founder Martin
+  Köppelmann said Coinbase needed to give more details about the lack of
+  fraud proofs. Pollak said that Coinbase
   "cannot unilaterally upgrade contracts or land invalid output
   proposals".[^theblock-permissionless] As of October 2026 the sequencer is
-  still run by Coinbase, and L2Beat rates it as having no real-time
+  still centralised, and L2Beat rates it as having no real-time
   censorship resistance beyond the 12-hour forced-inclusion
   path.[^l2beat]
-- **Sequencer fees (February 2025).** Critics, including Sonic Labs
-  co-founder Andre Cronje, noted that Base's sequencer fee revenue was
-  being sent to the Coinbase exchange and questioned whether Base was
-  aligned with Ethereum. A Base strategy team member said the ETH was held
+- **Sequencer fees (February 2025).** Onchain observers noted that Base's
+  sequencer fee revenue was being sent to the Coinbase exchange, and
+  critics, including Sonic Labs co-founder Andre Cronje, questioned whether
+  Base was aligned with Ethereum. A Base strategy team member said the ETH was held
   by Coinbase for "security and auditing purposes".[^theblock-fees]
 - **"Base is for everyone" (April 2025).** DL News reported that onchain
   records showed a few buyers bought early and sold at a profit.
-  Critics said the post harmed inexperienced traders, while supporters
-  defended it as an experiment.[^dlnews-coin][^decrypt-coin]
+  Critics called the post "deeply disappointing", while Base defended it
+  as an experiment in public.[^dlnews-coin][^decrypt-coin]
 - **Sequencer outage (August 2025).** On 5 August 2025 block production
   stopped for 33 minutes after the active sequencer fell behind and
   automatic failover chose a replacement that was still being provisioned.
@@ -265,8 +274,8 @@ required.[^theblock-stage1][^theblock-unified]
   separate bug slowed recovery. Base said "all funds on Base were
   safe".[^base-postmortem][^theblock-june]
 - **Departure from the Superchain.** Base's move to its own stack ended
-  its revenue share with the Optimism Collective. Members of Optimism
-  governance asked whether the original agreements had allowed this and
+  its revenue share with the Optimism Collective. A participant in the
+  Optimism governance forum asked whether the original agreements had allowed this and
   why it had not been disclosed. The Foundation replied that Base's
   participation was "never a given".[^op-forum]
 
@@ -278,22 +287,25 @@ required.[^theblock-stage1][^theblock-unified]
 | 2023-07 | Mainnet opens to developers |
 | 2023-08-09 | Mainnet opens to the public; Onchain Summer begins |
 | 2023-08 | Friend.tech launches on Base |
-| 2023-08-25 | OP grant and revenue-share agreement reported |
+| 2023-08-24 | Revenue-share agreement with Optimism announced |
 | 2024-03-14 | Ecotone upgrade: blob support |
 | 2024-06-05 | Coinbase Smart Wallet launches |
-| 2024-10 | Permissionless fault proofs on mainnet |
+| 2024-10-30 | Permissionless fault proofs on mainnet |
 | 2025-02 | Criticism of sequencer fees sent to Coinbase |
 | 2025-04-16 | "Base is for everyone" content coin |
 | 2025-04-29 | Base reaches Stage 1 |
 | 2025-07-16 | Coinbase Wallet renamed Base App |
 | 2025-08-05 | 33-minute sequencer outage |
 | 2025-09-15 | Base says it is exploring a network token |
-| 2026-02 | Base App drops social feed to focus on trading |
+| 2026-02-09 | Base App to drop social feed to focus on trading |
 | 2026-02-18 | Base announces move to its own stack |
 | 2026-05-28 | Azul upgrade: TEE and ZK multi-proofs |
 | 2026-06-25 | Beryl upgrade: B20 tokens; 116-minute outage |
 | 2026-06-26 | 20-minute outage |
 | 2026-07-13 | Armstrong says content coins "didn't work" |
+| 2026-07-15 | Pollak hands Base App leadership to Cobie |
+| 2026-08-24 | Coinbase tokenised stocks launch on Base |
+| 2026-09-10 | Base App renamed back to Coinbase Wallet |
 | 2026-09-30 | Cobalt upgrade |
 
 ## See also
@@ -314,7 +326,7 @@ required.[^theblock-stage1][^theblock-unified]
 [^decrypt-friendtech]: Decrypt (2023). *Base network sees activity soar past Arbitrum, Optimism amid Friend.tech frenzy*. <https://decrypt.co/153133/base-network-sees-activity-soar-past-arbitrum-optimism-friend-tech-frenzy>
 [^theblock-op-grant]: The Block (2023). *Base set to receive 118M OP tokens over six years in governance agreement*. <https://www.theblock.co/post/247532/base-optimism-revenue>
 [^op-forum]: Optimism governance forum (2026). *Base, the Superchain, and Governance: Questions That Merit Answers*. <https://gov.optimism.io/t/base-the-superchain-and-governance-questions-that-merit-answers/10612>
-[^dlnews-op]: DL News (2026). *Optimism token price plunges as Base leaves Superchain*. <https://www.dlnews.com/articles/defi/optimism-token-price-plunges-as-base-leaves-superchain/>
+[^dlnews-op]: DL News (2026). *Optimism token price plunges 25% as Coinbase cuts off DAO from millions in revenue*. <https://www.dlnews.com/articles/defi/optimism-token-price-plunges-as-base-leaves-superchain/>
 [^theblock-4844]: The Block (2024). *Base says it will support EIP-4844 from 'day 1' following Dencun upgrade*. <https://www.theblock.co/post/281258/base-to-support-eip-4844-from-day-1-following-dencun-upgrade>
 [^base-upgrades]: Base documentation. *Upgrades overview*. <https://docs.base.org/upgrades/overview>
 [^defiant-dencun]: The Defiant (2024). *Transaction fees on layer 2 plummet post Dencun*. <https://thedefiant.io/news/cefi/transaction-fees-on-layer-2-plummet-post-dencun>
@@ -322,13 +334,13 @@ required.[^theblock-stage1][^theblock-unified]
 [^decrypt-smartwallet]: Decrypt (2024). *Coinbase debuts Smart Wallet, gunning to bring 1 billion users to crypto*. <https://decrypt.co/233925/coinbase-debuts-smart-wallet-gunning-to-bring-1-billion-users-to-crypto>
 [^theblock-permissionless]: The Block (2023). *Base is 'permissionless,' says Coinbase's Jesse Pollak*. <https://www.theblock.co/post/244629/coinbase-base-jesse-pollak>
 [^theblock-stage1]: The Block (2025). *Base reaches 'stage 1' in Ethereum rollup decentralization with fault proofs and security council*. <https://www.theblock.co/amp/post/352320/base-stage-1>
-[^dlnews-coin]: DL News (2025). *Coinbase distances itself from Base memecoin made on Zora*. <https://dlnews.com/articles/defi/coinbase-distances-itself-from-base-memecoin-made-on-zora/>
+[^dlnews-coin]: DL News (2025). *Coinbase distances itself from 'deeply disappointing' Base memecoin*. <https://dlnews.com/articles/defi/coinbase-distances-itself-from-base-memecoin-made-on-zora/>
 [^decrypt-coin]: Decrypt (2025). *Coinbase's Base promotes unofficial meme coin—traders ape in and get rekt*. <https://decrypt.co/315204/coinbases-base-promotes-unofficial-meme-coin-traders-ape-get-rekt>
 [^theblock-baseapp]: The Block (2025). *Coinbase unveils Base App, rebrands wallet as all-in-one social and trading platform*. <https://www.theblock.co/post/362713/coinbase-unveils-base-app-rebrands-wallet-as-all-in-one-social-and-trading-platform>
 [^theblock-talk]: The Block (2026). *Base App removes Farcaster-powered Talk feed to sharpen focus on onchain trading*. <https://www.theblock.co/post/389191>
 [^cryptonews-armstrong]: crypto.news (2026). *Coinbase CEO admits Base 'messed up' on content coins*. <https://crypto.news/coinbase-ceo-admits-base-messed-up-on-content-coins/>
 [^defiant-armstrong]: The Defiant (2026). *Coinbase CEO says Base's content coins 'didn't work'*. <https://thedefiant.io/news/blockchains/coinbase-ceo-says-base-s-content-coins-didn-t-work>
-[^decrypt-unified]: Decrypt (2026). *Coinbase Ethereum network Base to dump Optimism tech as potential token looms*. <https://decrypt.co/358469/coinbase-ethereum-network-base-dump-optimism-tech-potential-token-looms>
+[^decrypt-unified]: Decrypt (2026). *Coinbase-backed Ethereum network Base to dump Optimism tech as potential token looms*. <https://decrypt.co/358469/coinbase-ethereum-network-base-dump-optimism-tech-potential-token-looms>
 [^base-azul]: Base documentation. *Azul: proofs*. <https://docs.base.org/upgrades/azul/proofs>
 [^theblock-azul]: The Block (2026). *Coinbase-incubated Base launches Azul testnet upgrade with multiproofs to advance decentralization*. <https://www.theblock.co/post/398421/coinbase-incubated-base-launches-azul-testnet-upgrade-with-multiproofs-to-advance-decentralization>
 [^base-beryl]: Base documentation. *Beryl overview*. <https://docs.base.org/base-chain/specs/upgrades/beryl/overview.md>
@@ -338,3 +350,11 @@ required.[^theblock-stage1][^theblock-unified]
 [^theblock-outage]: The Block (2025). *Base network says sequencer handoff failure caused 33-minute mainnet outage*. <https://www.theblock.co/post/365732/base-network-sequencer-failure>
 [^base-postmortem]: Base (2026). *Postmortem: June 25th block production outage*. <https://base.org/blog/postmortem-june-25th-block-production-outage>
 [^theblock-june]: The Block (2026). *Coinbase-incubated Base suffers mainnet chain stall interrupting block production*. <https://theblock.co/news/ecosystems/2026-06-25-coinbase-incubated-base-blockchain-suffers-unsafe-head-stall-interrupting-block-production-406213>
+[^base-network]: Base documentation. *Connecting to Base*. <https://docs.base.org/base-chain/quickstart/connecting-to-base>
+[^base-superchain]: Base (2023). *Base's Commitment to Decentralization with the Superchain*. <https://base.org/blog/bases-commitment-to-decentralization-with-the-superchain>
+[^base-faultproofs]: Base (2024). *Fault proofs are now live on Base Mainnet*. <https://base.org/blog/fault-proofs-are-now-live-on-base-mainnet>
+[^base-unified]: Base (2026). *A new, unified stack for Base Chain*. <https://base.org/blog/next-chapter-for-base-chain-1>
+[^theblock-socialfi]: The Block (2026). *Coinbase CEO Brian Armstrong says Base App's SocialFi features 'didn't quite work'*. <https://www.theblock.co/post/392080/coinbase-ceo-brian-armstrong-says-base-apps-socialfi-features-didnt-quite-work>
+[^theblock-cobie]: The Block (2026). *Coinbase's Jesse Pollak hands Base app leadership to Cobie after admitting social bets fell short*. <https://www.theblock.co/post/408504/coinbases-jesse-pollak-hands-base-app-leadership-cobie-social-bets-fell-short>
+[^theblock-wallet]: The Block (2026). *Coinbase rebrands Base App back to Coinbase Wallet after just over a year as social experiment falls short*. <https://www.theblock.co/news/defi/2026-09-10-coinbase-rebrands-base-app-back-to-coinbase-wallet-after-just-over-a-year-as-social-experiment-falls-short-414115>
+[^base-stocks]: Base (2026). *Stocks just got updated*. <https://base.org/blog/tokenized-stocks>
