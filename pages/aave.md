@@ -178,9 +178,9 @@ falls.[^v4-docs]
 
 ### Safety Module and Umbrella
 
-From late 2020, AAVE holders could stake in the Safety Module
-and earn rewards. In return, up to 30% of the staked assets could be
-used to cover a shortfall in the protocol.[^migration] Umbrella,
+By mid-October 2020, AAVE holders could stake in the Safety Module
+and earn AAVE rewards. Once the module was activated, up to 30% of the
+staked assets could be used to cover a shortfall in the protocol.[^migration] Umbrella,
 proposed by BGD Labs in March 2025, lets users stake aTokens and GHO
 instead. If a pool has bad debt in an asset, stakes in that asset are
 burned automatically to cover it, without a governance
@@ -193,7 +193,7 @@ be disabled once Umbrella is large enough.[^umbrella-docs]
 
 Holders of AAVE, staked AAVE (stkAAVE) and supplied AAVE (aAAVE) can
 vote or delegate. Ethereum holds voting power, but voting can take place
-on other networks such as Polygon and Avalanche. In the standard
+on lower-cost networks such as Polygon and Avalanche. In the standard
 process, a proposal is discussed on the forum as an Aave Request for
 Comments (ARFC), passes a binding Snapshot vote, and is then submitted
 on-chain as an Aave Improvement Proposal (AIP). Most AIPs use a short
@@ -259,17 +259,19 @@ technical service provider.[^governance-docs]
   open. LlamaRisk said the position was over-collateralised and did not
   put suppliers at risk.[^binance-response] As supplier withdrawals
   pushed the largest stablecoin pools to 92–100% utilisation, LlamaRisk
-  proposed temporary cuts to their interest-rate slopes,[^binance-caps]
-  and cut borrow caps ahead of a staged unfreeze. As of 30 October 2026
-  the markets remain frozen.[^binance-draw]
+  proposed temporary cuts to their Slope2 interest-rate parameter[^binance-caps]
+  and lower borrow and draw caps ahead of a staged unfreeze.[^binance-draw]
+  As of 30 October 2026 the markets remain frozen.[^binance-response]
 - Aave Labs and the DAO (2025–2026). In December 2025 a delegate found
   that fees from a new CoW Swap integration in Aave Labs' interface went
-  to Aave Labs rather than the DAO. Zeller said Aave Labs had acted "in
-  the pursuit of their own monetization". Aave Labs said the integration
-  was not a fee switch, and that it owned the website while the DAO owned
-  the smart contracts.[^cow-forum][^cow-tl][^cow] Aave Labs then put to
-  a Snapshot vote a proposal, written by Ernesto Boado of BGD Labs, to move the brand's
-  domains, social accounts and code repositories under DAO control.
+  to Aave Labs rather than the DAO. Zeller said Aave Labs, "in the
+  pursuit of their own monetization", had redirected Aave user volume to
+  competitors. Aave Labs said the interface it owned sat entirely outside
+  the protocol the DAO stewards, and that the DAO governed the protocol's
+  smart contracts.[^cow-forum][^cow-tl] Aave Labs then put to a Snapshot
+  vote a proposal, written by Ernesto Boado of BGD Labs, to move the
+  brand's domains, social accounts and code repositories under DAO
+  control.
   Boado said it had been submitted without his knowledge; Aave Labs said
   the rules did not require his permission.[^brand-block] The vote
   failed, with over 55% against and over 41%
@@ -371,7 +373,6 @@ technical service provider.[^governance-docs]
 [^binance-draw]: LlamaRisk (2026). *Risk Stewards: borrow and draw cap reductions on Aave V3 and Aave V4 / 2026.10.30*. Aave governance forum. <https://governance.aave.com/t/risk-stewards-borrow-and-draw-cap-reductions-on-aave-v3-and-aave-v4-2026-10-30/25960>
 [^cow-forum]: EzR3aL et al. (2025). *Aave CowSwap integration – tokenholder questions*. Aave governance forum. <https://governance.aave.com/t/aave-cowswap-integration-tokenholder-questions/23530>
 [^cow-tl]: TokenLogic (2025). *Velora & CowSwap integration analysis*. Aave governance forum. <https://governance.aave.com/t/velora-cowswap-integration-analysis/23620>
-[^cow]: crypto.news (2025). *Aave DAO clashes with Aave Labs over CoW Swap fees and control of protocol IP*. <https://crypto.news/aave-dao-clashes-with-aave-labs-over-cow-swap-fees-and-control-of-protocol-ip/>
 [^brand-block]: The Block (2025). *'A hostile takeover attempt': Aave Labs' unilateral push to vote on brand-rights proposal sparks community outcry*. <https://www.theblock.co/post/383464/aave-labs-vote-sparks-community-outcry>
 [^brand-ct]: Cointelegraph (2025). *Aave founder says $15M token buy wasn't used in controversial DAO vote*. <https://cointelegraph.com/news/aave-founder-tokens-influence-failed-dao-vote>
 [^aww-temp]: The Block (2026). *'Aave will win' proposal clears temp check with 52.6% backing on revenue shift, V4 plan*. <https://www.theblock.co/post/391693/aave-proposal-clears-temp-check-vote>
