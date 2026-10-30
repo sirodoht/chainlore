@@ -37,7 +37,7 @@ install -d -m 755 /var/www/chainlore/releases /var/www/chainlore/backups
 mkdir -m 755 "/var/www/chainlore/releases/$release"
 REMOTE
 
-rsync -az --chmod=D755,F644 dist/ "$host:$remote_root/releases/$release/"
+rsync -az --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r dist/ "$host:$remote_root/releases/$release/"
 scp deploy/chainlore.caddy "$host:$remote_root/releases/$release.caddy"
 
 ssh "$host" bash -s -- "$release" <<'REMOTE'
