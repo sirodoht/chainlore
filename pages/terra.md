@@ -79,8 +79,9 @@ On 23 May 2021 UST fell to nearly US$0.90 before recovering, and
 Terraform said the algorithm had restored the peg.[^sec-complaint] The
 SEC later found that Tai Mo Shan, a subsidiary of Jump Trading, had
 bought more than US$20 million of UST under an agreement in which
-Terraform vested its option to buy LUNA at a discount, negligently
-misleading the market about the mechanism. Tai Mo Shan settled in December 2024 for
+Terraform vested Tai Mo Shan's existing option to buy LUNA at a
+discount, and that this trading negligently misled the market about the
+mechanism. Tai Mo Shan settled in December 2024 for
 about US$123 million without admitting or denying the
 findings.[^tms-order][^tms-block] Kwon later admitted in his US plea that
 he made false statements about why the peg recovered.[^reuters-sentence]
@@ -165,8 +166,9 @@ validators could plan to rebuild the network.[^block-halt]
 ### Terra 2.0 and Terra Classic
 
 On 25 May 2022 holders passed governance proposal 1623, creating a new
-chain. Its mainnet, `phoenix-1`, launched at 06:00 UTC on 28 May 2022
-without an algorithmic stablecoin, and new LUNA was airdropped to
+chain. Its mainnet, `phoenix-1`, launched at 06:00 UTC on 28 May
+2022[^phoenix-genesis][^block-phoenix] (Terra's documentation gives 27
+May, the date in US time) without an algorithmic stablecoin, and new LUNA was airdropped to
 holders of the old chain's tokens based on snapshots taken before and
 after the depeg.[^terra-protocol][^block-phoenix] The original chain
 was renamed Terra Classic, with its tokens trading as LUNC and USTC,
@@ -274,7 +276,7 @@ for US$4 billion, alleging that Jump profited from and accelerated the
 collapse. Jump called the suit a "desperate attempt" to shift blame from
 Terraform and Kwon.[^block-jump][^bl-jump] In February 2026 Snyder sued
 Jane Street and three individuals, alleging insider trading linked to
-Terraform's Curve pool withdrawal on 7 May 2022.[^block-jane-suit] In
+Terraform's Curve pool withdrawal on 7 May 2022.[^block-jane-suit][^bl-jane] In
 April 2026 Jane Street moved to dismiss, calling the case an attempt to
 make it "foot the bill" for Terraform's own fraud.[^block-jane][^bl-jane]
 No ruling on either suit had been reported as of April 2026.
@@ -353,6 +355,7 @@ returned.[^koreatimes-2025]
 [^fortune-lfg]: Fortune (2022). *Luna Foundation Guard has now dumped $2.4 billion from its bitcoin reserves*. <https://fortune.com/2022/05/16/luna-foundation-guard-dumps-bitcoin-reserves-terra-usd-peg/>
 [^tc-halt]: TechCrunch (2022). *Terra resumes blockchain production after halting to prevent hacks amid UST crash*. <https://techcrunch.com/2022/05/12/terra-halts-its-blockchain-to-prevent-hacks-ust/>
 [^block-halt]: The Block (2022). *Terra says it has halted blockchain for second time in 24 hours*. <https://www.theblock.co/linked/146722/terra-says-it-has-halted-blockchain-for-second-time-in-24-hours>
+[^phoenix-genesis]: Terra (2022). *phoenix-1 genesis file*. <https://phoenix-genesis.s3.us-west-1.amazonaws.com/genesis.json>
 [^block-phoenix]: The Block (2022). *Terra gets second life as new blockchain goes live with LUNA 2.0 airdrop*. <https://www.theblock.co/post/149127/terra-gets-second-life-as-new-blockchain-goes-live-with-luna-2-0-airdrop>
 [^defiant-lunc]: The Defiant. *What is LUNC?*. <https://thedefiant.io/what-is-lunc>
 [^cg-lunc]: CoinGecko. *Terra Luna Classic (LUNC)*. <https://www.coingecko.com/en/coins/terra-luna>
