@@ -11,8 +11,8 @@ updated: 2026-10-30
 **FTX** was a cryptocurrency exchange founded in 2019 by Sam
 Bankman-Fried and Gary Wang, which offered spot trading, derivatives and
 margin lending, and issued its own token, FTT. It was closely tied to
-Alameda Research, a trading firm Bankman-Fried had founded in 2017. In
-November 2022 a run on the exchange exposed a shortfall in customer
+Alameda Research, a trading firm Bankman-Fried controlled and had led
+from its founding in 2017. In November 2022 a run on the exchange exposed a shortfall in customer
 funds, and FTX, Alameda and more than 130 affiliated companies filed for
 bankruptcy on 11 November 2022. Bankman-Fried was convicted of fraud and
 conspiracy in November 2023 and sentenced to 25 years in prison, and four
@@ -30,25 +30,25 @@ repaying creditors in February 2025.[^ca2-opinion][^bloomberglaw-ch11][^coindesk
 | Status | Bankrupt; creditor distributions under way |
 | Bankruptcy case | *In re FTX Trading Ltd.*, No. 22-11068 (Bankr. D. Del.), filed 2022-11-11 |
 | Chief executive after filing | John J. Ray III |
-| Bahamian proceeding | FTX Digital Markets Ltd.; provisional liquidators appointed 2022-11-15 |
+| Bahamian proceeding | FTX Digital Markets Ltd.; provisional liquidators approved by 2022-11-14 |
 | Criminal case | *United States v. Bankman-Fried*, No. 22-cr-673 (S.D.N.Y.) |
 
 ## History
 
 ### Alameda Research and founding
 
-Bankman-Fried founded Alameda Research, a crypto trading firm that
-specialised in arbitrage, in 2017 and was its chief executive until he
-stepped down in 2021. He founded FTX in 2019 and was its chief executive
-until November 2022. Gary Wang, his childhood friend and former
+Bankman-Fried was chief executive of Alameda Research, a crypto trading
+firm, from its founding in 2017 until he stepped down in 2021, and of FTX from its founding in
+2019 until November 2022. Gary Wang, his childhood friend and former
 roommate at the Massachusetts Institute of Technology, was co-owner of
 Alameda and co-founder and chief technology officer of
 FTX.[^ca2-opinion] Nishad Singh, who became FTX's head of engineering,
-helped Bankman-Fried and Wang start the platform.[^sec-singh] Caroline
+helped Bankman-Fried and Wang start the platform.[^sec-singh][^ca2-opinion] Caroline
 Ellison later served as chief executive of Alameda.[^sec-ellison-wang]
 
 FTX Trading Ltd. was based in The Bahamas.[^sec-sbf] A separate entity,
-FTX US, served customers in the United States.[^coindesk-binance-deal]
+FTX US, operated as a domestic exchange in the United
+States.[^bloomberglaw-ch11][^coindesk-binance-deal]
 
 ### FTT and Binance
 
@@ -58,8 +58,9 @@ FTT was used as collateral for undisclosed loans from FTX to Alameda,
 and that Ellison, at Bankman-Fried's direction, bought FTT on the open
 market between 2019 and 2022 to prop up its price.[^sec-ellison-wang]
 
-Binance was an early investor in FTX; Bankman-Fried later called it
-"FTX.com's first, and last" investor.[^coindesk-binance-deal] In July 2021
+Binance had invested in FTX; when the two agreed a deal in November 2022,
+Bankman-Fried said FTX.com's "first, and last, investors are the
+same".[^coindesk-binance-deal] In July 2021
 Bankman-Fried bought out the stake held by Binance and its chief
 executive, Changpeng Zhao, paying with FTT, BNB and BUSD worth about
 US$1.76 billion. In November 2024 the FTX estate sued Binance and Zhao to
@@ -71,7 +72,7 @@ insolvent. Binance called the claims meritless.[^coindesk-binance-suit]
 By 2022 FTX customers were trading about US$10–15 billion a day. Alameda
 was the exchange's largest customer and main market maker, and received
 a large line of credit on the platform.[^ca2-opinion] According to the
-SEC, FTX raised more than US$1.8 billion from equity investors from
+SEC, FTX raised more than US$1.8 billion from equity investors since
 2019.[^sec-sbf] At its peak FTX was valued at over US$30 billion.[^fortune-ray]
 
 FTX spent heavily on marketing. In March 2021 Miami-Dade County approved
@@ -107,7 +108,7 @@ offered to buy Binance's FTT.[^coindesk-binance-deal] According
 to a message from Bankman-Fried to staff, FTX saw about US$6 billion of
 net withdrawals in the following days.[^block-binance-out]
 
-On 8 November, as customers struggled to withdraw funds, Binance signed
+On 8 November Binance signed
 a non-binding letter of intent to acquire FTX.com, subject to due
 diligence; FTX US was not included.[^coindesk-binance-deal] The next day
 Binance withdrew, saying that after reviewing FTX's finances "the issues
@@ -122,16 +123,16 @@ who had held senior roles in the Enron bankruptcy.[^bloomberglaw-ch11]
 FTX Digital Markets, the Bahamian subsidiary, was not part of the
 filing.[^techcrunch-ch11]
 
-That night and into 12 November, crypto assets were drained from FTX
+Within about a day of the filing, crypto assets were drained from FTX
 wallets in transfers the company called unauthorised. The analytics
 firm Elliptic estimated the outflow at about US$477
 million.[^elliptic] In January 2023 the debtors put hacked crypto at
 about US$415 million across FTX.com, FTX US and
 Alameda.[^nbc-415] In early 2024 a federal grand jury in Washington
 indicted three people, alleging that they had carried out a SIM swap on
-an FTX employee's phone account on 11 November 2022 and moved more than
-US$400 million from the company's wallets. The indictment does not name
-FTX; a source confirmed it was the victim.[^nbc-powell]
+an employee's phone account on 11 November 2022 and moved more than
+US$400 million from the wallets of a company that a source identified
+as FTX.[^nbc-powell]
 
 Testifying to Congress in December 2022, Ray said there was
 "no record-keeping whatsoever", that the business was run using
@@ -172,15 +173,15 @@ all seven counts.[^ca2-opinion][^block-verdict]
 On 28 March 2024 Judge Lewis A. Kaplan sentenced him to 25 years in
 prison and three years of supervised release, and ordered forfeiture of
 about US$11 billion. Prosecutors had sought 40 to 50 years and the
-defence about six and a half.[^bloomberglaw-sentence][^globe-sentence]
+defence five to six and a half.[^bloomberglaw-sentence][^globe-sentence][^ca2-opinion]
 Kaplan found that customers had lost about US$8 billion, investors
 US$1.7 billion and lenders US$1.3 billion, and said Bankman-Fried had
 lied under oath.[^globe-sentence]
 
 The cooperating witnesses were sentenced in 2024. Ellison received two
-years in prison on 24 September;[^ap-ellison] she was released in
-January 2026 after about 14 months, the last part in a halfway
-house.[^coindesk-ellison-release] Singh was sentenced to time served on
+years in prison on 24 September;[^ap-ellison] in January 2026 she was
+reported to have been released after about 14 months, the last part in
+a halfway house.[^coindesk-ellison-release] Singh was sentenced to time served on
 30 October,[^ap-singh][^coindesk-singh] and Wang to time served with
 three years of supervised release on 20 November.[^nbc-wang][^coindesk-wang]
 
@@ -201,15 +202,16 @@ issue.[^ca2-opinion]
 
 A pro se motion for a new trial, filed by his mother in February 2026,
 argued that witnesses including Salame had been deterred from
-testifying.[^coindesk-new-trial][^decrypt-new-trial] Bankman-Fried tried
-to withdraw it, but Kaplan denied it on 28 April 2026, calling claims of
-government threats "wildly conspiratorial and entirely contradicted by
-the record".[^block-new-trial][^decrypt-new-trial]
+testifying.[^coindesk-new-trial][^decrypt-new-trial] Bankman-Fried
+withdrew it in April, but Kaplan formally denied it on 28 April 2026,
+calling its claims of government retaliation "wildly conspiratorial and entirely contradicted by the
+record".[^block-new-trial][^decrypt-new-trial]
 
 On 10 September 2026 Bankman-Fried petitioned the Supreme Court to review
 the conviction and the forfeiture, which he argues violates the Excessive
-Fines Clause.[^scotus-docket][^unchained-cert] As of October 2026 the
-government's response was due on 16 November 2026.[^scotus-docket]
+Fines Clause.[^scotus-docket][^block-cert] As of October 2026 the
+government's response was due, after an extension, on 16 November
+2026.[^scotus-docket]
 
 ### Clemency
 
@@ -238,18 +240,18 @@ withdraw customer assets.[^cftc-2022] In August 2024 a court ordered FTX
 and Alameda to pay US$12.7 billion, comprising US$8.7 billion of
 restitution and US$4 billion of disgorgement; the CFTC agreed to
 subordinate its claims to those of victims.[^cftc-2024] In August 2026
-trading and registration bans were entered against Ellison and Wang,
-with no monetary penalty sought in view of their cooperation and the
-criminal forfeiture.[^cftc-2026]
+trading and registration bans were entered against Ellison and Wang;
+the CFTC sought no monetary relief, citing their cooperation, guilty
+pleas and the criminal forfeiture.[^cftc-2026]
 
 ## Bankruptcy
 
 ### Bahamas
 
-The Securities Commission of The Bahamas used its powers over FTX
-Digital Markets, and on 15 November 2022 the Supreme Court of The
-Bahamas approved provisional liquidators, Brian Simms and two partners
-of PwC.[^block-bahamas] On 17 November the Commission said it had
+On 14 November 2022 the Securities Commission of The Bahamas announced
+that the Supreme Court of The Bahamas had approved provisional
+liquidators for FTX Digital Markets: Brian Simms and two from
+PwC.[^block-bahamas] On 17 November the Commission said it had
 directed the transfer of FTX Digital Markets' digital assets to a wallet
 it controlled.[^elliptic] In March 2023 the US debtors sued in Delaware
 for a declaration that FTX Digital Markets owned none of their
@@ -272,14 +274,18 @@ US$50,000.[^coindesk-first-dist] A second round of more than US$5
 billion began on 30 May 2025,[^coindesk-second-dist] and a third, of about
 US$1.6 billion, on 30 September 2025, bringing cumulative recoveries to
 95% for US customers and 78% for international customers.[^coindesk-third-dist]
-A further distribution was set for 31 March 2026. The trust is also
-pursuing clawback suits, including one seeking about US$1 billion from
-Genesis Digital Assets.[^coindesk-jan-2026]
+A fourth, of about US$2.2 billion, was paid from 31 March 2026, taking
+cumulative recoveries to 100% for US customers and 96% for
+international customers.[^coindesk-march-2026][^block-fifth-dist] By July 2026
+the estate had distributed nearly US$10 billion, and a fifth round, of
+roughly US$900 million, was set to begin on 31 July.[^block-fifth-dist]
+The trust is also pursuing clawback suits, including one seeking about
+US$1 billion from Genesis Digital Assets.[^coindesk-jan-2026]
 
 ### Valuation disputes
 
 Claims were valued in US dollars at the November 2022 petition
-date.[^coindesk-second-dist] Some creditors objected that they should
+date.[^coindesk-plan] Some creditors objected that they should
 instead receive crypto in kind, and that FTT should not be valued at
 zero. Dorsey overruled the objections, accepting testimony that the
 estate did not hold the assets needed to return crypto in kind or buy it
@@ -287,9 +293,6 @@ at current prices.[^coindesk-plan] Many creditors had expected to be
 repaid in crypto, and by March 2025 the price of bitcoin had more than
 quadrupled since the bankruptcy, so dollar repayments were worth less
 than the same holdings at market prices.[^coindesk-march-2025]
-Bankman-Fried has cited the recoveries to argue that customers suffered
-no loss; the Second Circuit held that this did not defeat the fraud
-charges.[^ca2-opinion]
 
 ## Timeline
 
@@ -303,28 +306,31 @@ charges.[^ca2-opinion]
 | 2022-11-06 | Binance announces sale of its FTT |
 | 2022-11-08 | Binance signs non-binding letter of intent |
 | 2022-11-09 | Binance withdraws |
-| 2022-11-11 | Chapter 11 filing; Ray replaces Bankman-Fried; unauthorised transfers begin |
-| 2022-11-15 | Bahamian court approves provisional liquidators of FTX Digital Markets |
+| 2022-11-11 | Chapter 11 filing; Ray replaces Bankman-Fried |
+| 2022-11-12 | Unauthorised transfers drain FTX wallets |
+| 2022-11-14 | Provisional liquidators of FTX Digital Markets announced |
 | 2022-12-13 | Criminal, SEC and CFTC charges against Bankman-Fried |
 | 2022-12-21 | Ellison and Wang pleas announced; Bankman-Fried extradited |
 | 2023-02-28 | Singh pleads guilty |
 | 2023-11-02 | Bankman-Fried convicted on all seven counts |
 | 2024-03-28 | Bankman-Fried sentenced to 25 years |
 | 2024-05-28 | Salame sentenced |
-| 2024-08-08 | CFTC announces US$12.7 billion order against FTX and Alameda |
+| 2024-08-08 | US$12.7 billion CFTC consent order against FTX and Alameda |
 | 2024-09-24 | Ellison sentenced to two years |
 | 2024-10-07 | Bankruptcy plan confirmed |
 | 2024-10-30 | Singh sentenced to time served |
-| 2024-11-11 | Estate sues Binance and Zhao |
+| 2024-11-10 | Estate sues Binance and Zhao |
 | 2024-11-20 | Wang sentenced to time served |
 | 2025-02-18 | First creditor distribution |
 | 2025-05-30 | Second distribution |
 | 2025-09-30 | Third distribution |
 | 2025-11-04 | Appeal argued in the Second Circuit |
-| 2026-01 | Ellison released |
+| 2026-01 | Ellison's release reported |
+| 2026-03-31 | Fourth distribution |
 | 2026-04-28 | Motion for a new trial denied |
 | 2026-06-12 | Second Circuit affirms conviction and sentence |
 | 2026-07-15 | Senate passes S. Res. 772 opposing clemency |
+| 2026-07-31 | Fifth distribution set to begin |
 | 2026-09-10 | Petition for certiorari filed |
 
 ## See also
@@ -371,7 +377,7 @@ charges.[^ca2-opinion]
 [^block-new-trial]: The Block (2026). *Judge rejects Sam Bankman-Fried's new trial request, slams claims as 'wildly conspiratorial'*. <https://www.theblock.co/post/399283/judge-rejects-sam-bankman-fried-new-trial-request-slams-claims-wildly-conspiratorial>
 [^decrypt-new-trial]: Decrypt (2026). *Judge shoots down Sam Bankman-Fried's bid for new trial*. <https://decrypt.co/365915/judge-shoots-down-sam-bankman-frieds-bid-for-new-trial>
 [^scotus-docket]: Supreme Court of the United States. *Docket No. 26-349, Bankman-Fried v. United States*. <https://www.supremecourt.gov/docket/docketfiles/html/public/26-349.html>
-[^unchained-cert]: Unchained (2026). *Sam Bankman-Fried asks the Supreme Court to overturn his fraud conviction and $11 billion forfeiture*. <https://unchainedcrypto.com/sam-bankman-fried-asks-the-supreme-court-to-overturn-his-fraud-conviction-and-11-billion-forfeiture/>
+[^block-cert]: The Block (2026). *Sam Bankman-Fried asks Supreme Court to overturn fraud conviction and $11 billion forfeiture*. <https://www.theblock.co/news/regulation/2026-09-11-sam-bankman-fried-supreme-court-petition-414226>
 [^coindesk-trump]: CoinDesk (2026). *Trump says he won't rescue Sam Bankman-Fried with pardon*. <https://www.coindesk.com/policy/2026/01/08/trump-says-he-won-t-rescue-sam-bankman-fried-with-pardon>
 [^techcrunch-pardon]: TechCrunch (2026). *Sam Bankman-Fried applies for a pardon from Trump*. <https://techcrunch.com/2026/06/08/sam-bankman-fried-applies-for-a-pardon-from-trump>
 [^decrypt-senate]: Decrypt (2026). *US Senate unanimously opposes Sam Bankman-Fried pardon*. <https://decrypt.co/373629/us-senate-unanimously-opposes-sam-bankman-fried-pardon>
@@ -385,3 +391,5 @@ charges.[^ca2-opinion]
 [^coindesk-second-dist]: CoinDesk (2025). *FTX to pay over $5B to creditors as bankrupt estate gears up for distribution*. <https://www.coindesk.com/markets/2025/05/16/ftx-to-pay-over-usd5b-to-creditors-as-bankrupt-exchange-gears-up-for-distribution>
 [^coindesk-third-dist]: CoinDesk (2025). *Bankrupt exchange FTX set to repay $1.6B to creditors starting on Sept. 30*. <https://www.coindesk.com/business/2025/09/19/bankrupt-exchange-ftx-set-to-repay-usd1-6b-to-creditors-starting-on-sep-30>
 [^coindesk-jan-2026]: CoinDesk (2026). *FTX estate sets next creditor payout date as Genesis Digital Assets fights $1 billion clawback suit*. <https://www.coindesk.com/business/2026/01/14/ftx-estate-sets-next-creditor-payout-date-as-genesis-digital-assets-fights-usd1-billion-clawback-suit>
+[^coindesk-march-2026]: CoinDesk (2026). *Sam Bankman-Fried's bankrupt exchange FTX set to repay creditors $2.2 billion this month*. <https://www.coindesk.com/business/2026/03/18/sam-bankman-fried-s-bankrupt-exchange-ftx-set-to-repay-creditors-usd2-2-billion-this-month>
+[^block-fifth-dist]: The Block (2026). *FTX to distribute roughly $900 million to creditors in fifth wave of payouts*. <https://www.theblock.co/post/408803/ftx-to-distribute-roughly-900-million-to-creditors-in-fifth-wave-of-payouts>
