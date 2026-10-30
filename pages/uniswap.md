@@ -26,7 +26,7 @@ Uniswap Labs, and is governed by holders of the UNI token.[^history][^whitepaper
 | Governance token | UNI |
 | Initial UNI supply | 1,000,000,000 |
 | Governance | Uniswap Governance, organised since 2025 as DUNI, a Wyoming DUNA |
-| Licence | v3 and v4 core: Business Source License 1.1, converting to GPL-2.0-or-later |
+| Licence | v4 core: Business Source License 1.1; v3 core: GPL-2.0-or-later since 2023 |
 | Own network | Unichain (mainnet 2025-02-11) |
 | Other products | UniswapX, Uniswap web app and wallet |
 | Live data | [DefiLlama](https://defillama.com/protocol/uniswap), [Uniswap explorer](https://app.uniswap.org/explore) |
@@ -48,9 +48,9 @@ favourite and credited it to Martin Köppelmann.[^path-independence]
 In April 2018 Floersch introduced him to Buterin, who suggested
 writing the contracts in Vyper and applying for an Ethereum Foundation
 grant.[^history] The foundation's Wave III grants, announced in August
-2018, gave Uniswap US$100,000 for a "DEX framework".[^ef-grants] The
-grant paid for formal verification of the contracts by Runtime
-Verification.[^history] Adams later became chief executive of Uniswap
+2018, gave Uniswap US$100,000 for a "DEX framework".[^ef-grants] With
+the grant, Adams contracted Runtime Verification to formally verify and
+audit the contracts.[^history] Adams later became chief executive of Uniswap
 Labs.[^wells-coindesk]
 
 ### v1 and v2
@@ -99,21 +99,20 @@ concentrated liquidity: providers choose a price range for their funds,
 and each position is represented by a non-fungible token. Uniswap Labs
 claimed this could make capital up to 4,000 times more efficient than in
 v2. v3 also introduced three fee tiers (0.05%, 0.30% and 1%) and
-cheaper oracles.[^v3-announce] A 0.01% tier was added
-later.[^unification]
+cheaper oracles.[^v3-announce] A 0.01% tier was added by a governance
+vote in late 2021.[^prop-9][^unification]
 
 The v3 core contracts were released under the Business Source License
 1.1, which limits commercial and production use of the code for a
 period. Uniswap Labs described it as "effectively a time-delayed
 GPL-2.0-or-later license".[^v3-announce] The licence set a change date
-of 1 April 2023, after which the code converts to GPL.[^v3-licence]
+of 1 April 2023 at the latest, after which the code converts to GPL.[^v3-licence]
 
 ### Uniswap Labs and the Uniswap Foundation
 
 In October 2022 Uniswap Labs raised US$165 million in a Series B round
 led by Polychain Capital.[^series-b] The Uniswap Foundation was set up
-in 2022 to support the protocol's growth and governance, building on a
-grants programme begun in 2021. Its co-founders are Devin Walsh and Ken
+in 2022, building on a grants programme begun in 2021. Its co-founders are Devin Walsh and Ken
 Ng.[^uf-about]
 
 In July 2023 Uniswap Labs introduced UniswapX (see
@@ -221,11 +220,11 @@ Hooks are external contracts that a pool can call at points such as
 before or after a swap or a change in liquidity. They let developers add
 features such as dynamic fees, custom pricing curves or automatic
 rebalancing of positions. Each pool
-chooses one hook when it is created.[^v4-vision][^v4-launch-uf] According
+can use its own hook, set when the pool is created.[^v4-vision][^v4-launch-uf] According
 to The Block, v4 went through nine audits and a security competition,
-and had a US$15.5 million bug bounty.[^v4-launch-theblock] Like v3, v4
-is under the Business Source License, with exceptions grantable by
-governance.[^v4-vision][^v4-launch-uf]
+and had a US$15.5 million bug bounty.[^v4-launch-theblock] Like v3 before
+it, v4 was released under the Business Source License, with exceptions
+grantable by governance.[^v4-vision][^v4-launch-uf]
 
 ### UniswapX
 
@@ -241,8 +240,8 @@ GPL.[^uniswapx]
 
 UNI holders govern the protocol. They can spend the treasury, set and
 switch on protocol fees, and mint new UNI up to 2% a year. To vote,
-holders delegate their voting power, to themselves or to
-another address.[^governance] Binding votes take place on-chain through
+holders must delegate their voting power to an
+address.[^governance] Binding votes take place on-chain through
 a GovernorBravo contract, which limits each proposal to 10 actions, so
 large changes are split across several votes.[^prop-94][^prop-100] A
 proposal needs 40 million UNI in favour to reach
@@ -272,12 +271,12 @@ raised a new issue".[^vote-delay]
   liquidity.[^sushi-theblock] CoinDesk reported that day that Uniswap had
   nonetheless ended up with more liquidity than when SushiSwap was
   announced.[^sushi-coindesk]
-- **Interface fees (2023–2025).** The interface fee was set by Uniswap
+- **Interface fees (from 2023).** The interface fee was set by Uniswap
   Labs, not by governance. Adams said it was separate from the protocol
   fee switch and that users could avoid it by using other interfaces,
-  aggregators or the contracts directly.[^interface-fee] Under
-  UNIfication, Labs agreed to drop interface, wallet and API
-  fees.[^unification][^unification-passed]
+  aggregators or the contracts directly.[^interface-fee] The
+  UNIfication proposal said Labs' interface, wallet and API fees "will
+  be set to zero".[^unification][^unification-passed]
 - **SEC investigation (2024–2025).** On 10 April 2024 Uniswap Labs
   disclosed a Wells notice from the US Securities and Exchange
   Commission, warning that its staff planned to recommend enforcement
@@ -291,7 +290,7 @@ raised a new issue".[^vote-delay]
 - **CFTC settlement (2024).** On 4 September 2024 the Commodity Futures
   Trading Commission settled charges that Uniswap Labs had illegally
   offered leveraged retail commodity transactions through leveraged
-  tokens on the protocol. Uniswap Labs agreed to pay a US$175,000 civil
+  tokens traded on the protocol and its web interface. Uniswap Labs agreed to pay a US$175,000 civil
   penalty and to cease and desist. The CFTC said it reduced the penalty
   because the company cooperated.[^cftc]
 - **UNIfication criticism (2025).** CoinDesk Research argued that the
@@ -319,7 +318,7 @@ raised a new issue".[^vote-delay]
 | 2025-02-25 | Uniswap Labs announces SEC closed its investigation |
 | 2025-11-10 | UNIfication proposed |
 | 2025-12-29 | UNIfication executed; 100M UNI burned |
-| 2026-03 | Protocol fees extended to all v3 pools and more networks |
+| 2026-03-07 | Protocol fees extended to all Ethereum v3 pools and more networks |
 | 2026-07-01 | Uniswap deployed on Robinhood Chain |
 | 2026-07-27 | v4 protocol fees activated on seven networks |
 | 2026-10-22 | Aggregator hooks live on Ethereum, Base and Robinhood Chain |
@@ -336,29 +335,30 @@ raised a new issue".[^vote-delay]
 
 [^history]: Adams, H. (2019). *A short history of Uniswap*. Uniswap Labs. <https://blog.uniswap.org/uniswap-history>
 [^path-independence]: Buterin, V. (2017). *On path independence*. <https://vitalik.eth.limo/general/2017/06/22/marketmakers.html>
-[^ef-grants]: Ethereum Foundation (2018). Ethereum Foundation grants update, Wave III. <https://blog.ethereum.org/2018/08/17/ethereum-foundation-grants-update-wave-3>
+[^ef-grants]: Ethereum Foundation (2018). *Ethereum Foundation grants update – Wave III*. <https://blog.ethereum.org/2018/08/17/ethereum-foundation-grants-update-wave-3>
 [^whitepaper-v1]: Uniswap. *Uniswap whitepaper* (v1, HackMD). <https://hackmd.io/@HaydenAdams/HJ9jLsfTz>
-[^v2-announce]: Uniswap Labs (2020). Uniswap v2 overview. <https://blog.uniswap.org/uniswap-v2>
-[^v2-launch]: Uniswap Labs (2020). Uniswap v2 mainnet launch. <https://blog.uniswap.org/launch-uniswap-v2>
-[^sushi-theblock]: The Block (2020). *SushiSwap begins migration of over $800M in liquidity funds from Uniswap*. <https://www.theblock.co/post/77324/sushiswap-initiates-migration-of-over-800m-in-liquidity-funds-from-uniswap>
+[^v2-announce]: Uniswap Labs (2020). *Uniswap v2 overview*. <https://blog.uniswap.org/uniswap-v2>
+[^v2-launch]: Uniswap Labs (2020). *Uniswap v2 mainnet launch*. <https://blog.uniswap.org/launch-uniswap-v2>
+[^sushi-theblock]: The Block (2020). *SushiSwap initiates migration of over $800M in liquidity funds from Uniswap*. <https://www.theblock.co/post/77324/sushiswap-initiates-migration-of-over-800m-in-liquidity-funds-from-uniswap>
 [^sushi-coindesk]: CoinDesk (2020). *SushiSwap migration ushers in era of 'protocol politicians'*. <https://www.coindesk.com/tech/2020/09/09/sushiswap-migration-ushers-in-era-of-protocol-politicians>
 [^vampire]: CoinDesk (2021). *'Continuous vampire attack': The AMM wars are getting interesting with Integral*. <https://www.coindesk.com/tech/2021/03/29/continuous-vampire-attack-the-amm-wars-are-getting-interesting-with-integral>
-[^uni]: Uniswap Labs (2020). Introducing UNI. <https://blog.uniswap.org/uni>
-[^v3-announce]: Uniswap Labs (2021). Uniswap v3 announcement. <https://blog.uniswap.org/uniswap-v3>
-[^v3-launch]: Uniswap Labs (2021). Uniswap v3 mainnet launch. <https://blog.uniswap.org/launch-uniswap-v3>
+[^uni]: Uniswap Labs (2020). *Introducing UNI*. <https://blog.uniswap.org/uni>
+[^v3-announce]: Uniswap Labs (2021). *Introducing Uniswap v3*. <https://blog.uniswap.org/uniswap-v3>
+[^v3-launch]: Uniswap Labs (2021). *Uniswap v3 mainnet launch*. <https://blog.uniswap.org/launch-uniswap-v3>
+[^prop-9]: Uniswap Governance. *Add 1 Basis Point Fee Tier* (proposal 9). <https://vote.uniswapfoundation.org/proposals/9>
 [^v3-licence]: Uniswap Labs. *v3-core LICENSE* (Business Source License 1.1). GitHub. <https://raw.githubusercontent.com/Uniswap/v3-core/main/LICENSE>
-[^series-b]: Uniswap Labs (2022). Series B announcement. <https://blog.uniswap.org/bringing-web3-to-everyone>
-[^uf-about]: Uniswap Foundation. About. <https://www.uniswapfoundation.org/about>
-[^uniswapx]: Uniswap Labs (2023). UniswapX announcement. <https://blog.uniswap.org/uniswapx-protocol>
+[^series-b]: Uniswap Labs (2022). *Bringing Web3 to everyone*. <https://blog.uniswap.org/bringing-web3-to-everyone>
+[^uf-about]: Uniswap Foundation. *About*. <https://www.uniswapfoundation.org/about>
+[^uniswapx]: Uniswap Labs (2023). *Introducing the UniswapX protocol*. <https://blog.uniswap.org/uniswapx-protocol>
 [^interface-fee]: The Block (2023). *Uniswap to charge 0.15% to swap certain tokens on web interface and wallet*. <https://www.theblock.co/post/257798/uniswap-to-charge-0-15-to-swap-certain-tokens-on-web-interface-and-wallet>
 [^interface-fee-hike]: The Block (2024). *Uniswap Labs hikes swap fee to .25% from .15% on trades through interface*. <https://www.theblock.co/post/288170/uniswap-labs-hikes-swap-fee-to-25-from-15-on-trades-through-interface>
-[^v4-vision]: Uniswap Labs (2023). Uniswap v4 design announcement. <https://blog.uniswap.org/uniswap-v4>
-[^v4-launch-uf]: Uniswap Foundation (2025). Uniswap v4: supercharging DeFi across chains. <https://uniswapfoundation.org/blog/uniswap-v4-supercharging-defi-across-chains>
+[^v4-vision]: Uniswap Labs (2023). *Our vision for Uniswap v4*. <https://blog.uniswap.org/uniswap-v4>
+[^v4-launch-uf]: Uniswap Foundation (2025). *Uniswap v4: supercharging DeFi across chains*. <https://uniswapfoundation.org/blog/uniswap-v4-supercharging-defi-across-chains>
 [^v4-launch-theblock]: The Block (2025). *Uniswap V4 goes live, with swaps rolling out across the next few days*. <https://www.theblock.co/post/338223>
 [^unichain]: Uniswap Labs (2025). *Unichain mainnet is here*. <https://blog.uniswap.org/unichain-mainnet-is-here>
 [^duni-vote]: Uniswap Governance. *Establish Uniswap Governance as "DUNI," a Wyoming DUNA* (proposal 90). <https://vote.uniswapfoundation.org/proposals/90>
 [^duni-theblock]: The Block (2025). *Uniswap community votes on Wyoming legal entity to support offchain operations*. <https://www.theblock.co/post/369433/uniswap-votes-legal-entity>
-[^unification]: Adams, H., Ng, K., and Walsh, D. (2025). UNIfication. Uniswap Labs. <https://blog.uniswap.org/unification>
+[^unification]: Adams, H., Ng, K., and Walsh, D. (2025). *UNIfication*. Uniswap Labs. <https://blog.uniswap.org/unification>
 [^unification-theblock]: The Block (2025). *UNI token soars 30% as Uniswap Labs and Foundation propose fee switch activation*. <https://www.theblock.co/news/defi/2025-11-10-uni-token-soars-26-uniswap-labs-foundation-propose-fee-switch-activation-378257>
 [^unification-passed]: The Block (2025). *Uniswap governance passes major 'UNIfication' proposal; 100 million token burn imminent*. <https://www.theblock.co/post/383742/uniswap-passes-unification-proposal>
 [^unification-coindesk]: CoinDesk (2025). *Uniswap's UNI token burn, protocol fee 'UNIfication' proposal backed overwhelmingly by voters*. <https://www.coindesk.com/business/2025/12/26/uniswap-s-token-burn-protocol-fee-proposal-backed-overwhelmingly-by-voters>
@@ -378,6 +378,6 @@ raised a new issue".[^vote-delay]
 [^wells-coindesk]: CoinDesk (2024). *DeFi exchange Uniswap receives enforcement notice from the SEC*. <https://www.coindesk.com/policy/2024/04/10/defi-exchange-uniswap-receives-enforcement-notice-from-the-sec>
 [^sec-closed]: Uniswap Labs (2025). *A win for DeFi: SEC closes investigation into Uniswap Labs*. <https://blog.uniswap.org/a-win-for-defi>
 [^sec-closed-theblock]: The Block (2025). *SEC drops Uniswap Labs investigation as agency continues crypto-friendly push*. <https://www.theblock.co/post/343353/sec-drops-uniswap-labs-investigation-as-agency-continues-crypto-friendly-push-wsj>
-[^cftc]: Commodity Futures Trading Commission (2024). Press release 8961-24: order against Uniswap Labs. <https://www.cftc.gov/PressRoom/PressReleases/8961-24>
+[^cftc]: Commodity Futures Trading Commission (2024). *CFTC issues order against Uniswap Labs for offering illegal digital asset derivatives trading* (release 8961-24). <https://www.cftc.gov/PressRoom/PressReleases/8961-24>
 [^coindesk-research]: Diwan, S. (2025). *Uniswap's UNIfication proposal: buybacks and competitive risk*. CoinDesk Research. <https://www.coindesk.com/research/uniswap-s-unification-proposal-buybacks-and-competitive-risk>
 [^coindesk-proposal]: CoinDesk (2025). *What Uniswap's latest proposal really means for UNI token buyers*. <https://www.coindesk.com/markets/2025/11/12/what-uniswap-s-latest-proposal-really-means-for-uni-token-buyers>
