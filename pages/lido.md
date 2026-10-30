@@ -28,7 +28,7 @@ down.[^intro][^block-2020]
 | LDO supply | 1,000,000,000 (fixed at launch) |
 | Governance | Lido DAO (Aragon), with dual governance since 2025 |
 | stETH contract | `0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84` |
-| LDO contract | `0x5a98fcbea516cf06857215779fd812ca3bef1b32` |
+| LDO contract | `0x5a98fcbea516cf06857215779fd812ca3bef1b32`[^contracts] |
 | Former networks | Terra, Kusama, Polkadot, Solana, Polygon |
 | Live data | [Lido](https://lido.fi/ethereum), [DefiLlama](https://defillama.com/protocol/lido) |
 
@@ -37,14 +37,13 @@ down.[^intro][^block-2020]
 ### Founding and launch
 
 Lido was founded by Konstantin Lomashuk and Vasiliy Shapovalov, who had
-earlier created the staking provider P2P Validator (p2p.org).[^forklog-paradigm][^coindesk-lomashuk][^block-layoff]
+earlier created the staking provider P2P Validator (p2p.org).[^forklog-paradigm][^coindesk-lomashuk]
 Lomashuk also runs the venture firm cyber.Fund with another Lido
 co-founder.[^coindesk-lomashuk]
 
-Lido was built for Ethereum's move to proof of stake, at a time when
-ETH staked on the Beacon Chain could not be withdrawn. Its design gave
-stakers a transferable token representing their locked ETH
-instead.[^block-2020][^forklog-what]
+Lido was built for the period when ETH staked on the Beacon Chain could
+not be withdrawn, giving stakers a transferable token representing their
+locked ETH.[^block-2020][^forklog-what]
 A testnet ran on Goerli from late November 2020, and in December 2020
 Lido raised US$2 million from Semantic Ventures, ParaFi Capital, Terra,
 KR1, Stakefish, Staking Facilities and others, with angel investments
@@ -53,20 +52,21 @@ staking service opened on 19 December 2020, and the stETH contract was
 deployed that month.[^forklog-what][^etherscan]
 
 The LDO governance token went live on 5 January 2021 (see
-[Token](#token)).[^ldo] In early 2021 contributors proposed selling 100
-million LDO, 10% of supply, to the investment firm Paradigm and partners
-for 21,600 ETH.[^forklog-paradigm] In March 2022 Andreessen Horowitz
-announced a US$70 million investment, paid partly by buying LDO from
-existing holders.[^techcrunch]
+[Token](#token)).[^ldo] In April 2021 LDO holders approved selling 100
+million LDO from the treasury, 10% of supply, to the investment firm
+Paradigm and partners for 21,600 ETH; Paradigm paid 15,120 ETH for its
+70 million in May.[^paradigm-proposal][^forklog-paradigm][^forklog-paradigm-paid]
+In March 2022 Andreessen Horowitz announced a US$70 million investment,
+paid partly by buying LDO from existing holders.[^techcrunch]
 
 ### Other networks
 
-Lido expanded beyond Ethereum. By March 2022 it offered liquid staking on
+By March 2022 Lido offered liquid staking on
 Solana, Kusama and [Terra](terra.md), and planned to launch on Polygon
 that month; by June 2022 it also supported Polkadot.[^techcrunch][^forklog-what]
 Lido on Terra ended in May 2022 after Terra's collapse.[^forklog-what]
 
-The other deployments were sunset over the next three years:
+The other deployments were later sunset:
 
 - **Polkadot and Kusama.** In March 2023 MixBytes, which developed both
   deployments, said it would stop supporting them, citing low adoption
@@ -79,8 +79,9 @@ The other deployments were sunset over the next three years:
   2024.[^solana]
 - **Polygon.** Shard Labs proposed in November 2024 to sunset Lido on
   Polygon, citing low adoption and weak economics. A Snapshot vote ending
-  on 28 November 2024 approved the sunset, with 58 million LDO in favour,
-  and a termination date of 16 June 2025 was set.[^polygon]
+  on 28 November 2024 approved the sunset, with 58 million LDO in favour.
+  New staking stopped on 16 December 2024, and front-end support ended
+  on 16 June 2025.[^polygon][^polygon-sunset]
 
 ### Withdrawals and Lido v2
 
@@ -91,7 +92,7 @@ withdrawals, letting holders redeem stETH for ETH at a 1:1 ratio through
 a request-and-claim queue. It also added a Staking Router that lets the
 protocol use several "modules", each with its own operator set and
 rules.[^v2-intro] LDO holders approved the upgrade in an Aragon vote
-that concluded on 15 May 2023, and withdrawals went live that day.[^block-v2]
+that concluded on 15 May 2023, and withdrawal requests opened that day.[^block-v2]
 
 ### New operator modules
 
@@ -111,13 +112,17 @@ operator set beyond the curated list:
 
 In July 2026 an on-chain vote approved a "Lido Core" upgrade that
 introduced Curated Module v2, Staking Router v3 and CSM v3.[^h1-2026]
+After a Snapshot vote, Simple DVT's 72 regular clusters were wound down
+and their operators offered a route into CSM.[^core-upgrade] In October 2026
+a second CSM instance for high-balance (0x02) validators went
+live.[^csm-0x02]
 
 ### Lido Alliance and Lido v3
 
-In May 2024 LDO holders approved the Lido Alliance, a framework proposed
-by Steakhouse Financial under which the DAO endorses and supports
-protocols that build on stETH and share its stated goals. The Snapshot
-vote closed on 23 May 2024.[^alliance] By April 2025 the alliance had
+In a Snapshot vote closing on 23 May 2024, LDO holders approved the Lido
+Alliance, a framework proposed by Steakhouse Financial under which the
+DAO endorses and supports Ethereum-aligned protocols that share its
+focus on security.[^alliance] By April 2025 the alliance had
 onboarded three members: Mellow, Drop and Bolt.[^alliance-q1]
 
 Lido v3 was announced in February 2025 and launched on mainnet on 30
@@ -147,10 +152,9 @@ From November 2025 the DAO debated using treasury funds to buy back
 LDO, and a second proposal followed in March 2026 after the token reached
 an all-time low.[^dlnews-buyback] The DAO approved a one-off LDO
 Accumulation Program on 13 April 2026 and adopted an automated
-mechanism, NEST, which buys LDO only when annualised staking revenue
-exceeds US$40 million.[^nest] Lido's own report for the first half of
-2026 said buybacks under NEST were not expected soon at the prevailing
-ETH price.[^h1-2026]
+mechanism, NEST, which converts part of any staking revenue above an
+annualised baseline of US$40 million into LDO.[^nest] Lido's H1 2026 report said NEST
+buybacks were not expected soon at current ETH prices.[^h1-2026]
 
 ### Regulation
 
@@ -163,7 +167,7 @@ assumes, and does not cover providers that decide how much to stake,
 guarantee rewards, or offer extra yield.[^sec]
 
 On 16 October 2025 VanEck filed to register a VanEck Lido Staked Ethereum
-ETF that would have held stETH. It withdrew the filing on 14 October
+ETF that would have held stETH.[^vaneck-s1] It withdrew the filing on 14 October
 2026, saying it did not intend to proceed; no shares were ever
 sold.[^vaneck] A WisdomTree exchange-traded product in Europe that stakes
 through Lido launched in December 2025.[^block-revenue][^h1-2026]
@@ -268,7 +272,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
   governance capture; opponents argued that capped stake would flow to
   centralised exchanges, which Lido had been founded to
   counter.[^self-limit-forum] A Snapshot vote ending on 1 July 2022
-  rejected self-limiting by about 80.5 million LDO to 156,000.[^self-limit-snapshot]
+  rejected self-limiting by about 80.5 million LDO to 156,000.[^self-limit-snapshot][^block-self-limit]
   Lido's development in the following years focused on dual governance
   and community staking, which Shapovalov said in 2025 improved Lido's
   image but did little for growth.[^dlnews-share] Its share was about
@@ -287,7 +291,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
 | 2020-12-15 | US$2M funding round reported |
 | 2020-12-19 | Staking service opens on Ethereum |
 | 2021-01-05 | LDO token goes live |
-| 2021 | Proposed sale of 100M LDO to Paradigm and partners |
+| 2021-04 | Sale of 100M LDO to Paradigm and partners approved |
 | 2022-03-03 | Andreessen Horowitz investment announced |
 | 2022-05 | Terra deployment ends after Terra's collapse |
 | 2022-05-21 | Forum discussion on limiting Lido's share opens |
@@ -303,9 +307,9 @@ favour, just above the 50 million quorum, and concluded on 30 June
 | 2024-10-25 | Community Staking Module live |
 | 2024-11-28 | Vote to sunset Lido on Polygon |
 | 2025-01 | CSM becomes fully permissionless |
-| 2025-06-16 | Scheduled end of Lido on Polygon |
+| 2025-06-16 | Front-end support for Lido on Polygon ends |
 | 2025-06-30 | Dual governance vote concludes |
-| 2025-08-01 | Lido announces 15% staff reduction |
+| 2025-08 | Lido announces 15% staff reduction |
 | 2025-08-05 | SEC staff statement on liquid staking |
 | 2025-10-16 | VanEck files for Lido staked ETH ETF |
 | 2025-12 | GOOSE-3 strategy vote |
@@ -314,6 +318,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
 | 2026-04 | Kelp DAO exploit; Lido joins DeFi United |
 | 2026-07 | Lido Core upgrade: Curated Module v2, CSM v3 |
 | 2026-10-14 | VanEck withdraws ETF filing |
+| 2026-10 | 0x02 CSM module live |
 
 ## See also
 
@@ -330,18 +335,24 @@ favour, just above the 50 million quorum, and concluded on 30 June
 [^coindesk-lomashuk]: CoinDesk (2025). *Lido co-founder teases "Second Foundation" for Ethereum amid community backlash*. <https://www.coindesk.com/tech/2025/01/22/lido-co-founder-teases-second-foundation-for-ethereum-amid-community-backlash>
 [^block-layoff]: The Block (2025). *Lido lays off 15% of workforce for "long-term sustainability," cofounder says*. <https://www.theblock.co/post/365369/lido-lay-off>
 [^dlnews-share]: DL News (2025). *Lido eyes "low-risk staking" to boost flagging market share*. <https://www.dlnews.com/articles/regulation/lido-eyes-low-risk-staking-to-boost-flagging-market-share/>
+[^paradigm-proposal]: Lido research forum (2021). *Proposal: LDO treasury diversification*. <https://research.lido.fi/t/proposal-ldo-treasury-diversification/458>
+[^forklog-paradigm-paid]: ForkLog (2021). *Paradigm transfers 15,120 ETH to Lido DAO under token buyback agreement*. <https://forklog.com/en/news/paradigm-transfers-15120-eth-to-lido-dao-under-token-buyback-agreement>
 [^forklog-what]: ForkLog (2022). *What is Lido?* <https://forklog.com/en/what-is-lido/>
 [^etherscan]: Etherscan. *Lido: stETH Token*. <https://etherscan.io/address/0xae7ab96520de3a18e5e111b5eaab095312d7fe84>
+[^contracts]: Lido documentation. *Deployed contracts*. <https://docs.lido.fi/deployed-contracts/>
 [^ldo]: Lido (2021). *Introducing LDO: the Lido DAO governance token*. <https://blog.lido.fi/introducing-ldo/>
 [^techcrunch]: TechCrunch (2022). *A16z backs decentralized liquid crypto staking platform Lido*. <https://techcrunch.com/2022/03/03/lido-raises-the-stakes-for-crypto-defi-investors-with-new-capital/>
 [^dot-ksm]: Lido research forum (2023). *Sunsetting of Lido on Polkadot and Kusama*. <https://research.lido.fi/t/sunsetting-of-lido-on-polkadot-and-kusama/4067>
 [^solana]: Lido (2023). *Lido on Solana sunset*. <https://blog.lido.fi/sunset-lido-on-solana/>
 [^polygon]: Lido research forum (2024). *Reevaluation of Lido on Polygon state*. <https://research.lido.fi/t/reevaluation-of-lido-on-polygon-state/8848>
+[^polygon-sunset]: Lido (2024). *Lido on Polygon sunset*. <https://blog.lido.fi/lido-on-polygon-sunset/>
 [^shapella]: Ethereum Foundation (2023). *Shapella mainnet announcement*. <https://blog.ethereum.org/2023/03/28/shapella-mainnet-announcement>
 [^v2-intro]: Lido (2023). *Introducing Lido V2: next step in decentralization*. <https://blog.lido.fi/introducing-lido-v2/>
 [^block-v2]: The Block (2023). *Lido Finance passes vote to activate withdrawals on Ethereum with v2 upgrade*. <https://www.theblock.co/post/230811/lido-finance-ethereum-withdrawals-upgrade>
 [^simple-dvt]: Lido (2024). *Simple DVT: a new phase for Lido on Ethereum*. <https://blog.lido.fi/simpledvt-new-phase-for-lido-on-ethereum/>
 [^csm]: Lido (2025). *CSM goes fully permissionless*. <https://blog.lido.fi/csm-goes-fully-permissionless/>
+[^core-upgrade]: Lido (2026). *A new Lido Core upgrade for protocol sustainability and a leaner Ethereum*. <https://blog.lido.fi/a-new-lido-core-upgrade-for-protocol-sustainability-and-a-leaner-ethereum/>
+[^csm-0x02]: Lido (2026). *Introducing 0x02 CSM: a permissionless path to running higher-balance validators*. <https://blog.lido.fi/introducing-0x02-csm-a-permissionless-path-to-running-higher-balance-validators/>
 [^h1-2026]: Lido DAO (2026). *GOOSE-2026 report, H1 2026*. <https://lido.fi/ldo-hub/reports/h1-2026>
 [^alliance]: Lido research forum (2024). *Lido Alliance: an Ethereum-aligned ecosystem*. <https://research.lido.fi/t/lido-alliance-an-ethereum-aligned-ecosystem/7475>
 [^alliance-q1]: Lido research forum (2025). *Q1 2025 Lido Alliance update*. <https://research.lido.fi/t/q1-2025-lido-alliance-update/9880>
@@ -353,6 +364,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
 [^nest]: Lido (2026). *LDO automated buybacks: overview*. <https://blog.lido.fi/ldo-automated-buybacks-overview/>
 [^sec]: US Securities and Exchange Commission, Division of Corporation Finance (2025). *Statement on certain liquid staking activities*. <https://www.sec.gov/newsroom/speeches-statements/corpfin-certain-liquid-staking-activities-080525>
 [^vaneck]: VanEck Digital Assets (2026). *VanEck Lido Staked Ethereum ETF: Form RW (application for withdrawal)*. SEC EDGAR. <https://www.sec.gov/Archives/edgar/data/0002091159/000209115926000005/vanecklidostakedethereumet.htm>
+[^vaneck-s1]: VanEck Lido Staked Ethereum ETF (2025). *Form S-1 registration statement*. SEC EDGAR. <https://www.sec.gov/Archives/edgar/data/2091159/000162828025045249/vanecklidostakedethereumet.htm>
 [^tokens-guide]: Lido documentation. *Lido tokens integration guide*. <https://docs.lido.fi/guides/lido-tokens-integration-guide>
 [^lnosg]: Lido research forum (2021). *Node Operator Sub Governance & new node operator application process*. <https://research.lido.fi/t/node-operator-sub-governance-new-node-operator-application-process/344>
 [^staking-modules]: Lido documentation. *Staking modules*. <https://docs.lido.fi/staking-modules/>
@@ -367,3 +379,4 @@ favour, just above the 50 million quorum, and concluded on 30 June
 [^ryan]: Ryan, D. (2022). *The risks of LSD*. <https://notes.ethereum.org/@djrtwo/risks-of-lsd>
 [^self-limit-forum]: Lido research forum (2022). *Should Lido on Ethereum be limited to some fixed % of stake?* <https://research.lido.fi/t/should-lido-on-ethereum-be-limited-to-some-fixed-of-stake/2225>
 [^self-limit-snapshot]: Lido DAO Snapshot (2022). *Should Lido consider self-limiting?* <https://snapshot.org/#/lido-snapshot.eth/proposal/0x10abedcc563b66b1adee60825e78c387105110fa4a1e7354ab57bc9cc1e675c2>
+[^block-self-limit]: The Block (2022). *Lido community strongly against limiting its Ethereum staking dominance*. <https://www.theblock.co/post/155070/lido-community-strongly-against-limiting-its-ethereum-staking-dominance>
