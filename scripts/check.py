@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Verify every local link, asset, and fragment in the generated site."""
+"""Verify article front matter, and every local link, asset, and fragment in the generated site."""
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlsplit
 
-ROOT = Path(__file__).resolve().parent.parent / 'dist'
+from build import load, validate
+
+SOURCE = Path(__file__).resolve().parent.parent
+ROOT = SOURCE / 'dist'
 
 
 class Page(HTMLParser):
@@ -28,7 +31,7 @@ class Page(HTMLParser):
 
 def main():
     pages = {path: Page(path) for path in ROOT.rglob('*.html')}
-    errors = []
+    errors = [error for path in sorted((SOURCE / 'pages').glob('*.md')) for error in validate(load(path)[0], path)]
     if not pages:
         raise SystemExit('No built pages. Run scripts/build.py first.')
     for path, page in pages.items():
@@ -47,7 +50,7 @@ def main():
                 errors.append(f'{base}: missing fragment {link}')
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f'Checked {len(pages)} HTML pages: all local links, assets, IDs, and citation anchors valid.')
+    print(f'Checked {len(pages)} HTML pages: article statuses, local links, assets, IDs, and citation anchors valid.')
 
 
 if __name__ == '__main__':

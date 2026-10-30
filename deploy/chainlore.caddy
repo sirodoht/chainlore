@@ -5,6 +5,9 @@ chainlore.xyz {
         X-Content-Type-Options nosniff
         Referrer-Policy strict-origin-when-cross-origin
     }
+    # Articles moved under /p/ so top-level paths stay free for site pages.
+    @legacy path_regexp legacy ^/(bitcoin|ethereum|hyperliquid|arbitrum)/?$
+    redir @legacy /p/{re.legacy.1}/ permanent
     @assets path /assets/*
     header @assets Cache-Control "public, max-age=3600"
     file_server

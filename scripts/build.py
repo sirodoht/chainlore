@@ -8,6 +8,7 @@ import re
 import shutil
 import sys
 import xml.etree.ElementTree as ET
+from collections import Counter
 from datetime import date
 from pathlib import Path
 from string import Template
@@ -17,8 +18,16 @@ import markdown
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
-ROUTES = {'INDEX.md': '/all-articles/', 'VISION.md': '/vision/',
-          'INSPIRATION.md': '/inspiration/', 'ABOUT.md': '/about/', 'README.md': '/'}
+SUPPORTING = ('INDEX.md', 'VISION.md', 'INSPIRATION.md', 'ABOUT.md', 'POLICY.md')
+ROUTES = {'INDEX.md': '/all-articles/', 'VISION.md': '/vision/', 'INSPIRATION.md': '/inspiration/',
+          'ABOUT.md': '/about/', 'POLICY.md': '/policy/', 'README.md': '/'}
+# Status values, display labels, and the POLICY.md section that defines each.
+STATUSES = {'draft': ('Draft', 'statuses'),
+            'ai-fact-checked': ('AI fact-checked', 'ai-fact-checked'),
+            'human-reviewed': ('Human reviewed', 'human-reviewed')}
+ARTICLE_FIELDS = ('title', 'ticker', 'category', 'status', 'updated')
+STATUS_FIELDS = {'ai-fact-checked': ('checked', 'checked_by'),
+                 'human-reviewed': ('checked', 'checked_by', 'reviewed', 'reviewed_by')}
 TEMPLATE = Template((ROOT / 'site/template.html').read_text())
 
 
@@ -39,6 +48,26 @@ def load(path):
             key, value = line.split(':', 1)
             meta[key.strip()] = value.strip()
     return meta, text
+
+
+def validate(meta, path):
+    """Return the problems with an article's front matter, per POLICY.md."""
+    errors = [f'{path.name}: missing {field}' for field in ARTICLE_FIELDS if not meta.get(field)]
+    status = meta.get('status')
+    if status and status not in STATUSES:
+        errors.append(f'{path.name}: unknown status {status!r}, expected one of {", ".join(STATUSES)}')
+    errors += [f'{path.name}: status {status} requires {field}' for field in STATUS_FIELDS.get(status, ()) if not meta.get(field)]
+    for field in ('updated', 'checked', 'reviewed'):
+        try:
+            if meta.get(field):
+                date.fromisoformat(meta[field])
+        except ValueError:
+            errors.append(f'{path.name}: {field} is not a YYYY-MM-DD date: {meta[field]}')
+    return errors
+
+
+def long_date(value):
+    return date.fromisoformat(value).strftime('%-d %B %Y')
 
 
 def render(path):
@@ -109,12 +138,19 @@ def article(page):
     title = page['title']
     details = 'From Chainlore, the AI native crypto encyclopedia'
     if meta:
-        updated = date.fromisoformat(meta['updated']).strftime('%-d %B %Y')
-        status = 'AI fact-checked' if meta['status'] == 'ai-fact-checked' else meta['status'].capitalize()
-        details = f'<span>{html.escape(meta["category"])} · {html.escape(meta["ticker"])}</span><span>Updated {updated}</span><span class="status">{html.escape(status)}</span>'
+        errors = validate(meta, page['source'])
+        if errors:
+            raise ValueError('\n'.join(errors))
+        label, anchor = STATUSES[meta['status']]
+        details = f'<span>{html.escape(meta["category"])} · {html.escape(meta["ticker"])}</span><span>Updated {long_date(meta["updated"])}</span>'
+        if meta.get('checked'):
+            details += f'<span>Checked {long_date(meta["checked"])} by {html.escape(meta["checked_by"])}</span>'
+        if meta.get('reviewed'):
+            details += f'<span>Reviewed {long_date(meta["reviewed"])} by {html.escape(meta["reviewed_by"])}</span>'
+        details += f'<a class="status" href="/policy/#{anchor}">{html.escape(label)}</a>'
     content = f'<header class="article-header"><h1>{html.escape(title)}</h1><div class="article-meta">{details}</div></header>'
     if meta.get('status') == 'draft':
-        content += '<p class="notice">This article is marked as a draft. Its source metadata does not yet record a completed fact-check.</p>'
+        content += '<p class="notice">This article is a draft. It has not yet passed a fact-check under the <a href="/policy/">editorial policy</a> and may contain errors.</p>'
     content += '<article class="article-body">' + ''.join(serialize(node) for node in page['tree']) + '</article>'
     toc = '<details class="contents" open><summary>Contents</summary><ul>' + ''.join(f'<li><a href="#{html.escape(anchor)}">{html.escape(label)}</a></li>' for anchor, label in page['toc']) + '</ul></details>' if page['toc'] else ''
     write_page(route, title, content, page['source'].relative_to(ROOT).as_posix(), page['description'], toc)
@@ -128,24 +164,26 @@ def homepage(pages):
         'hyperliquid': 'A layer 1 blockchain with an onchain order book for perpetual futures and spot trading.',
         'arbitrum': 'Optimistic rollups that scale Ethereum, with governance through the Arbitrum DAO.',
     }
-    rows = ''.join(f'<div class="article-row"><span class="article-number">{i:02}</span><div><h3><a href="/{slug}/">{p["title"]}</a><span>{p["meta"]["ticker"]} · {p["meta"]["category"]}</span></h3><p>{summaries.get(slug, html.escape(p["description"][:150]))}</p></div></div>' for i, (slug, p) in enumerate(pages.items(), 1))
+    rows = ''.join(f'<div class="article-row"><span class="article-number">{i:02}</span><div><h3><a href="/p/{slug}/">{p["title"]}</a><span>{p["meta"]["ticker"]} · {p["meta"]["category"]}</span></h3><p>{summaries.get(slug, html.escape(p["description"][:150]))}</p></div></div>' for i, (slug, p) in enumerate(pages.items(), 1))
     index = render(ROOT / 'INDEX.md')
     index_html = ''.join(serialize(node) for node in index['tree'] if node.tag != 'p')
     index_html = index_html.replace('<h2', '<h3').replace('</h2>', '</h3>')
+    counts = Counter(p['meta']['status'] for p in pages.values())
+    statuses = ', '.join(f'{label} ({counts[key]})' for key, (label, _) in STATUSES.items() if counts[key])
     references = sum(len(re.findall(r'^\[\^[^\]]+\]:', p['source'].read_text(), re.M)) for p in pages.values())
     content = f'''<section class="welcome"><h1><span>Chainlore</span></h1><p>An AI native encyclopedia of crypto.</p><p class="subline"><a href="/all-articles/">{len(pages)} articles</a> · {references} references</p></section>
 <div class="home-grid">
-<section class="panel"><h2>Featured article</h2><div class="eyebrow">{feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/hyperliquid/">Full article →</a></div></section>
+<section class="panel"><h2>Featured article</h2><div class="eyebrow">{feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/p/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/p/hyperliquid/">Full article →</a></div></section>
 <section class="panel blue"><h2>Articles</h2>{rows}</section>
 </div>
-<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. The current articles retain draft status in their source metadata.</p><p><a href="/about/">Authorship and review</a> · <a href="/vision/">Editorial scope</a> · <a href="/inspiration/">Reference sites</a></p></section></div>'''
+<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Encyclopedia articles were written and fact-checked by Opus 5.5 High. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a> · <a href="/inspiration/">Reference sites</a></p></section></div>'''
     write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on Bitcoin, Ethereum, Hyperliquid, and Arbitrum.', active='Main page')
 
 
 def main():
     sources = sorted((ROOT / 'pages').glob('*.md'))
     for path in sources:
-        ROUTES[path.relative_to(ROOT).as_posix()] = f'/{path.stem}/'
+        ROUTES[path.relative_to(ROOT).as_posix()] = f'/p/{path.stem}/'
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir()
@@ -156,13 +194,13 @@ def main():
         page = render(path)
         pages[path.stem] = page
         article(page)
-    for name in ('INDEX.md', 'VISION.md', 'INSPIRATION.md', 'ABOUT.md'):
+    for name in SUPPORTING:
         article(render(ROOT / name))
     homepage(pages)
     write_page('/search/', 'Search', '<header class="article-header"><h1>Search Chainlore</h1></header><p id="search-status" role="status">Loading search…</p><noscript><p>Search requires JavaScript. You can browse every article in the index.</p></noscript><ul id="search-results" class="search-results"></ul><p><a href="/all-articles/">Browse all articles →</a></p>', description='Search the Chainlore encyclopedia.', active='Search')
     write_page('/404/', 'Page not found', '<h1>Page not found</h1><p>This page is not in the encyclopedia yet.</p><p><a href="/">Return to the main page</a> or <a href="/all-articles/">browse all articles</a>.</p>', active='Page not found')
-    (OUT / 'search-index.json').write_text(json.dumps([{'title': p['title'], 'ticker': p['meta']['ticker'], 'url': f'/{slug}/', 'description': p['description'], 'text': p['text']} for slug, p in pages.items()], ensure_ascii=False))
-    all_sources = sources + [ROOT / name for name in ('README.md', 'INDEX.md', 'VISION.md', 'INSPIRATION.md', 'ABOUT.md')]
+    (OUT / 'search-index.json').write_text(json.dumps([{'title': p['title'], 'ticker': p['meta']['ticker'], 'url': f'/p/{slug}/', 'description': p['description'], 'text': p['text']} for slug, p in pages.items()], ensure_ascii=False))
+    all_sources = sources + [ROOT / name for name in ('README.md',) + SUPPORTING]
     for path in all_sources:
         destination = OUT / 'sources' / path.relative_to(ROOT)
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -170,7 +208,7 @@ def main():
     urls = ['/'] + sorted(route for key, route in ROUTES.items() if key != 'README.md')
     (OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>https://chainlore.xyz{route}</loc></url>' for route in urls) + '</urlset>\n')
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://chainlore.xyz/sitemap.xml\n')
-    print(f'Built {len(pages)} articles and 7 supporting pages in {OUT}')
+    print(f'Built {len(pages)} articles and {len(SUPPORTING) + 3} supporting pages in {OUT}')
 
 
 if __name__ == '__main__':
