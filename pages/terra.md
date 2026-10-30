@@ -15,10 +15,10 @@ governance token was **LUNA**, and it issued algorithmic stablecoins,
 chief among them TerraUSD (UST), which were meant to hold their peg
 through a mint-and-burn swap with LUNA rather than through reserves of
 cash.[^classic-protocol][^sec-2023] In May 2022 UST lost its dollar peg
-and both tokens fell close to zero, wiping out more than US$40 billion of
+and both tokens fell close to zero, wiping out at least US$40 billion of
 market value according to the SEC.[^sec-complaint] The original chain
 continues as Terra Classic (LUNC), and a new chain without UST was
-launched under the Terra and LUNA names.[^terra-protocol][^cg-luna] Kwon
+launched under the Terra and LUNA names.[^terra-protocol][^block-phoenix] Kwon
 later pleaded guilty to fraud in the United States and was sentenced to
 15 years in prison.[^reuters-sentence]
 
@@ -32,7 +32,7 @@ later pleaded guilty to fraud in the United States and was sentenced to
 | Columbus-5 upgrade | 2021-09-30 |
 | Stablecoins | TerraUSD (UST, now USTC), TerraKRW (KRT) and others |
 | Collapse | May 2022 |
-| Successor chain | Terra (`phoenix-1`), launched 2022-05-27 |
+| Successor chain | Terra (`phoenix-1`), launched 2022-05-28 |
 | Tickers | LUNC and USTC (original chain); LUNA (new chain) |
 | Live data | [CoinGecko: LUNA](https://www.coingecko.com/en/coins/terra-luna-2), [CoinGecko: LUNC](https://www.coingecko.com/en/coins/terra-luna) |
 
@@ -52,8 +52,8 @@ payment service, in or around June 2019. Chai and Terraform shared
 offices and staff until early 2020, though Kwon stayed on Chai's board
 until about May 2022.[^sec-complaint] Chai integrated Terra's won-pegged
 stablecoin in 2019 and says it had no relationship with Terraform Labs
-after early 2020. Shin left Terra around that time to focus on
-Chai.[^dlnews-shin]
+after early 2020. According to DL News, Shin left Terra in late
+2019.[^dlnews-shin]
 The SEC alleged that Terraform and Kwon falsely claimed Chai payments
 were settled on the Terra blockchain, when Chai transactions were
 instead copied onto the chain to make them appear to run
@@ -79,8 +79,8 @@ On 23 May 2021 UST fell to nearly US$0.90 before recovering, and
 Terraform said the algorithm had restored the peg.[^sec-complaint] The
 SEC later found that Tai Mo Shan, a subsidiary of Jump Trading, had
 bought more than US$20 million of UST under an agreement in which
-Terraform released LUNA owed to it on easier terms, misleading the
-market about the mechanism. Tai Mo Shan settled in December 2024 for
+Terraform vested its option to buy LUNA at a discount, negligently
+misleading the market about the mechanism. Tai Mo Shan settled in December 2024 for
 about US$123 million without admitting or denying the
 findings.[^tms-order][^tms-block] Kwon later admitted in his US plea that
 he made false statements about why the peg recovered.[^reuters-sentence]
@@ -89,7 +89,7 @@ he made false statements about why the peg recovered.[^reuters-sentence]
 
 The Columbus-5 upgrade took effect on 30 September 2021. It moved Terra
 to Cosmos SDK v0.43 and added IBC support. From then on, all
-seigniorage from minting stablecoins was burned, instead of part going
+seigniorage from minting stablecoins was burned, instead of most going
 to a community pool.[^c5-guide][^nber]
 
 ### Mirror Protocol subpoena
@@ -140,8 +140,8 @@ day Terraform Labs removed 150 million UST from the UST-3Crv pool on
 Curve, a planned move to a new pool. Soon after, a large wallet withdrew
 85 million UST from Anchor and sold it on Curve in one trade, other large
 sales followed, and UST's discount on Curve widened to 2.5%. The authors
-argue that the pool change was not harmful in itself but served as a
-coordinating event when confidence was already weak.[^nber] The SEC
+argue that the pool change was not harmful in itself but could have
+served as a coordinating event when confidence was already weak.[^nber] The SEC
 described the trigger as large UST sales by one or more sophisticated
 trading firms.[^sec-complaint]
 
@@ -158,18 +158,19 @@ and UST traded around US$0.37.[^tc-halt]
 
 On 12 May 2022 validators halted the chain at block 7,603,700. Terraform
 Labs said this was to prevent governance attacks after severe LUNA
-inflation. Block production resumed later that day.[^tc-halt] Late on
+inflation. Block production resumed later that day.[^tc-halt][^block-halt] Late on
 12 May US time (13 May UTC) Terra halted again, at block 7,607,789, so
 validators could plan to rebuild the network.[^block-halt]
 
 ### Terra 2.0 and Terra Classic
 
 On 25 May 2022 holders passed governance proposal 1623, creating a new
-chain. Its mainnet, `phoenix-1`, launched on 27 May 2022, and new LUNA
-was airdropped to holders of the old chain's tokens based on snapshots
-taken before and after the depeg.[^terra-protocol] The original chain
+chain. Its mainnet, `phoenix-1`, launched at 06:00 UTC on 28 May 2022
+without an algorithmic stablecoin, and new LUNA was airdropped to
+holders of the old chain's tokens based on snapshots taken before and
+after the depeg.[^terra-protocol][^block-phoenix] The original chain
 was renamed Terra Classic, with its tokens trading as LUNC and USTC,
-while the new chain took the LUNA name.[^cg-luna][^cg-lunc][^cg-ustc]
+while the new chain took the LUNA name.[^block-phoenix][^defiant-lunc][^cg-lunc][^cg-ustc]
 
 ### Contagion
 
@@ -219,7 +220,7 @@ later management for the collapse.[^block-shin][^hankook] In December
 2025 the first-instance trial had been running for nearly three years
 without a verdict.[^hankook]
 
-Korean prosecutors estimate that about 200,000 local investors lost
+Korean prosecutors estimate that about 200,000 local victims lost
 about 300 billion won. They want to try Kwon in South Korea, and one
 said a conviction there could bring a sentence of more than 30
 years.[^koreatimes-2025][^decrypt-korea]
@@ -229,7 +230,7 @@ years.[^koreatimes-2025][^decrypt-korea]
 On 23 March 2023 Kwon and Han Chang-joon, Terraform's former chief
 financial officer, were arrested at Podgorica airport in Montenegro
 while trying to fly to Dubai on forged Costa Rican
-passports.[^ap-montenegro][^semafor][^fortune-montenegro] The same day,
+passports.[^block-arrest][^semafor][^fortune-montenegro] The same day,
 US prosecutors in Manhattan charged Kwon with securities fraud, wire
 fraud, commodities fraud and conspiracy.[^semafor] On 19 June 2023 a
 Podgorica court sentenced both men to four months in prison for the
@@ -247,11 +248,12 @@ The SEC sued Terraform and Kwon on 16 February 2023, alleging that they
 sold crypto asset securities in unregistered transactions, marketed UST
 as a "yield-bearing" stablecoin paying up to 20% through Anchor, and
 misled investors about a Korean payment app's use of the
-chain.[^sec-2023] On 28 December 2023 Judge Jed Rakoff found them liable
+chain.[^sec-2023] On 28 December 2023 the court found them liable
 for unregistered offers and sales, and on 5 April 2024 a jury found them
 liable for fraud.[^sec-2024]
 
-In June 2024 they settled for about US$4.5 billion. Terraform agreed to
+In June 2024 they settled for about US$4.5 billion, and Judge Jed Rakoff
+approved the settlement.[^coindesk-settlement] Terraform agreed to
 pay about US$3.59 billion in disgorgement, US$467 million in interest and
 a US$420 million penalty, and to wind down. Kwon agreed to pay US$110
 million in disgorgement plus interest, jointly with Terraform, and a
@@ -266,15 +268,16 @@ US$184.5 million and US$442.2 million, and the SEC agreed to recover only
 after harmed investors and other unsecured creditors were paid in
 full.[^block-winddown]
 
-In December 2025 the estate's plan administrator sued Jump Trading and
-two of its executives for US$4 billion, alleging that Jump profited from
-and accelerated the collapse. Jump called the suit a "desperate attempt"
-to shift blame from Kwon.[^block-jump][^bl-jump] In February 2026 the
-estate sued Jane Street, alleging insider trading linked to Terraform's
-Curve pool change. In April 2026 Jane Street moved to dismiss, calling
-the case an attempt to make it pay for Terraform's own
-fraud.[^block-jane][^bl-jane] As of the latest reports found, neither
-suit had been decided.
+In December 2025 the estate's plan administrator, Todd Snyder, sued Jump
+Trading, its co-founder William DiSomma and former president Kanav Kariya
+for US$4 billion, alleging that Jump profited from and accelerated the
+collapse. Jump called the suit a "desperate attempt" to shift blame from
+Terraform and Kwon.[^block-jump][^bl-jump] In February 2026 Snyder sued
+Jane Street and three individuals, alleging insider trading linked to
+Terraform's Curve pool withdrawal on 7 May 2022.[^block-jane-suit] In
+April 2026 Jane Street moved to dismiss, calling the case an attempt to
+make it "foot the bill" for Terraform's own fraud.[^block-jane][^bl-jane]
+No ruling on either suit had been reported as of April 2026.
 
 ### US criminal case
 
@@ -309,7 +312,7 @@ returned.[^koreatimes-2025]
 | 2022-01 | Luna Foundation Guard announced |
 | 2022-05-07 | Large UST withdrawals from Anchor and sales on Curve |
 | 2022-05-12 | Chain halted; halted again early on 13 May (UTC) |
-| 2022-05-27 | New Terra chain launches; old chain becomes Terra Classic |
+| 2022-05-28 | New Terra chain launches; old chain becomes Terra Classic |
 | 2022-07-13 | Celsius files for Chapter 11 |
 | 2022-09 | South Korean arrest warrant for Kwon |
 | 2023-02-16 | SEC sues Terraform Labs and Kwon |
@@ -339,6 +342,7 @@ returned.[^koreatimes-2025]
 [^sec-2023]: U.S. Securities and Exchange Commission (2023). *SEC charges Terraform and CEO Do Kwon with defrauding investors in crypto schemes*. <https://www.sec.gov/newsroom/press-releases/2023-32>
 [^sec-complaint]: U.S. Securities and Exchange Commission (2023). *SEC v. Terraform Labs Pte Ltd. and Do Hyeong Kwon*, amended complaint, No. 1:23-cv-1346 (S.D.N.Y.). <https://www.sec.gov/files/terraform-labs-pte-ltd-amended-complaint.pdf>
 [^sec-2024]: U.S. Securities and Exchange Commission (2024). *Terraform and Kwon to pay $4.5 billion following fraud verdict*. <https://www.sec.gov/news/press-release/2024-73>
+[^coindesk-settlement]: CoinDesk (2024). *U.S. judge signs off on $4.5B Terraform-Do Kwon settlement with SEC*. <https://www.coindesk.com/policy/2024/06/13/us-judge-signs-off-on-45b-terraform-do-kwon-settlement-with-sec>
 [^sec-subpoena]: U.S. Securities and Exchange Commission (2021). *SEC files subpoena enforcement action against Terraform Labs and its CEO*. Litigation Release No. 25262. <https://www.sec.gov/litigation/litreleases/lr-25262>
 [^tms-order]: U.S. Securities and Exchange Commission (2024). *In the Matter of Tai Mo Shan Limited*, Release No. 33-11349. <https://www.sec.gov/files/litigation/admin/2024/33-11349.pdf>
 [^tms-block]: The Block (2024). *SEC fines Jump Trading subsidiary $123 million for propping up TerraUSD stablecoin during depeg*. <https://theblock.co/news/regulation/2024-12-21-sec-fines-jump-trading-subsidiary-123-million-for-propping-up-terrausd-stablecoin-during-depeg-332096>
@@ -349,7 +353,8 @@ returned.[^koreatimes-2025]
 [^fortune-lfg]: Fortune (2022). *Luna Foundation Guard has now dumped $2.4 billion from its bitcoin reserves*. <https://fortune.com/2022/05/16/luna-foundation-guard-dumps-bitcoin-reserves-terra-usd-peg/>
 [^tc-halt]: TechCrunch (2022). *Terra resumes blockchain production after halting to prevent hacks amid UST crash*. <https://techcrunch.com/2022/05/12/terra-halts-its-blockchain-to-prevent-hacks-ust/>
 [^block-halt]: The Block (2022). *Terra says it has halted blockchain for second time in 24 hours*. <https://www.theblock.co/linked/146722/terra-says-it-has-halted-blockchain-for-second-time-in-24-hours>
-[^cg-luna]: CoinGecko. *Terra (LUNA)*. <https://www.coingecko.com/en/coins/terra-luna-2>
+[^block-phoenix]: The Block (2022). *Terra gets second life as new blockchain goes live with LUNA 2.0 airdrop*. <https://www.theblock.co/post/149127/terra-gets-second-life-as-new-blockchain-goes-live-with-luna-2-0-airdrop>
+[^defiant-lunc]: The Defiant. *What is LUNC?*. <https://thedefiant.io/what-is-lunc>
 [^cg-lunc]: CoinGecko. *Terra Luna Classic (LUNC)*. <https://www.coingecko.com/en/coins/terra-luna>
 [^cg-ustc]: CoinGecko. *TerraClassicUSD (USTC)*. <https://www.coingecko.com/en/coins/terrausd>
 [^decrypt-mirror]: Decrypt (2021). *Terra's Do Kwon was served by SEC at crypto conference*. <https://decrypt.co/81356/terra-do-kwon-served-sec-subpoena-crypto-conference-sources>
@@ -358,6 +363,7 @@ returned.[^koreatimes-2025]
 [^block-3ac]: The Block (2022). *Three Arrows founders tell Bloomberg 'the whole situation is regrettable'*. <https://www.theblock.co/post/159110/three-arrows-founders-tell-bloomberg-the-whole-situation-is-regrettable>
 [^block-voyager]: The Block (2022). *Voyager Digital issues default notice against Three Arrows Capital*. <https://www.theblock.co/post/154316/voyager-digital-issues-default-notice-against-three-arrows-capital>
 [^ap-montenegro]: Associated Press (2023). *Montenegro: South Korea, US seek extradition of Do Kwon*. Via WSLS. <https://www.wsls.com/business/2023/03/29/montenegro-south-korea-us-seek-extradition-of-do-kwon>
+[^block-arrest]: The Block (2023). *Terraform Labs CEO Do Kwon believed to be arrested in Montenegro*. <https://www.theblock.co/post/222286/do-kwon-terra-luna-arrested-montenegro>
 [^semafor]: Semafor (2023). *Do Kwon charged after arrest in Montenegro*. <https://semafor.com/article/03/24/2023/do-kwon-charged-arrest-montenegro-fugitive-crypto>
 [^fortune-montenegro]: Fortune (2023). *Terra's Do Kwon sentenced to 4 months in a Balkan prison for document forgery*. <https://fortune.com/crypto/2023/06/19/terras-do-kwon-sentenced-to-4-months-in-a-balkan-prison-for-document-forgery>
 [^block-forgery]: The Block (2023). *Do Kwon found guilty in Montenegro fake passport case*. <https://www.theblock.co/post/235448/do-kwon-found-guilty-in-montenegro-fake-passport-case>
@@ -373,5 +379,6 @@ returned.[^koreatimes-2025]
 [^block-winddown]: The Block (2024). *Terraform Labs gets sign off from US bankruptcy judge to begin winding down: Reuters*. <https://www.theblock.co/post/317414/terraform-labs-gets-sign-off-from-us-bankruptcy-judge-to-begin-winding-down-reuters>
 [^block-jump]: The Block (2025). *Terraform Labs liquidator sues Jump Trading for $4 billion in damages*. <https://www.theblock.co/post/383263/terraform-labs-sues-jump-trading>
 [^bl-jump]: Bloomberg Law (2025). *Jump Trading faces $4 billion Terraform administrator suit*. <https://news.bloomberglaw.com/bankruptcy-law/terraform-administrator-files-4-billion-lawsuit-against-jump>
+[^block-jane-suit]: The Block (2026). *Terraform Labs sues Jane Street for alleged insider trading prior to Terra-Luna collapse: WSJ*. <https://www.theblock.co/news/regulation/2026-02-23-terraform-labs-sues-jane-street-390915>
 [^block-jane]: The Block (2026). *Jane Street asks court to dismiss Terraform Labs' insider trading lawsuit*. <https://www.theblock.co/post/398713/jane-street-asks-court-dismiss-terraform-labs-insider-trading-lawsuit>
 [^bl-jane]: Bloomberg Law (2026). *Jane Street seeks dismissal of Terraform insider-trading suit*. <https://news.bloomberglaw.com/bankruptcy-law/jane-street-seeks-dismissal-of-terraform-insider-trading-suit>
