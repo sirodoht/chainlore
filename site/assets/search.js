@@ -6,7 +6,7 @@
   input.value = query;
   const status = document.getElementById('search-status');
   if (!query) { status.textContent = 'Enter a subject, ticker, or phrase to search the encyclopedia.'; return; }
-  document.title = `Search: ${query} — Chainlore`;
+  document.title = `Search: ${query} - Chainlore`;
   fetch('/search-index.json').then(response => {
     if (!response.ok) throw new Error('Search unavailable');
     return response.json();

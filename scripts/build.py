@@ -124,7 +124,7 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
     tabs = f'<a class="active" href="{route}" aria-current="page">{html.escape(active)}</a>'
     if route != '/all-articles/':
         tabs += '<a href="/all-articles/">All articles</a>'
-    output = TEMPLATE.substitute(title=html.escape(title + ' — Chainlore') if route != '/' else 'Chainlore — The AI native crypto encyclopedia',
+    output = TEMPLATE.substitute(title=html.escape(title + ' - Chainlore') if route != '/' else 'Chainlore - The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
         source='/sources/' + source, toc=toc, tabs=tabs,
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
