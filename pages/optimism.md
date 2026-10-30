@@ -25,7 +25,7 @@ OP Labs, and the network is governed by the Optimism Collective through the
 | Chain ID | 10[^connect] |
 | Gas token | ETH |
 | Governance token | OP |
-| Initial OP supply | 4,294,967,296 (2^32)[^token-live][^allocation] |
+| Initial OP supply | 4,294,967,296[^budget-y3] |
 | Governance | Optimism Collective (Token House and Citizens' House); Security Council |
 | Proof system | Permissionless fault proofs (since 2024-06-10) |
 | Withdrawal delay | About 7 days |
@@ -151,7 +151,7 @@ Permissionless fault proofs went live on OP Mainnet on 10 June 2024,
 allowing anyone to propose and challenge state claims used to prove
 withdrawals. L2Beat then classed OP Mainnet as Stage 1.[^fault-proofs][^l2beat]
 On 16 August 2024 fault proofs were disabled as a precaution after a bug was
-found, and OP Mainnet fell back to permissioned dispute games; L2Beat
+found, and OP Mainnet fell back to permissioned proposals; L2Beat
 records the suspension as lasting 26 days, ending with the Granite upgrade
 in September 2024.[^l2beat][^upgrades]
 
@@ -265,8 +265,8 @@ legal entity such as a DUNA.[^season-9]
   error in August 2023. Balances were unaffected.[^lost-data]
 - **Fraud proofs removed (2021–2024).** From the November 2021 regenesis to
   June 2024, OP Mainnet ran without working fault proofs.[^l2beat]
-- **Token grants.** CoinDesk reported that unnamed competitors criticised
-  Optimism for using large OP grants to win adoption; the Foundation said
+- **Token grants.** CoinDesk reported that competitors had noted
+  Optimism's use of large OP grants to win adoption; the Foundation said
   chains decide whether to disclose their grant amounts, and several did
   not.[^coindesk-wang]
 - **Base revenue and OP Enterprise.** After Base's departure, the delegate
@@ -333,6 +333,7 @@ legal entity such as a DUNA.[^season-9]
 [^l2beat]: L2Beat. *OP Mainnet*. <https://l2beat.com/scaling/projects/op-mainnet>
 [^whitelist]: ForkLog (2021). *Optimism opens access to its Ethereum L2 solution for all developers*. <https://forklog.com/en/optimism-opens-access-to-its-ethereum-l2-solution-for-all-developers/>
 [^token-live]: The Block (2022). *Optimism's governance token officially goes live*. <https://www.theblock.co/post/149464/optimisms-governance-token-officially-goes-live>
+[^budget-y3]: Optimism Foundation (2024). *Foundation Year 3 budget update*. Optimism governance forum. <https://gov.optimism.io/t/foundation-year-3-budget-update/8304>
 [^allocation]: Optimism Foundation (2023). *Treasury appropriation proposal: Foundation Year 2 budget*. Optimism governance forum. <https://gov.optimism.io/t/treasury-appropriation-proposal-foundation-year-2-budget/5979>
 [^airdrop-2]: Optimism (2023). *OP Drop #2*. <https://optimism.io/blog/op-drop-2>
 [^airdrop-fund]: Optimism governance forum (2026). *Re-designating the User Airdrop Allocation as the Strategic Ecosystem Fund*. <https://gov.optimism.io/t/re-designating-the-user-airdrop-allocation-as-the-strategic-ecosystem-fund/10797>
