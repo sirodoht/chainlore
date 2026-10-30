@@ -131,6 +131,7 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
         description=html.escape(description[:300], quote=True), path=route, content=content,
         source='/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source,
         toc=toc, tabs=tabs, report_error_link=report_error_link,
+        sidebar_class='sidebar sidebar-home' if route == '/' else 'sidebar',
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)
