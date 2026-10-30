@@ -55,7 +55,7 @@ The LDO governance token went live on 5 January 2021 (see
 [Token](#token)).[^ldo] In April 2021 LDO holders approved selling 100
 million LDO from the treasury, 10% of supply, to the investment firm
 Paradigm and partners for 21,600 ETH; Paradigm paid 15,120 ETH for its
-70 million in May.[^paradigm-proposal][^forklog-paradigm][^forklog-paradigm-paid]
+70 million in May.[^paradigm-proposal][^paradigm-snapshot][^forklog-paradigm][^forklog-paradigm-paid]
 In March 2022 Andreessen Horowitz announced a US$70 million investment,
 paid partly by buying LDO from existing holders.[^techcrunch]
 
@@ -272,7 +272,8 @@ favour, just above the 50 million quorum, and concluded on 30 June
   governance capture; opponents argued that capped stake would flow to
   centralised exchanges, which Lido had been founded to
   counter.[^self-limit-forum] A Snapshot vote ending on 1 July 2022
-  rejected self-limiting by about 80.5 million LDO to 156,000.[^self-limit-snapshot][^block-self-limit]
+  rejected self-limiting,[^block-self-limit] by about 80.5 million LDO to
+  156,000.[^self-limit-snapshot]
   Lido's development in the following years focused on dual governance
   and community staking, which Shapovalov said in 2025 improved Lido's
   image but did little for growth.[^dlnews-share] Its share was about
@@ -291,7 +292,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
 | 2020-12-15 | US$2M funding round reported |
 | 2020-12-19 | Staking service opens on Ethereum |
 | 2021-01-05 | LDO token goes live |
-| 2021-04 | Sale of 100M LDO to Paradigm and partners approved |
+| 2021-04-06 | Sale of 100M LDO to Paradigm and partners approved |
 | 2022-03-03 | Andreessen Horowitz investment announced |
 | 2022-05 | Terra deployment ends after Terra's collapse |
 | 2022-05-21 | Forum discussion on limiting Lido's share opens |
@@ -336,6 +337,7 @@ favour, just above the 50 million quorum, and concluded on 30 June
 [^block-layoff]: The Block (2025). *Lido lays off 15% of workforce for "long-term sustainability," cofounder says*. <https://www.theblock.co/post/365369/lido-lay-off>
 [^dlnews-share]: DL News (2025). *Lido eyes "low-risk staking" to boost flagging market share*. <https://www.dlnews.com/articles/regulation/lido-eyes-low-risk-staking-to-boost-flagging-market-share/>
 [^paradigm-proposal]: Lido research forum (2021). *Proposal: LDO treasury diversification*. <https://research.lido.fi/t/proposal-ldo-treasury-diversification/458>
+[^paradigm-snapshot]: Lido DAO Snapshot (2021). *Proposal: LDO Treasury Diversification*. <https://snapshot.org/#/lido-snapshot.eth/proposal/QmTR46STEjdRwmCKJjDThXXekKJHbhuiUHaXqDJqry3KqK>
 [^forklog-paradigm-paid]: ForkLog (2021). *Paradigm transfers 15,120 ETH to Lido DAO under token buyback agreement*. <https://forklog.com/en/news/paradigm-transfers-15120-eth-to-lido-dao-under-token-buyback-agreement>
 [^forklog-what]: ForkLog (2022). *What is Lido?* <https://forklog.com/en/what-is-lido/>
 [^etherscan]: Etherscan. *Lido: stETH Token*. <https://etherscan.io/address/0xae7ab96520de3a18e5e111b5eaab095312d7fe84>
