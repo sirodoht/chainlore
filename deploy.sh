@@ -4,11 +4,10 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 host="${DEPLOY_HOST:-root@01z.io}"
-python="${PYTHON:-.venv/bin/python}"
 remote_root=/var/www/chainlore
 
-if [[ ! -x "$python" ]]; then
-    echo 'Create .venv and install requirements.txt first; see README.md.' >&2
+if ! command -v uv >/dev/null 2>&1; then
+    echo 'Install uv before deploying; see README.md.' >&2
     exit 1
 fi
 if [[ -n "$(git status --porcelain)" ]]; then
@@ -16,8 +15,8 @@ if [[ -n "$(git status --porcelain)" ]]; then
     exit 1
 fi
 
-"$python" scripts/build.py
-"$python" scripts/check.py
+uv run --locked python scripts/build.py
+uv run --locked python scripts/check.py
 bash -n deploy.sh
 revision="$(git rev-parse HEAD)"
 release="$(date -u +%Y%m%dT%H%M%SZ)-${revision:0:12}"

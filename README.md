@@ -9,14 +9,14 @@ preserved separately in the editorial record.
 
 ## Build and preview
 
-Requires Python 3.9 or newer. The only direct dependency is Python-Markdown.
+Requires uv and Python 3.9 or newer. Dependencies are declared in
+`pyproject.toml` and locked in `uv.lock`.
 
 ```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python scripts/build.py
-.venv/bin/python scripts/check.py
-.venv/bin/python -m http.server 8000 --directory dist
+uv sync --locked
+uv run --locked python scripts/build.py
+uv run --locked python scripts/check.py
+uv run --locked python -m http.server 8000 --directory dist
 ```
 
 Open http://localhost:8000. The build reads `pages/*.md`, `INDEX.md`,
@@ -31,7 +31,7 @@ Add an article in `pages/` with the front matter below and link it from
 
 ## Deploy to Brick
 
-With SSH access to `root@01z.io`, and `rsync`, `scp`, and `curl` installed:
+With SSH access to `root@01z.io`, and `uv`, `rsync`, `scp`, and `curl` installed:
 
 ```sh
 git add <changed-files>
