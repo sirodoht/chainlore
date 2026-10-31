@@ -169,12 +169,7 @@ def step(check):
     if response.get('stop_reason') == 'pause_turn' and len(responses) < 3:
         return check
     try:
-        clean = ai.without_thinking(response)
-        text = ''.join(block.get('text', '') for block in clean.get('content', []) if block.get('type') == 'text').strip()
-        fenced = re.fullmatch(r'```(?:json)?\s*\n(.*)\n```', text, re.S)
-        if fenced:
-            clean['content'] = [{'type': 'text', 'text': fenced[1]}]
-        report = extract_draft(clean)
+        report = extract_draft(ai.without_thinking(response))
         errors, evidence = validate_report(check, report, responses)
     except (InvalidArticle, TypeError, ValueError):
         report, errors, evidence = {}, ['invalid_check_report'], {}

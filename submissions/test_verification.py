@@ -111,3 +111,15 @@ class VerificationTests(TestCase):
 
     def test_local_reference_is_rejected(self):
         with self.assertRaises(InvalidArticle):inventory(SOURCE.replace(URL,'http://127.0.0.1/secret'))
+
+
+class ResponseFormatTests(TestCase):
+    def test_only_complete_json_or_one_enclosing_fence_is_accepted(self):
+        from .article_validation import extract_draft
+        for text in ('{"edits": []}', '```json\n{"edits": []}\n```'):
+            self.assertEqual(extract_draft({'stop_reason':'end_turn','content':[{'type':'text','text':text}]}),{'edits':[]})
+        for text in ('Explanation before\n```json\n{"edits": []}\n```', '```json\n{"edits": []}\n```\nExtra prose', '```json\n{"edits": ['):
+            with self.assertRaises(InvalidArticle):
+                extract_draft({'stop_reason':'end_turn','content':[{'type':'text','text':text}]})
+        with self.assertRaises(InvalidArticle):
+            extract_draft({'stop_reason':'max_tokens','content':[{'type':'text','text':'{"edits": []}'}]})

@@ -34,3 +34,10 @@ recovery attempts, up to three delayed account recovery probes, 10 new jobs/day,
 one scheduled maintenance job/day, 2,000,000 reserved tokens/day and 500,000/run.
 These conservative token reservations include tool allowances and failed calls;
 they are not a currency invoice. Owner configuration can change the budget limits.
+
+
+Post-deployment inspection confirmed that two earlier improvement-writing failures
+were complete `end_turn` responses wrapped in JSON fences. The same strict parser
+now handles both writing and verification responses. Surrounding prose, incomplete
+objects, non-object JSON and interrupted responses remain rejected. No historical
+private response text was published or used to assign new verification credit.

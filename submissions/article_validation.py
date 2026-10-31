@@ -83,7 +83,12 @@ def stub_draft(title, research):
 
 def extract_draft(response):
     require(response.get('stop_reason') == 'end_turn', 'writing_incomplete')
-    text = ''.join(block['text'] for block in response.get('content', []) if block.get('type') == 'text')
+    text = ''.join(block['text'] for block in response.get('content', []) if block.get('type') == 'text').strip()
+    # Accept only a single enclosing code fence, never surrounding prose or a
+    # partial object. The same schema and content checks still apply afterward.
+    fenced = re.fullmatch(r'```(?:json)?\s*\n(.*)\n```', text, re.S)
+    if fenced:
+        text = fenced[1]
     try:
         result = json.loads(text)
     except (ValueError, TypeError):
