@@ -81,6 +81,11 @@ All pages in Chainlore.
 
 ## Infrastructure
 
+- [Safe](pages/safe.md): contract accounts, owners, modules, guards, and governance.
+- [Zero-knowledge proof](pages/zero-knowledge-proof.md): hidden witnesses,
+  succinct verification, setup assumptions, and rollups.
+- [Account abstraction](pages/account-abstraction.md): programmable validation,
+  ERC-4337, fee sponsorship, and EIP-7702.
 - [Perpetual futures](pages/perpetual-futures.md): funding, leverage,
   reference prices, and loss allocation.
 - [Multisignature wallet](pages/multisignature-wallet.md): signing thresholds,
