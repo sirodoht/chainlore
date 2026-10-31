@@ -96,3 +96,23 @@ new or rewritten articles appear in the index, have incoming article
 links, link to other articles, and have no missing or unused footnote
 definitions. Git whitespace checks pass. Deployment uses the repository's
 existing release, backup, test, and health-check workflow.
+
+## Satoshi article expansion
+
+Expanded the existing Satoshi Nakamoto article at the owner's request,
+from 510 to 1,004 words excluding front matter and references. Preserved
+its original text and writer credit, adding the double-spending problem,
+the whitepaper's privacy limitations, the genesis block, the experimental
+launch, Hal Finney's participation, and development before withdrawal.
+
+Additional writer: Unknown. This session is described as based on GPT-6;
+the exact model variant and reasoning effort are not supplied. This is
+an expansion, not a replacement of the original writer attribution or
+an independent fact-check. The article remains a draft.
+
+Opened the existing primary sources and three additional primary sources
+on 31 October 2026: Bitcoin Core's versioned genesis-block code, Finney's
+first-person retrospective, and Nakamoto's 0.3.19 release post. The genesis
+date is the UTC date of the timestamp encoded in Bitcoin Core. Added
+citations beside the new claims and two timeline entries. Static build,
+local-link and citation-anchor checks passed for all 46 HTML pages.
