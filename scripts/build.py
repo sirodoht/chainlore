@@ -27,7 +27,7 @@ ROUTES = {'INDEX.md': '/all-articles/', 'VISION.md': '/vision/',
 STATUSES = {'draft': ('Draft', 'statuses'),
             'ai-fact-checked': ('AI fact-checked', 'ai-fact-checked'),
             'human-reviewed': ('Human reviewed', 'human-reviewed')}
-ARTICLE_FIELDS = ('title', 'ticker', 'category', 'status', 'updated')
+ARTICLE_FIELDS = ('title', 'ticker', 'category', 'status', 'updated', 'written_by')
 STATUS_FIELDS = {'ai-fact-checked': ('checked', 'checked_by'),
                  'human-reviewed': ('checked', 'checked_by', 'reviewed', 'reviewed_by')}
 TEMPLATE = Template((ROOT / 'site/template.html').read_text())
@@ -190,6 +190,13 @@ def article(page):
         if errors:
             raise ValueError('\n'.join(errors))
         details = f'<span>Updated {long_date(meta["updated"])}</span>'
+        details += f'<span>Written by {html.escape(meta["written_by"])}</span>'
+        label, anchor = STATUSES[meta['status']]
+        details += f'<span><a href="/policy/#{anchor}">{label}</a></span>'
+        if meta['status'] in ('ai-fact-checked', 'human-reviewed'):
+            details += f'<span>Fact-checked by {html.escape(meta["checked_by"])} on {long_date(meta["checked"])}</span>'
+        if meta['status'] == 'human-reviewed':
+            details += f'<span>Reviewed by {html.escape(meta["reviewed_by"])} on {long_date(meta["reviewed"])}</span>'
     content = f'<header class="article-header"><h1>{html.escape(title)}</h1><div class="article-meta">{details}</div></header>'
     if meta.get('status') == 'draft':
         content += '<p class="notice">This article is a draft. It has not yet passed a fact-check under the <a href="/policy/">editorial policy</a> and may contain errors.</p>'

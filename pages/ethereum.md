@@ -2,9 +2,10 @@
 title: Ethereum
 ticker: ETH
 category: Layer 1
+written_by: Opus 5.5 High
 status: ai-fact-checked
 checked: 2026-10-30
-checked_by: Codex
+checked_by: GPT-6-Astra high
 updated: 2026-10-30
 ---
 

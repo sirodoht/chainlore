@@ -7,8 +7,9 @@ and protocols.
 ## Authorship and review
 
 The original encyclopedia drafts were written by Opus 5.5 High.
-Completed AI fact-checks are credited separately on each article, with
-the checker and date.
+Each article records and displays its writer model and reasoning effort when
+known. Completed AI fact-checks are credited separately, with the checker
+model, effort, and date. Missing historical attribution is labelled Unknown.
 
 Each article displays an update date and one of three editorial
 statuses from its Markdown source:

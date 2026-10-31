@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from . import ai_providers as ai
 from . import notify
+from .attribution import attribute_source, historical_writer_credit
 from .article_validation import InvalidArticle, citable_urls, extract_draft, stub_draft, validate_draft
 from .catalog import articles
 from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, Submission
@@ -45,7 +46,9 @@ def draft_article(run):
     if citable_urls(run.research):
         for _ in range(2):
             try:
-                draft = extract_draft(ai.write_article(run, problem))
+                response = ai.write_article(run, problem)
+                draft = extract_draft(response)
+                draft['_written_by'] = response.get('_written_by', 'Unknown')
                 validate_draft(draft, run.research)
                 return draft
             except InvalidArticle as exc:
@@ -104,6 +107,8 @@ def process(run):
         run.draft = draft_article(run)
         run.save(update_fields=['draft', 'updated_at'])
     source, digest = validate_draft(run.draft, run.research)
+    credit = run.draft.get('_written_by') or historical_writer_credit(run.events.order_by('pk'), run.draft['markdown'])
+    source, digest = attribute_source(source, credit)
     event(run, 'validation', passed=True, content_hash=digest)
     match = existing_match(run.draft['title'], catalog)
     if match:

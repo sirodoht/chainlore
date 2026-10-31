@@ -14,6 +14,33 @@ reviewed, and what each status promises the reader.
 A page moves up one status at a time. Editing a page can move it back
 down; see [Losing a status](#losing-a-status).
 
+## Authorship and check credits
+
+Every article requires `written_by` in its front matter, including drafts.
+Record the actual model and reasoning effort, for example:
+
+    written_by: Opus 5.5 High
+    checked_by: GPT-6-Astra high
+    checked: 2026-10-30
+
+Only add the check fields after a completed fact-check. Names of applications
+such as Codex or ChatGPT are insufficient model attribution. Use the provider's
+model identifier for automated writing, with the requested effort appended.
+If historical evidence is missing, record `Unknown` rather than guessing.
+Fixed placeholder pages credit `Chainlore template (no model)`.
+
+Keep the original writer credit when editing or checking an article. Record
+additional substantive writing and checking passes, including model and effort,
+in the commit description or a dated review record. A complete rewrite updates
+`written_by`; Git retains prior credits. Generated articles retain provider
+requests and responses in their private audit history, and their Markdown
+stores the writer credit so it travels with the article. Screening credits in
+that audit history do not qualify as fact-checks.
+
+Article headers display the writer, current status, and applicable checker or
+human reviewer and date. After a substantive edit returns a page to draft,
+old checker metadata may remain as history but is not displayed as a current check.
+
 ## Sources
 
 Every reference falls into one of three tiers.

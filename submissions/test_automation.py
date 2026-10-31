@@ -58,7 +58,8 @@ def decision(**values):
 
 
 def written(draft=None):
-    return {'stop_reason': 'end_turn', 'content': [{'type': 'text', 'text': json.dumps(draft or DRAFT)}]}
+    return {'stop_reason': 'end_turn', '_written_by': 'test-writer-v1 (high effort)',
+            'content': [{'type': 'text', 'text': json.dumps(draft or DRAFT)}]}
 
 
 class AutomationTests(TestCase):
@@ -93,6 +94,9 @@ class AutomationTests(TestCase):
         current = self.root / 'published/current'
         html = (current / 'p/test-protocol/index.html').read_text()
         self.assertIn('This article is a draft', html)
+        self.assertIn('Written by test-writer-v1 (high effort)', html)
+        self.assertNotIn('Fact-checked by', html)
+        self.assertIn('written_by: test-writer-v1 (high effort)', GeneratedArticle.objects.get().markdown)
         self.assertIn('Test Protocol', (current / 'all-articles/index.html').read_text())
         index = (current / 'sources/INDEX.md').read_text()
         self.assertIn('- [Test Protocol](pages/test-protocol.md)', index.split('## Decentralised finance')[1].split('## ')[0])
@@ -107,6 +111,7 @@ class AutomationTests(TestCase):
         self.assertNotEqual(first, current.resolve())
         self.assertEqual(json.loads((current / 'build-info.json').read_text())['revision'], 'b' * 40)
         self.assertTrue((current / 'p/test-protocol/index.html').is_file())
+        self.assertIn('Written by test-writer-v1 (high effort)', (current / 'p/test-protocol/index.html').read_text())
         self.assertEqual((current / 'sources/INDEX.md').read_text().count('](pages/test-protocol.md)'), 1)
         self.assertEqual(run_worker(), 0)
         self.write_article.assert_called_once()
@@ -234,6 +239,7 @@ class AutomationTests(TestCase):
         article = GeneratedArticle.objects.get()
         self.assertIn('This is a placeholder', article.markdown)
         self.assertNotIn('alert(1)', article.markdown)
+        self.assertIn('written_by: Chainlore template (no model)', article.markdown)
         self.assertIn('This article is a draft', (self.root / 'published/current/p/test-protocol/index.html').read_text())
         self.review_output.assert_called_once()
 

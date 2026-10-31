@@ -1,6 +1,6 @@
 # AI fact-check: 30 October 2026
 
-Checker: Codex. Original drafts: Opus 5.5 High.
+Checker: GPT-6-Astra high. Original drafts: Opus 5.5 High.
 
 Reviewed Bitcoin, Ethereum, Arbitrum, and Hyperliquid against live sources,
 including their leads, infoboxes, prose, tables, timelines, and references.

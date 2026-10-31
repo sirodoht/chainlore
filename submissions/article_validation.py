@@ -76,7 +76,8 @@ def stub_draft(title, research):
                 f'It has not been checked and should not be relied on.{markers}\n')
     if references:
         markdown += f'\n## References\n\n{references}\n'
-    return {'title': title, 'slug': slugify(title), 'ticker': 'None', 'category': 'Other', 'markdown': markdown}
+    return {'title': title, 'slug': slugify(title), 'ticker': 'None', 'category': 'Other', 'markdown': markdown,
+            '_written_by': 'Chainlore template (no model)'}
 
 
 def extract_draft(response):

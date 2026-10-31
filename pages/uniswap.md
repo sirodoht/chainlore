@@ -2,6 +2,7 @@
 title: Uniswap
 ticker: UNI
 category: DeFi
+written_by: Opus 5.5 High
 status: ai-fact-checked
 checked: 2026-10-30
 checked_by: Opus 5.5 High

@@ -2,6 +2,7 @@
 title: Stablecoins Ordinance (Hong Kong)
 ticker: —
 category: Regulation
+written_by: Opus 5.5 High
 status: draft
 updated: 2026-10-31
 ---

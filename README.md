@@ -268,7 +268,7 @@ blockchains and protocols. See [editorial scope](VISION.md).
 
 Every page in `pages/` follows the same shape:
 
-1. **Front matter**: title, ticker, category, status, last updated date.
+1. **Front matter**: title, ticker, category, status, last updated date, and `written_by` (writer model and effort).
 2. **Lead**: one paragraph that says what the subject is.
 3. **Infobox**: a two-column table of hard facts.
 4. **Body sections**: History, Technology, Token, Governance, Incidents
@@ -289,3 +289,17 @@ Rules:
   `human-reviewed`. [POLICY.md](POLICY.md) sets out what each requires
   and the source rules every page must meet.
 - File names are lowercase and hyphenated: `pages/arbitrum.md`.
+
+Writer attribution is required by the build. `checked_by` records the actual
+checker model and effort; `checked` records the check date. Application names
+alone are insufficient. See POLICY.md and AGENTS.md for attribution on later
+edits and checks. These credits appear in article headers and Markdown exports.
+
+The automated writer copies its model identifier from the provider response
+(falling back to the request identifier) and effort from the request into
+`written_by`; generated text cannot set its own credit. The credit is saved
+with the draft for retries and publication. Migration 0006 recovers credits for
+existing database articles from matching writing responses and their requests,
+updates content hashes, and uses `Unknown` when evidence is absent. Placeholder
+pages credit the fixed Chainlore template. Jev screening remains separately
+audited and does not populate `checked_by`.
