@@ -58,3 +58,16 @@ All pages in Chainlore.
   Hong Kong's licensing regime for stablecoin issuers.
 - [UK cryptoasset regime](pages/uk-cryptoasset-regime.md): the United
   Kingdom's authorisation regime for crypto firms and stablecoins.
+
+## Infrastructure
+
+- [Cryptocurrency wallet](pages/cryptocurrency-wallet.md): keys, accounts,
+  custody, recovery, and transaction signing.
+- [Smart contract](pages/smart-contract.md): blockchain programs, execution,
+  permissions, and upgrades.
+- [Rollup](pages/rollup.md): scaling through offchain execution and
+  settlement on a base chain.
+- [Blockchain bridge](pages/blockchain-bridge.md): cross-chain assets,
+  messages, and verification.
+- [Blockchain oracle](pages/blockchain-oracle.md): data used by smart
+  contracts, including prices and external events.

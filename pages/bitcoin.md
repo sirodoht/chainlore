@@ -368,6 +368,8 @@ issuance.[^faq]
 
 ## See also
 
+- [Cryptocurrency wallet](cryptocurrency-wallet.md)
+
 - [Ethereum](ethereum.md)
 
 ## References

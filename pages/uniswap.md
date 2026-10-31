@@ -12,7 +12,7 @@ updated: 2026-10-30
 # Uniswap
 
 **Uniswap** is a decentralised exchange protocol that lets users swap
-tokens against pools of liquidity held in smart contracts, rather than
+tokens against pools of liquidity held in [smart contracts](smart-contract.md), rather than
 against an order book. Prices are set by a formula, and anyone can add
 tokens to a pool and earn a share of its trading fees. Uniswap launched on
 [Ethereum](ethereum.md) in November 2018 and has since been deployed on

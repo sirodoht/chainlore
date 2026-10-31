@@ -314,6 +314,8 @@ to a public token launch.[^theblock-arc]
 
 ## See also
 
+- [Blockchain bridge](blockchain-bridge.md)
+
 - [Stablecoin](stablecoin.md), the general article and list of stablecoins
 - [Tether](tether.md), issuer of USDT, the other major dollar stablecoin
 - [Terra](terra.md), whose algorithmic stablecoin collapsed in 2022

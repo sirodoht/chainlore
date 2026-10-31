@@ -314,6 +314,8 @@ required.[^theblock-stage1][^theblock-unified]
 
 ## See also
 
+- [Rollup](rollup.md)
+
 - [Ethereum](ethereum.md)
 - [Optimism](optimism.md)
 - [Arbitrum](arbitrum.md)

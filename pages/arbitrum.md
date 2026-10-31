@@ -13,7 +13,7 @@ updated: 2026-10-30
 
 **Arbitrum** is a family of layer 2 networks that process transactions
 off [Ethereum](ethereum.md) and post the results back to it. Its main
-network, **Arbitrum One**, is an optimistic rollup: transactions are
+network, **Arbitrum One**, is an optimistic [rollup](rollup.md): transactions are
 assumed valid unless someone proves otherwise with a fraud proof during a
 challenge period. Arbitrum was developed by Offchain Labs and is governed
 by the Arbitrum DAO through the **ARB** token.[^intro][^governance-intro]

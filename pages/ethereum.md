@@ -13,7 +13,7 @@ updated: 2026-10-30
 
 **Ethereum** is a decentralized blockchain with a built-in virtual
 machine, the Ethereum Virtual Machine (EVM), that runs general-purpose
-programs called smart contracts. Its native currency is **ether** (ETH).
+programs called [smart contracts](smart-contract.md). Its native currency is **ether** (ETH).
 It was proposed by Vitalik Buterin in 2013 and launched on 30 July 2015.
 Since September 2022 it has used proof of stake.[^history]
 
@@ -72,7 +72,7 @@ upgrade on 12 April 2023.[^history]
 ### Rollup-centric roadmap
 
 In October 2020 Buterin proposed that Ethereum scale mainly through layer
-2 rollups, such as [Arbitrum](arbitrum.md), rather than on the base layer
+2 [rollups](rollup.md), such as [Arbitrum](arbitrum.md), rather than on the base layer
 itself.[^rollup-roadmap] Later upgrades followed that plan. Dencun (March
 2024) added "blobs", a cheaper data type for rollups
 (EIP-4844).[^eip4844] Pectra (May 2025) raised blob capacity (EIP-7691)

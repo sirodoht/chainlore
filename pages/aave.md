@@ -325,6 +325,9 @@ technical service provider.[^governance-docs]
 
 ## See also
 
+- [Blockchain oracle](blockchain-oracle.md)
+- [Smart contract](smart-contract.md)
+
 - [Ethereum](ethereum.md)
 - [Arbitrum](arbitrum.md), whose Security Council froze ETH from the rsETH exploit
 - [Uniswap](uniswap.md)

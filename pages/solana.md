@@ -337,6 +337,8 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 
 ## See also
 
+- [Blockchain bridge](blockchain-bridge.md)
+
 - [Ethereum](ethereum.md)
 - [FTX](ftx.md), an early backer whose collapse affected Solana
 - [USDC](usdc.md) and [Tether](tether.md), both issued natively on Solana
