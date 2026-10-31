@@ -3,12 +3,12 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from .models import AutomationEvent, AutomationRun, Submission, SubmissionUpdate
-from .tests import SubmissionsTests
+from . import tests as form_tests
 from .forms import new_token
 
 
 class TrackingTests(TestCase):
-    setUp = SubmissionsTests.setUp
+    setUp = form_tests.SubmissionsTests.setUp
 
     def detail(self, record):
         return self.client.get(f'/submit/track/{record.pk}/')
@@ -142,3 +142,18 @@ class TrackingTests(TestCase):
         self.client.logout()
         self.assertContains(self.detail(record), 'The source confirms the existing date.')
         self.assertContains(self.client.get('/submit/all/'), 'Bitcoin launch date')
+
+    def test_automated_decline_is_explained_without_overwriting_manual_decision(self):
+        from .automation import finish
+        record = Submission.objects.create(kind='request', status='reviewing')
+        run = AutomationRun.objects.create(submission=record, state='running')
+        finish(run, 'declined', 'out_of_scope_or_injection')
+        self.assertContains(self.detail(record), 'outside the editorial scope')
+        record.refresh_from_db()
+        record.status = 'resolved'
+        record.public_summary = 'An editor published the requested material.'
+        record.save()
+        finish(run, 'review', 'submission_already_decided')
+        response = self.detail(record)
+        self.assertEqual(response.context['item']['status'], 'resolved')
+        self.assertContains(response, 'An editor published the requested material.')

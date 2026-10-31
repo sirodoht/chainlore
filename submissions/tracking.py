@@ -80,6 +80,8 @@ EVENT_LABELS = {
     'operator_regenerate': 'Queued for an expanded article',
     'operator_resume_approved': 'Approved improvement queued for publication',
     'improvement_conflict': 'Article changed during processing; review needed',
+    'provider_error': 'Processing interrupted', 'worker_error': 'Processing interrupted',
+    'git_error': 'Publication delayed',
 }
 
 
@@ -90,19 +92,19 @@ def history(submission, catalog):
     run = getattr(submission, 'automation', None)
     if run:
         # Deliberately allowlist kinds and fields; provider payloads stay private.
-        for event in run.events.filter(kind__in=[*EVENT_LABELS, 'decision', 'publication']).order_by('created_at', 'pk'):
-            label = EVENT_LABELS.get(event.kind)
+        for event in run.events.filter(kind__in=[*EVENT_LABELS, 'decision', 'publication']).order_by('created_at', 'pk').values('kind', 'created_at', 'data__state', 'data__revision'):
+            label = EVENT_LABELS.get(event['kind'])
             link = ''
-            if event.kind == 'decision':
+            if event['kind'] == 'decision':
                 label = {'published': 'Article published', 'duplicate': 'Already covered',
-                         'declined': 'Declined', 'review': 'Needs review', 'failed': 'Needs review'}.get(event.data.get('state'))
-            elif event.kind == 'publication':
+                         'declined': 'Declined', 'review': 'Needs review', 'failed': 'Needs review'}.get(event['data__state'])
+            elif event['kind'] == 'publication':
                 label = 'Article published' if submission.kind == 'request' else 'Article updated'
-                commit = event.data.get('revision', '')
+                commit = event['data__revision']
                 if re.fullmatch(r'[a-f0-9]{40}', str(commit)):
                     link = f'https://github.com/sirodoht/chainlore/commit/{commit}'
             if label:
-                entries.append({'date': event.created_at, 'label': label, 'note': '', 'link': link})
+                entries.append({'date': event['created_at'], 'label': label, 'note': '', 'link': link})
     entries.sort(key=lambda entry: entry['date'])
     # Older manual decisions may predate tracking. Do not invent transition dates.
     return entries
