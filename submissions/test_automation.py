@@ -245,6 +245,23 @@ class AutomationTests(TestCase):
         self.triage.assert_called_once()
         self.assertTrue(run.events.filter(kind='queue_resumed', data__actor_id=123).exists())
 
+    def test_repeated_account_failure_fails_the_run_and_releases_the_queue(self):
+        second = Submission.objects.create(kind='request', title='Another request')
+        self.research.side_effect = [ai.ProviderError('anthropic_http_400', account_problem=True),
+                                     ai.ProviderError('anthropic_http_400', account_problem=True), RESEARCH]
+        self.write_article.return_value = written({**DRAFT, 'title': 'Another Request', 'slug': 'another-request'})
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'blocked')
+        resume_queue(actor_id=1)
+        run_worker()
+        first = AutomationRun.objects.get(submission=self.submission)
+        self.assertEqual(first.state, 'failed')
+        self.assertEqual(first.last_error, 'anthropic_http_400')
+        self.assertFalse(AutomationControl.objects.get().paused)
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get(submission=second).state, 'published')
+        self.assertEqual(self.research.call_count, 3)
+
     def test_failed_queue_alert_is_audited_and_retried_without_provider_calls(self):
         self.triage.side_effect = ai.ProviderError('jev_http_401', account_problem=True)
         with override_settings(NOTIFICATIONS_ENABLED=True, ADMIN_NOTIFICATION_EMAIL='admin@example.com'), patch('submissions.automation_control.notify_provider_problem', side_effect=smtplib.SMTPException('private mail error')) as alert:

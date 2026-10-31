@@ -150,7 +150,9 @@ def run_worker():
                         process(run)
                 except ai.ProviderError as exc:
                     event(run, 'provider_error', code=str(exc), retryable=exc.retryable, account_problem=exc.account_problem)
-                    if exc.account_problem:
+                    # A run that repeats the error after a resume is the likely cause,
+                    # so it fails alone rather than blocking the queue behind it.
+                    if exc.account_problem and not run.events.filter(kind='queue_paused').exists():
                         control = pause_for_provider(run, exc)
                         deliver_provider_alert(control)
                     elif exc.retryable and run.attempts < 3:

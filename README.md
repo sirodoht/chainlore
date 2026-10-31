@@ -124,6 +124,9 @@ consuming an attempt; subsequent worker ticks make no model calls and leave new
 requests queued. The worker alerts the configured admin, logs the pause, and
 records alert acceptance/failure. Failed alerts retry hourly, up to three attempts.
 The admin control remains visible even if email is suppressed or unavailable.
+A run that hits such an error again after a resume is marked Failed instead of
+pausing the queue a second time, so one bad request cannot block those behind it.
+If the problem was account-wide, the next run pauses the queue as usual.
 
 After fixing the provider settings or billing, select the control in
 `/admin/submissions/automationcontrol/` and choose **Resume queue after fixing
