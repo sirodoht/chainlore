@@ -27,6 +27,16 @@ for the name.[^announcement][^release][^judgment]
 
 ## Whitepaper and design
 
+Preparations preceded the public announcement. In an email dated 22 August
+2008, preserved in correspondence supplied by Wei Dai, Nakamoto asked Dai
+for the publication year of his b-money proposal so it could be cited
+properly. Nakamoto said Adam Back had pointed out similarities and directed
+them to Dai's work. The message included a draft under the title
+*Electronic Cash Without a Trusted Third Party*. This exchange documents
+contact with earlier digital-cash researchers before the mailing-list
+publication, without establishing how much of the design came from any
+one predecessor.[^dai]
+
 On 31 October 2008, Nakamoto posted a link to *Bitcoin: A Peer-to-Peer
 Electronic Cash System* on the cryptography mailing list. The announcement
 proposed electronic payments without a central trusted operator and
@@ -55,6 +65,25 @@ well as possible protections.[^paper]
 
 ## Launch and early participants
 
+Discussion began before the software was publicly released. In a
+November 2008 reply to Hal Finney on the cryptography mailing list,
+Nakamoto described how nodes would retain pending transactions, check
+signatures, and resolve competing branches. Nakamoto also said that
+writing the code had preceded writing the paper: implementation was
+needed to establish that the design's problems could be solved. This
+was the creator's account of the development sequence, rather than a
+dated record of every programming milestone.[^discussion]
+
+The exchange addressed a practical question for merchants: when was a
+payment sufficiently settled to justify handing over goods? Nakamoto
+explained that an attacker trying to replace a payment would have to
+compete with the work accumulating on the accepted history, and suggested
+waiting perhaps an hour before shipping. That was an early explanation
+of confirmation risk, rather than a guarantee that any fixed waiting
+period makes a payment irreversible. Finney's questions show that
+transaction propagation and competing histories were already being
+scrutinised before launch.[^discussion]
+
 Bitcoin's genesis block carries a timestamp of 3 January 2009. Its
 transaction embeds the text "The Times 03/Jan/2009 Chancellor on brink of
 second bailout for banks." Bitcoin Core's source preserves both that
@@ -76,6 +105,13 @@ deliberately low, with competition expected to raise it through automatic
 adjustments. Participation initially meant helping operate and test a
 small network.[^release]
 
+The same announcement described a maximum issuance of 21 million coins,
+with the amount issued falling by half roughly every four years. It
+also anticipated transaction fees eventually replacing newly generated
+coins as the main payment to network operators. These were features
+of the proposed monetary schedule, not promises about a future market
+price.[^release]
+
 Hal Finney's 2013 retrospective supplies a participant's account of those
 first days. His interest drew on earlier digital-cash work, including
 his own reusable proof-of-work experiment, RPOW, and correspondence with
@@ -91,6 +127,48 @@ experience of the software and correspondence, rather than establishing
 the real-world identity of the person using the Nakamoto name.[^finney]
 
 ## Development and withdrawal
+
+Correspondence published by early contributor Martti Malmi shows the
+practical work surrounding the program. In November 2009, Malmi reported
+installing two candidate forum systems, phpBB3 and Simple Machines Forum,
+for comparison. In December, Nakamoto praised the new Drupal-based
+bitcoin.org site. The exchanges document work on the project's website
+and discussion infrastructure alongside software development.[^malmi]
+
+The same archive preserves a July 2010 message about removing a promise
+of anonymity from the homepage. Nakamoto warned that transaction history
+could reveal information and that using Bitcoin anonymously required
+precautions. Separately, a July release message described version 0.3's
+command-line JSON-RPC support and credited Laszlo for the Mac OS X
+version. The archive therefore records both a more careful public
+description of privacy and contributions to making the software usable
+beyond its original Windows release.[^malmi]
+
+An urgent incident interrupted that development in August 2010. On
+15 August, Nakamoto announced version 0.3.10 as an overflow patch for
+block 74,638. The announcement urged users to upgrade. An edited follow-up
+reported that the correct chain had overtaken the bad chain and said
+upgraded clients would reorganise automatically; deleting local block
+files was no longer necessary. The record distinguishes the software
+fix from the subsequent recovery of the accepted chain. Because the
+post was edited on 16 August, its recovery instructions should not all
+be treated as statements made at the instant the patch was first
+announced.[^overflow]
+
+The patch announcement also listed Windows, Linux, and Mac OS X packages
+and credited tcatm for a four-way SSE2 SHA-256 implementation. That
+optimisation was described as improving hashing performance on some CPUs.
+Even an emergency release thus combined a consensus-related repair with
+platform packaging and another contributor's performance work.[^overflow]
+
+Nakamoto also expressed concern about attracting attention before the
+software was ready. On 5 December 2010, during a forum discussion about
+WikiLeaks accepting Bitcoin, Nakamoto appealed against that use at the
+time. The post described a small beta-stage community and argued that
+the publicity could overwhelm the project while raising little money
+for WikiLeaks. It documents caution about growth and exposure, but does
+not by itself explain the later decision to withdraw from development
+or establish what happened to Nakamoto afterwards.[^wikileaks]
 
 Nakamoto continued publishing technical updates after the launch. In a
 12 December 2010 forum post announcing version 0.3.19, Nakamoto described
@@ -126,25 +204,64 @@ did not write the whitepaper or initial software, and did not create
 Bitcoin. The judgment rejected a particular identity claim; it did not
 identify the actual creator.[^judgment]
 
-In April 2026, a New York Times investigation named Adam Back as Nakamoto;
-Back denied it.[^identity]
+Subsequent proceedings concerned compliance with court orders. In
+December 2024, the court found Wright in contempt and imposed a
+12-month prison sentence suspended for two years. The order set the
+suspension to expire on 20 December 2026, conditional on compliance,
+and struck out a new claim. A suspended sentence is distinct from
+immediate imprisonment. These proceedings enforced restrictions following
+the rejected identity claim; they did not establish who actually created
+Bitcoin.[^contempt]
+
+In April 2026, a *New York Times* investigation argued that Adam Back
+could be Nakamoto. Reporting by The Block described the case as relying
+on similarities in writing and earlier electronic-cash ideas; it also
+reported Back's denial. Such comparisons are an argument about authorship,
+not a demonstrated link between a legal identity and control of the
+original project's cryptographic keys. As of 31 October 2026, this
+article treats the identification as contested, rather than replacing
+the pseudonym with Back's name.[^identity]
 
 The distinction between documented activity under the pseudonym and
 claims about a particular person is central to reading this history.
 Original messages establish what was published under the name, while
 identity assertions require separate evidence.[^announcement][^judgment]
 
+## Mining and attributed holdings
+
+Claims about Nakamoto's wealth also depend on attribution. In April
+2013, researcher Sergio Demian Lerner published an analysis of early
+blocks using patterns in the ExtraNonce field of mining transactions.
+He interpreted recurring patterns as evidence of a dominant early miner
+and estimated around one million bitcoins, while explicitly acknowledging
+that he could not be certain all the identified blocks belonged to
+Nakamoto. This was an inference from mining behaviour, not a published
+wallet balance authenticated by the creator.[^holdings]
+
+The distinction matters when interpreting large holdings estimates.
+Grouping blocks believed to share a miner and identifying that miner
+as Nakamoto are separate steps. Lerner's analysis supplied a method and
+assumptions for the grouping; its identity attribution remained uncertain.
+His historical estimate should therefore not be read as a verified
+statement of Nakamoto's present holdings, access to private keys, or
+spendable wealth.[^holdings]
+
 ## Timeline
 
 | Date | Event |
 |---|---|
+| 2008-08-22 | Email to Wei Dai requests a citation for b-money and shares a draft[^dai] |
 | 2008-10-31 | Whitepaper announced on the cryptography mailing list[^announcement] |
 | 2009-01-03 | Timestamp recorded in Bitcoin's genesis block[^genesis] |
 | 2009-01-08 | v0.1 release announcement timestamped in the original archive[^release] |
+| 2010-08-15 | Version 0.3.10 announced as an overflow patch for block 74,638[^overflow] |
+| 2010-12-05 | Forum post cautions against WikiLeaks adoption at that stage[^wikileaks] |
 | 2010-12-12 | Version 0.3.19 announcement discusses denial-of-service controls[^development] |
 | 2011-04-23 | Email to Mike Hearn describes moving to other work[^hearn] |
 | 2024-03-14 | High Court announces rejection of Wright's identity claim[^judgment] |
 | 2024-05-20 | Detailed judgment published[^judgment] |
+| 2024-12-20 | Court order records Wright's suspended prison sentence for contempt[^contempt] |
+| 2026-04-08 | Reporting describes the Times' Back hypothesis and his denial[^identity] |
 
 ## See also
 
@@ -162,4 +279,11 @@ identity assertions require separate evidence.[^announcement][^judgment]
 [^development]: Nakamoto, S. (12 December 2010). *Added some DoS limits, removed safe mode (0.3.19)*. <https://bitcointalk.org/index.php?topic=2228.msg29479#msg29479>
 [^hearn]: Hearn, M. and Nakamoto, S. (April 2011). *Holding coins in an unspendable state for a rolling time window*. Correspondence published by Hearn. <https://plan99.net/~mike/satoshi-emails/thread5.html>
 [^judgment]: High Court of England and Wales (20 May 2024). *Crypto Open Patent Alliance v Wright*, [2024] EWHC 1198 (Ch), particularly paragraphs 7 and 26–30. <https://www.judiciary.uk/wp-content/uploads/2024/05/COPA-v-Wright-Judgment.pdf>
-[^identity]: Fortune (8 April 2026). *Satoshi identity reporting*. <https://fortune.com/2026/04/08/who-is-the-real-inventor-of-bitcoin-satoshi-nakamoto/>
+[^identity]: The Block (8 April 2026). *NYT investigation suggests Adam Back may be Satoshi Nakamoto*. <https://www.theblock.co/news/business/2026-04-08-nyt-investigation-suggests-adam-back-may-be-satoshi-nakamoto-396663>
+[^dai]: Nakamoto, S. and Dai, W. (2008–2009). *Bitcoin emails*, correspondence supplied by Dai and reproduced by Gwern. <https://gwern.net/doc/bitcoin/2008-nakamoto>
+[^discussion]: Nakamoto, S. (8 November 2008, archive timestamp). *Bitcoin P2P e-cash paper*, reply to Hal Finney. <https://www.metzdowd.com/pipermail/cryptography/2008-November/014832.html>
+[^malmi]: Malmi, M. *Satoshi – Sirius emails, 2009–2011*. Correspondence published by its recipient. <https://mmalmi.github.io/satoshi/>
+[^overflow]: Nakamoto, S. (15 August 2010; edited 16 August). *Version 0.3.10 – block 74638 overflow PATCH!* <https://bitcointalk.org/index.php?topic=827.0>
+[^wikileaks]: Nakamoto, S. (5 December 2010). *Re: Wikileaks contact info?*, post 148. <https://bitcointalk.org/index.php?topic=1735.msg26999#msg26999>
+[^contempt]: High Court of England and Wales (20 December 2024). *Crypto Open Patent Alliance v Wright*, order following contempt proceedings. <https://www.judiciary.uk/judgments/crypto-open-patent-alliance-v-wright-order/>
+[^holdings]: Lerner, S. D. (17 April 2013). *The Well Deserved Fortune of Satoshi Nakamoto*. Researcher's original analysis and stated uncertainty. <https://bitslog.com/2013/04/17/the-well-deserved-fortune-of-satoshi-nakamoto/>
