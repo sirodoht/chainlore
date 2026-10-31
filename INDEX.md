@@ -43,3 +43,18 @@ All pages in Chainlore.
 
 - [FTX](pages/ftx.md): a cryptocurrency exchange that collapsed and filed
   for bankruptcy in November 2022.
+
+## Legislation
+
+- [CLARITY Act](pages/clarity-act.md): a United States market-structure
+  bill that passed the House but stalled in the Senate.
+- [GENIUS Act](pages/genius-act.md): a United States law, signed in July
+  2025, that regulates payment stablecoins.
+- [MiCA](pages/mica.md): the European Union's regulation of crypto-assets
+  and stablecoins.
+- [Payment Services Act (Japan)](pages/japan-payment-services-act.md):
+  the Japanese statute behind its crypto-asset and stablecoin rules.
+- [Stablecoins Ordinance (Hong Kong)](pages/hong-kong-stablecoins-ordinance.md):
+  Hong Kong's licensing regime for stablecoin issuers.
+- [UK cryptoasset regime](pages/uk-cryptoasset-regime.md): the United
+  Kingdom's authorisation regime for crypto firms and stablecoins.

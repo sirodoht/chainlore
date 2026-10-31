@@ -259,7 +259,9 @@ October 2027.[^skadden-fca][^kpmg-uk]
   2025.[^hkma] The Hong Kong Monetary Authority issued its first licences
   on 10 April 2026, to HSBC and Anchorpoint Financial, a venture of
   Standard Chartered, HKT, and Animoca
-  Brands.[^charltons][^hsbc-licence]
+  Brands.[^charltons][^hsbc-licence] Anchorpoint began rolling out HKDAP in
+  August 2026, and Decrypt reported that HSBC's RedCoin went live in
+  October.[^block-hkdap][^decrypt-redcoin]
 - Singapore. The Monetary Authority of Singapore finalised a framework
   for single-currency stablecoins on 15 August 2023, requiring par
   redemption within five business days.[^mas]
@@ -357,9 +359,11 @@ means no launch date was confirmed from a source. Current supply is on
 | EURC | EURC | Euro | Circle Internet Financial Europe | 2022-06-30 | Launched as Euro Coin; French e-money institution[^circle-euroc][^circle-eurc] |
 | Eurite | EURI | Euro | Banking Circle S.A. | 2024-08-26 | Redeemable at par[^banking-circle] |
 | Frankencoin | ZCHF | Swiss franc | Decentralised | 2023-04 | Oracle-free, collateralised; date is public beta[^frankencoin] |
+| HKDAP | HKDAP | Hong Kong dollar | Anchorpoint Financial | 2026-08-12 | Phased rollout, first to institutional distributors and professional investors[^block-hkdap] |
 | JPY Coin | JPYC | Japanese yen | JPYC Inc. | 2025-10-27 | Deposits and government bonds, per the company[^block-jpyc] |
 | JPYSC | JPYSC | Japanese yen | SBI Shinsei Trust Bank | 2026-06-24 | Reserves managed by a trust bank[^block-jpysc] |
 | Monerium EUR | EURe | Euro | Monerium hf | — | Supervised by the Central Bank of Iceland[^monerium] |
+| RedCoin | RCHKD | Hong Kong dollar | HSBC | 2026-10 | Reported on HSBC's private ledger, inside its PayMe app[^decrypt-redcoin] |
 | STASIS Euro | EURS | Euro | STASIS (Malta) | 2018-07 | Euro-backed, per STASIS[^bm-eurs] |
 | Tether CNH | CNHT | Offshore yuan | Tether | 2019-09-09 | Current status not confirmed[^block-cnht] |
 | XSGD | XSGD | Singapore dollar | StraitsX | — | In-principle approval from Singapore's regulator in 2023[^straitsx] |
@@ -376,8 +380,6 @@ means no launch date was confirmed from a source. Current supply is on
 | Project | Reference | Status |
 |---|---|---|
 | Qivalis | Euro | E-money authorisation on 2026-10-14; issuance planned within months[^qivalis-dnb] |
-| Anchorpoint Financial | Hong Kong dollar | Licensed 2026-04-10[^charltons] |
-| HSBC | Hong Kong dollar | Licensed 2026-04-10; launch planned for the second half of 2026[^hsbc-licence] |
 
 ### Often listed but not stablecoins
 
@@ -557,6 +559,8 @@ said it had acted consistently with its duties.[^block-wlf][^ab-wlf]
 [^kpmg-uk]: KPMG (2026). *The UK's finalised regulatory regime for cryptoassets*. <https://kpmg.com/xx/en/our-insights/regulatory-insights/the-uk-finalised-regulatory-regime-for-cryptoassets.html>
 [^hkma]: Hong Kong Monetary Authority. *Stablecoin issuers*. <https://www.hkma.gov.hk/eng/key-functions/international-financial-centre/stablecoin-issuers/>
 [^charltons]: Charltons (2026). *HKMA issues first stablecoin issuer licences*. <https://www.charltonslaw.com/hkma-issues-first-stablecoin-issuer-licences/>
+[^block-hkdap]: The Block (2026). *Standard Chartered-backed Anchorpoint begins HKDAP stablecoin rollout*. <https://theblock.co/news/business/2026-08-12-standard-chartered-anchorpoint-hkdap-stablecoin-rollout-411575>
+[^decrypt-redcoin]: Decrypt (2026). *Hong Kong bank HSBC stablecoin 3 million wallets*. <https://decrypt.co/381760/hong-kong-bank-hsbc-stablecoin-3-million-wallets>
 [^hsbc-licence]: HSBC (2026). *HSBC welcomes HKMA's grant of a Hong Kong stablecoin issuer licence*. <https://www.about.hsbc.com.hk/news-and-media/hsbc-welcomes-hkmas-grant-of-a-hong-kong-stablecoin-issuer-licence>
 [^mas]: Monetary Authority of Singapore (2023). *MAS finalises stablecoin regulatory framework*. <https://www.mas.gov.sg/news/media-releases/2023/mas-finalises-stablecoin-regulatory-framework>
 [^iflr]: IFLR (sponsored content). *Stablecoins under Japan's amended Payment Services Act*. <https://www.iflr.com/article/2ai02f5kcnevykck8zoqo/sponsored/stablecoins-under-japans-amended-payment-services-act>
