@@ -81,6 +81,10 @@ All pages in Chainlore.
 
 ## Infrastructure
 
+- [Inter-Blockchain Communication](pages/inter-blockchain-communication.md):
+  clients, relayers, token transfers, and IBC versions.
+- [Tornado Cash](pages/tornado-cash.md): privacy pools, governance,
+  sanctions litigation, and developer prosecutions.
 - [Safe](pages/safe.md): contract accounts, owners, modules, guards, and governance.
 - [Zero-knowledge proof](pages/zero-knowledge-proof.md): hidden witnesses,
   succinct verification, setup assumptions, and rollups.
@@ -115,6 +119,10 @@ All pages in Chainlore.
 
 ## History
 
+- [Bitcoin block size war](pages/bitcoin-block-size-war.md): scaling proposals,
+  SegWit activation, Bitcoin Cash, and SegWit2x.
+- [Three Arrows Capital](pages/three-arrows-capital.md): investment losses,
+  creditor exposure, liquidation, and Singapore enforcement.
 - [The DAO](pages/the-dao.md): the 2016 investment project, exploit, and Ethereum fork.
 
 ## People

@@ -31,3 +31,22 @@ check the final text before any promotion under POLICY.md.
   Pectra activation, sponsorship, and delegate-contract risks.
 
 Writer: GPT-6-Astra high. These remain drafts, not independently checked.
+
+## Batch 3
+
+- IBC: Classic clients and relayers, ICS-20 escrow and refunds, and the
+  distinction between IBC v2 and the Eureka product.
+- Bitcoin block size war: competing priorities from original proposals
+  and participants, activation rules, and separate fork outcomes.
+- Three Arrows Capital: company default notice, official liquidation
+  appointment, and MAS findings; no unsupported recovery estimate.
+- Tornado Cash: protocol documentation, the Fifth Circuit opinion,
+  Treasury delisting, DOJ conviction announcement, and the August 2026
+  court order postponing Storm's retrial to April 2027. Distinguishes
+  convictions, unresolved counts, civil sanctions, and the Dutch appeal.
+
+Writer: GPT-6-Astra high. All ten articles remain drafts. Source review
+while writing does not satisfy the independent-check requirement.
+
+Final author review added a direct no-expiry source to the perpetuals
+lead and a Safe cross-reference to the multisignature article.

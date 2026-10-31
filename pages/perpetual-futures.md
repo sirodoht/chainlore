@@ -13,7 +13,7 @@ Perpetual futures, often called perpetual contracts or perps, are
 derivatives that provide long or short exposure without a scheduled
 expiry. Crypto venues use periodic funding payments to encourage their
 prices to track the referenced asset. Holding a perpetual position is
-different from buying the underlying asset outright.[^contracts][^funding]
+different from buying the underlying asset outright.[^intro][^funding]
 
 | | |
 |---|---|
@@ -85,6 +85,7 @@ dependencies.[^adl]
 
 ## References
 
+[^intro]: Bybit. *Introduction to USDT Perpetual and Expiry Contracts*. <https://www.bybit.com/en/help-center/article/Introduction-to-USDT-Perpetual-Expiry-Contract>
 [^contracts]: Bybit. *FAQ — USDT Perpetual and Expiry Contracts*. <https://www.bybitglobal.com/en/help-center/article/FAQ-USDT-Perpetual-and-Expiry-Contracts>
 [^funding]: Hyperliquid documentation. *Funding*. <https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding>
 [^prices]: Hyperliquid documentation. *Robust price indices*. <https://hyperliquid.gitbook.io/hyperliquid-docs/trading/robust-price-indices>

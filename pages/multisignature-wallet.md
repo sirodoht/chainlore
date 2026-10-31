@@ -76,6 +76,7 @@ contract or script requires.[^bybit]
 
 ## See also
 
+- [Safe](safe.md)
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [Bitcoin](bitcoin.md)
 - [Smart contract](smart-contract.md)
