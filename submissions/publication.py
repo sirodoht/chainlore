@@ -15,7 +15,30 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone as django_timezone
+from .categories import CATEGORY_SECTIONS
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
+
+
+def index_generated_articles(index, records):
+    """Merge published articles into subject lists, retaining curated index text."""
+    additions = {}
+    for record in records:
+        # Keep an editor's existing placement and avoid duplicate index entries.
+        if f'](pages/{record.slug}.md)' in index:
+            continue
+        front = record.markdown.split('---\n', 2)[1] if record.markdown.startswith('---\n') else ''
+        category = re.search(r'^category:\s*([^\n]+)', front, re.M)
+        heading = CATEGORY_SECTIONS.get(category.group(1).strip() if category else '', 'Other topics')
+        additions.setdefault(heading, []).append(f'- [{record.title}](pages/{record.slug}.md)')
+    for heading, links in additions.items():
+        section = re.search(r'^## ' + re.escape(heading) + r'\s*$', index, re.M)
+        if section:
+            following = re.search(r'^## ', index[section.end():], re.M)
+            end = section.end() + following.start() if following else len(index)
+            index = index[:end].rstrip() + '\n' + '\n'.join(links) + '\n\n' + index[end:]
+        else:
+            index = index.rstrip() + f'\n\n## {heading}\n\n' + '\n'.join(links) + '\n'
+    return index
 
 
 @contextmanager
@@ -58,10 +81,10 @@ def publish_site(base_release=None):
             # An article deliberately added to Git takes precedence over its generated original.
             if not destination.exists():
                 destination.write_text(record.markdown)
-                additions.append(f'- [{record.title}](pages/{record.slug}.md)')
+                additions.append(record)
         if additions:
-            with (source / 'INDEX.md').open('a') as index:
-                index.write('\n\n## Requested articles\n\n' + '\n'.join(additions) + '\n')
+            index = source / 'INDEX.md'
+            index.write_text(index_generated_articles(index.read_text(), additions))
         env = {**os.environ, 'CHAINLORE_BUILD_ROOT': str(source)}
         for script in ('build.py', 'check.py'):
             result = subprocess.run([sys.executable, str(base / 'scripts' / script)], env=env,

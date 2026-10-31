@@ -8,6 +8,7 @@ from datetime import date
 from urllib.parse import urlsplit
 import markdown
 from django.utils.text import slugify
+from .categories import CATEGORY_SECTIONS
 
 
 PLACEHOLDER = 'This is a placeholder:'
@@ -97,7 +98,7 @@ def validate_draft(draft, research):
     require(bool(re.fullmatch(r'[\w ()’\x27.,+-]{1,100}', title)), 'invalid_title')
     require(bool(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', slug)) and slug == slugify(title) and len(slug) <= 100, 'invalid_slug')
     require(bool(re.fullmatch(r'[A-Za-z0-9 .-]{1,30}', draft['ticker'])), 'invalid_ticker')
-    require(draft['category'] in ('Layer 1', 'Layer 2', 'DeFi', 'Stablecoin', 'Exchange', 'Infrastructure', 'Other'), 'invalid_category')
+    require(draft['category'] in CATEGORY_SECTIONS, 'invalid_category')
     require(300 <= len(body) <= 45000, 'invalid_article_length')
     require(not any(c in body for c in ('<', '>', '\x00')) and '```' not in body and '![' not in body, 'unsafe_markdown')
     require(not re.search(r'^# |^---\s*$', body, re.M), 'unexpected_front_matter_or_h1')

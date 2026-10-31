@@ -158,6 +158,10 @@ Generated Markdown is authoritative in SQLite, not automatically committed to
 Git. Every deployment combines the shipped Git sources with these database
 articles, updating the index, search, sitemap, and Markdown URLs. A page added
 deliberately to `pages/` with the same slug supersedes the generated version.
+Generated articles join the index and homepage subject lists using their category
+metadata (for example, Exchange maps to Exchanges). Existing curated entries and
+summaries stay in place. Infrastructure and Other topics sections appear only when
+needed; request provenance is not a public category.
 Back up the database to retain generated articles and their audit history.
 Public releases are under `published/releases/`, with an atomic `published/current`
 symlink; the existing `current` path points to that symlink. The worker can write

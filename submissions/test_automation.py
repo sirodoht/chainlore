@@ -4,15 +4,16 @@ import json
 from pathlib import Path
 import smtplib
 import tempfile
+from types import SimpleNamespace
 from unittest.mock import patch
 from django.contrib.auth import get_user_model
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
 from . import ai_providers as ai
 from .article_validation import InvalidArticle, stub_draft, validate_draft
 from .automation import run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
-from .publication import publication_lock, publish_site
+from .publication import index_generated_articles, publication_lock, publish_site
 from .automation_control import regenerate_placeholders, resume_queue, retry_runs
 from .models import AutomationControl
 
@@ -93,6 +94,9 @@ class AutomationTests(TestCase):
         html = (current / 'p/test-protocol/index.html').read_text()
         self.assertIn('This article is a draft', html)
         self.assertIn('Test Protocol', (current / 'all-articles/index.html').read_text())
+        index = (current / 'sources/INDEX.md').read_text()
+        self.assertIn('- [Test Protocol](pages/test-protocol.md)', index.split('## Decentralised finance')[1].split('## ')[0])
+        self.assertNotIn('Requested articles', index)
         self.assertIn('test-protocol', json.loads((current / 'article-catalog.json').read_text()))
         self.assertTrue((current / 'p/test-protocol.md').is_file())
         self.assertNotIn(self.submission.email, ''.join(path.read_text() for path in current.rglob('*') if path.is_file()))
@@ -103,11 +107,28 @@ class AutomationTests(TestCase):
         self.assertNotEqual(first, current.resolve())
         self.assertEqual(json.loads((current / 'build-info.json').read_text())['revision'], 'b' * 40)
         self.assertTrue((current / 'p/test-protocol/index.html').is_file())
+        self.assertEqual((current / 'sources/INDEX.md').read_text().count('](pages/test-protocol.md)'), 1)
         self.assertEqual(run_worker(), 0)
         self.write_article.assert_called_once()
         self.assertEqual(GeneratedArticle.objects.count(), 1)
         self.assertNotIn('email', run.inputs)
         self.assertTrue(run.events.filter(kind='notification', data__outcome='failed').exists())
+
+    def test_generated_exchange_joins_existing_exchange_lists(self):
+        self.write_article.return_value = written({**DRAFT, 'title': 'Binance', 'slug': 'binance', 'category': 'Exchange'})
+        run_worker()
+        current = self.root / 'published/current'
+        index = (current / 'sources/INDEX.md').read_text()
+        exchanges = index.split('## Exchanges')[1].split('## ')[0]
+        self.assertIn('](pages/ftx.md)', exchanges)
+        self.assertIn('](pages/binance.md)', exchanges)
+        for path in ('index.html', 'all-articles/index.html'):
+            html = (current / path).read_text()
+            self.assertNotIn('Requested articles', html)
+            heading = 'h3' if path == 'index.html' else 'h2'
+            exchanges = html.split(f'>Exchanges</{heading}>')[1].split(f'<{heading}')[0]
+            self.assertIn('href="/p/ftx/"', exchanges)
+            self.assertIn('href="/p/binance/"', exchanges)
 
     def test_injection_and_out_of_scope_decline_without_writer(self):
         for response in [decision(scope='in_scope', injection='injection', duplicate='new'),
@@ -469,7 +490,46 @@ class AutomationTests(TestCase):
         self.assertTrue(run.events.filter(kind='decision', data__reason='previous_hold').exists())
 
 
+class IndexCategoryTests(SimpleTestCase):
+    def record(self, slug, category):
+        return SimpleNamespace(slug=slug, title=slug.title(), markdown=f'---\ntitle: {slug.title()}\ncategory: {category}\n---\n\nBody.\n')
+
+    def test_categories_map_to_subjects_and_rebuilds_do_not_duplicate_links(self):
+        categories = {
+            'Layer 1': 'Layer 1 blockchains', 'Layer 2': 'Layer 2 networks',
+            'Stablecoin': 'Stablecoins', 'DeFi': 'Decentralised finance',
+            'Exchange': 'Exchanges', 'Regulation': 'Legislation',
+            'Infrastructure': 'Infrastructure', 'Other': 'Other topics',
+        }
+        records = [self.record(f'article-{i}', category) for i, category in enumerate(categories)]
+        index = index_generated_articles('# Index\n', records)
+        for record, heading in zip(records, categories.values()):
+            section = index.split(f'## {heading}\n')[1].split('## ')[0]
+            self.assertIn(f'](pages/{record.slug}.md)', section)
+        self.assertEqual(index_generated_articles(index, records), index)
+
+    def test_curated_text_and_manual_placement_are_preserved(self):
+        index = '# Index\n\n## Exchanges\n\n- [FTX](pages/ftx.md): a curated\n  multiline summary.\n\n## Infrastructure\n\n- [Manual](pages/manual.md): editorial placement.\n'
+        result = index_generated_articles(index, [self.record('binance', 'Exchange'), self.record('manual', 'Other')])
+        self.assertIn('- [FTX](pages/ftx.md): a curated\n  multiline summary.\n- [Binance](pages/binance.md)\n\n## Infrastructure', result)
+        self.assertIn('## Infrastructure\n\n- [Manual](pages/manual.md): editorial placement.', result)
+        self.assertNotIn('## Other topics', result)
+
+    def test_unknown_or_missing_metadata_uses_other_topics_not_body_text(self):
+        records = [self.record('unknown', 'Unrecognised'), self.record('missing', 'Exchange')]
+        records[1].markdown = 'Body text\ncategory: Exchange\n'
+        result = index_generated_articles('# Index\n', records)
+        self.assertEqual(result.count('## Other topics'), 1)
+        self.assertNotIn('## Exchanges', result)
+        self.assertIn('](pages/unknown.md)', result)
+        self.assertIn('](pages/missing.md)', result)
+
+
 class ValidationTests(TestCase):
+    def test_regulation_category_is_supported(self):
+        source, _ = validate_draft({**DRAFT, 'category': 'Regulation'}, RESEARCH)
+        self.assertIn('category: Regulation\n', source)
+
     def test_unsafe_and_unfounded_articles_rejected(self):
         for replacement in [
             {'slug': '../../private'}, {'title': '<img src=x>'}, {'ticker': 'TEST\nstatus: human-reviewed'},
