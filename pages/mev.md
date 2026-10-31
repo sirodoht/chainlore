@@ -3,7 +3,9 @@ title: Maximal extractable value
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -35,8 +37,7 @@ These activities have different consequences. Arbitrage can bring prices
 into alignment and liquidations can help lending systems remain solvent.
 Other ordering strategies worsen execution for users. MEV therefore
 includes both useful market operations and extraction at someone else's
-expense; its existence does not by itself identify an illegal
-transaction.[^overview]
+expense.[^overview]
 
 ## Research and consensus risks
 
@@ -83,7 +84,7 @@ to be assessed by its actual data-sharing rules.[^settings]
 
 ## References
 
-[^overview]: ethereum.org. *Maximal extractable value (MEV)*. <https://ethereum.org/en/developers/docs/mev/>
+[^overview]: ethereum.org. *Maximal extractable value (MEV)*. <https://ethereum.org/developers/docs/mev/>
 [^paper]: Daian, P. et al. (2019). *Flash Boys 2.0: Frontrunning, Transaction Reordering, and Consensus Instability in Decentralized Exchanges*. <https://arxiv.org/abs/1904.05234>
 [^boost]: Flashbots. *MEV-Boost overview*. <https://docs.flashbots.net/flashbots-mev-boost/introduction>
 [^protect]: Flashbots. *MEV Protection Overview*. <https://docs.flashbots.net/flashbots-protect/overview>

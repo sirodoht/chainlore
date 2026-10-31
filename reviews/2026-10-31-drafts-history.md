@@ -64,3 +64,58 @@ liquidation and FTX-claim disputes; the official site lists 2026 distribution
 notices. Added an as-of paragraph on the eighth notice dated June 1 and seventh
 in March. No final recovery percentage is asserted from incomplete public
 notices. Final text and all infobox entries rechecked.
+
+## Completed: Maximal extractable value
+
+Opened all five references and the full Flash Boys 2.0 PDF. Ethereum.org
+verifies the definition, miner/maximal terminology, searcher payments,
+arbitrage/liquidation benefits and sandwich harm. The April 10, 2019 paper
+verifies its authors, priority gas auctions, ordering revenue and consensus
+incentive risks; these remain research claims rather than claims that each
+trade reorganises a chain. Flashbots' current documentation verifies middleware,
+builder market/payment, Protect private submission/refunds, and builder/searcher
+information-sharing settings and trust tradeoffs. Removed an unsupported legal
+aside that the technical overview did not substantiate, and canonicalized the
+Ethereum.org URL. Current Flashbots searches and documentation confirm the
+services still described; no market-share or deployment forecast is asserted.
+Final corrected text, infobox and reference coverage rechecked.
+
+## Completed: XRP Ledger
+
+Opened all eight original documentation references plus the added October 9,
+2026 primary security disclosure. History and XRP documentation verify the
+2011 developers, June 2012 launch, company separation, 100bn initial XRP,
+80bn allocation and later escrow. Fee documentation verifies fee destruction
+and load/queue thresholds. Consensus Structure and UNL pages verify proposals,
+validation, trust lists, overlap and publisher influence. DEX documentation
+verifies offers, partial execution, cross-currency payments, auto-bridging,
+freezes and authorized trust lines; XRP documentation supports native versus
+issued-asset distinction. Amendments documentation verifies strictly greater
+than 80% for two weeks, activation versus software availability, and amendment
+reversal. Current-event search found a material October 2026 disclosure:
+3.4.1 fixed an XRP-creating overflow directly while a separate Batch validation
+fix used an amendment activated October 9. Added both, with the report's own
+no-public-exploitation finding attributed, and changed governance wording to
+"normally" to accommodate the documented emergency exception. No inference of
+actual stolen/minted public-network funds is made. Final text and all numerical
+claims rechecked against the disclosure and original documentation.
+
+## Completed: Tornado Cash
+
+Opened all nine original references and the added October 7, 2026 Decrypt
+report. Raw project docs verify Classic fixed pools, note/commitment/Merkle
+proof, public nullifier double-spend prevention, relayers/timing/participation,
+and TORN governance. Fifth Circuit opinion verifies the narrow immutable-
+contract property holding and sanctions background; Treasury verifies March
+21, 2025 delisting. DOJ verifies the single August 6, 2025 conviction. The
+August 26 report verifies deadlocked counts and the defense acquittal argument;
+the actual August 25 court order verifies April 26, 2027 retrial and pending
+motion. Dutch AMLC's official discussion of the May 14, 2024 judgment verifies
+64 months; The Block confirms appeal through a court spokesperson. Current
+searches found October reporting consistent with the scheduled retrial and
+pending appeal. Added Pertsev's electronic monitoring pending appeal, with a
+bounded as-of description rather than assuming imprisonment continued. Court
+outcomes and agency allegations remain distinct, and a delisting is not
+misrepresented as a criminal acquittal. Final text, infobox and all references
+rechecked. Limitation: this check is a public-source snapshot, not private
+court docket access; ongoing proceedings are explicitly dated.

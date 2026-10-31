@@ -3,7 +3,9 @@ title: Tornado Cash
 ticker: TORN
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -78,8 +80,10 @@ described as convictions.[^retrial]
 In the Netherlands, a court convicted developer Alexey Pertsev of money
 laundering on 14 May 2024 and imposed a 64-month prison sentence. He
 appealed; The Block reported the filing after confirmation from a court
-spokesperson. This was a separate prosecution under Dutch law, not the
-US sanctions challenge.[^dutch][^dutchappeal]
+spokesperson. In October 2026, Decrypt reported that he had been released
+to electronic monitoring pending appeal.
+This was a separate prosecution under Dutch law, not the US sanctions
+challenge.[^dutch][^dutchappeal][^october]
 
 ## See also
 
@@ -99,3 +103,5 @@ US sanctions challenge.[^dutch][^dutchappeal]
 [^retrial]: US District Court, Southern District of New York (2026-08-25). *United States v. Storm*, No. 23 Cr. 430, docket 300, order. <https://storage.courtlistener.com/recap/gov.uscourts.nysd.604938/gov.uscourts.nysd.604938.300.0.pdf>
 [^dutch]: Anti Money Laundering Centre (2024-06-13). *Ontwikkelaar van Cryptomixer Tornado Cash veroordeeld voor witwassen*, discussing ECLI:NL:RBOBR:2024:2069. <https://www.amlc.nl/ontwikkelaar-van-cryptomixer-tornado-cash-veroordeeld-voor-witwassen/>
 [^dutchappeal]: The Block (2024-05-16). *Tornado Cash developer Alexey Pertsev appeals conviction*. <https://www.theblock.co/news/regulation/2024-05-16-tornado-cash-alexey-pertsev-appeals-conviction-294906>
+
+[^october]: Decrypt (2026-10-07). *Prosecutors Cite Bitcoin Fog Ruling Against Roman Storm's Venue Challenge*. <https://decrypt.co/380260/prosecutors-cite-bitcoin-fog-ruling-against-roman-storms-venue-challenge>

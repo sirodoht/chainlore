@@ -3,7 +3,9 @@ title: XRP Ledger
 ticker: XRP
 category: Layer 1
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -72,7 +74,7 @@ issuer obligations identical.[^dex][^xrp]
 
 ## Protocol governance
 
-Changes affecting transaction processing are introduced through
+Changes affecting transaction processing normally proceed through
 amendments implemented in node software. Validators vote on activation;
 the documentation specifies more than 80% support maintained for two
 weeks. Once enabled, an amendment applies to later ledger versions,
@@ -82,6 +84,21 @@ A feature's presence in source code or a software release therefore
 does not by itself establish that it is active on mainnet. Validator
 votes and the amendment's activation status are part of that
 distinction.[^amendments]
+
+## October 2026 security disclosure
+
+A 9 October 2026 disclosure reported an integer-overflow vulnerability in the
+payment engine that could create spendable XRP contrary to the ledger's
+intended supply rules. The report said it found no evidence of exploitation
+on a public network. Version 3.4.1, released on 25 September, fixed the issue
+immediately on upgrade, exceptionally bypassing an amendment because the
+maintainers judged the exploit risk greater than the risk of a temporary
+network halt during deployment.[^security]
+
+The same release also addressed a separate Batch transaction validation
+flaw through the usual amendment process. Its fix, `fixBatchV1_2`, activated
+on mainnet on 9 October. The two fixes illustrate that an emergency software
+change and an amendment can have different activation mechanisms.[^security]
 
 ## See also
 
@@ -100,3 +117,5 @@ distinction.[^amendments]
 [^fees]: XRP Ledger documentation. *Transaction Cost*. <https://xrpl.org/docs/concepts/transactions/transaction-cost>
 [^dex]: XRP Ledger documentation. *Decentralized Exchange (DEX)*. <https://xrpl.org/docs/concepts/tokens/decentralized-exchange>
 [^amendments]: XRP Ledger documentation. *Amendments*. <https://xrpl.org/docs/concepts/networks-and-servers/amendments>
+
+[^security]: XRP Ledger (2026-10-09). *Vulnerability Disclosure Report for xrpld 3.4.1*. <https://xrpl.org/blog/2026/vulnerabilitydisclosurereport-bug-20261009>
