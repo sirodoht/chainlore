@@ -58,6 +58,7 @@ class AutomationRun(models.Model):
         QUEUED = 'queued', 'Queued'
         RUNNING = 'running', 'Running'
         RETRY = 'retry', 'Retry scheduled'
+        BLOCKED = 'blocked', 'Waiting for provider recovery'
         REVIEW = 'review', 'Needs review'
         DECLINED = 'declined', 'Declined'
         PUBLISHED = 'published', 'Published'
@@ -69,6 +70,7 @@ class AutomationRun(models.Model):
     inputs = models.JSONField(default=dict)
     triage = models.JSONField(default=dict)
     research = models.JSONField(default=dict)
+    research_session = models.JSONField(default=dict)
     draft = models.JSONField(default=dict)
     output_review = models.JSONField(default=dict)
     attempts = models.PositiveIntegerField(default=0)
@@ -104,3 +106,19 @@ class GeneratedArticle(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class AutomationControl(models.Model):
+    """Singleton circuit breaker, shared by every worker invocation."""
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    paused = models.BooleanField(default=False)
+    reason = models.CharField(max_length=200, blank=True)
+    blocked_run = models.ForeignKey(AutomationRun, null=True, blank=True, on_delete=models.PROTECT)
+    paused_at = models.DateTimeField(null=True, blank=True)
+    alert_attempts = models.PositiveIntegerField(default=0)
+    alert_retry_at = models.DateTimeField(null=True, blank=True)
+    alert_sent_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'Article request queue'

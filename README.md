@@ -104,6 +104,35 @@ thinking is not stored. Notifications retry up to three times, one hour apart;
 SMTP acceptance does not prove inbox delivery. Existing admin-new-submission
 notifications keep their original behavior.
 
+Research handles `pause_turn` by sending the exact paused assistant content back
+in a capped loop (three responses total). It saves each completed response before
+continuing, so a later error or worker restart resumes from that checkpoint.
+The final research record merges all content blocks and usage; writing and source
+validation can use evidence from every part. Search/fetch allowances are reduced
+across continuations, not reset. Hitting the continuation cap goes to review with
+the evidence retained. Each research HTTP request has a 300-second timeout;
+the worker's 35-minute deadline covers three such requests, the other model calls,
+build checks and notifications. An interrupted in-flight HTTP request can still
+lose work that the provider has not returned; completed responses are preserved.
+
+Missing credentials, HTTP 400/401/402/403/404 configuration/account errors and
+recognized spend-cap errors pause the entire queue in the persistent Automation
+control record. The affected run becomes Waiting for provider recovery without
+consuming an attempt; subsequent worker ticks make no model calls and leave new
+requests queued. The worker alerts the configured admin, logs the pause, and
+records alert acceptance/failure. Failed alerts retry hourly, up to three attempts.
+The admin control remains visible even if email is suppressed or unavailable.
+
+After fixing the provider settings or billing, select the control in
+`/admin/submissions/automationcontrol/` and choose **Resume queue after fixing
+provider settings**. Under Automation runs, **Retry failed runs from their saved
+stage** recovers failed requests without SQL edits. **Restart screening and
+research for held review runs** deliberately starts fresh screening/research while
+preserving the old audit events. These operations require the respective change
+permission, respect the worker lock, and record the operator in the audit log;
+ordinary audit fields remain read-only. Resolved/published runs cannot be retried
+through these actions.
+
 Provider keys are read by the worker from `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`,
 or private files `jev-api-key` and `anthropic-api-key` in `CHAINLORE_DATA_DIR`
 (owner `deploy`, mode `600` on Brick). Never put credentials in source, prompts,

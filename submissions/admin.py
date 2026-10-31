@@ -57,7 +57,8 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 # Audit records and source artifacts are visible only to authenticated staff.
 # They are append-only in the application; no public endpoints expose them.
-from .models import AutomationEvent, AutomationRun, GeneratedArticle
+from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle
+from .automation_control import resume_queue, retry_runs
 
 
 class AuditAdmin(admin.ModelAdmin):
@@ -79,6 +80,48 @@ class AutomationRunAdmin(AuditAdmin):
     list_display = ['id', 'submission', 'state', 'attempts', 'last_error', 'created_at']
     list_filter = ['state', 'created_at']
     search_fields = ['submission__title', 'submission__reference']
+    actions = ['retry_failed', 'restart_review']
+
+    def has_operate_permission(self, request):
+        return request.user.has_perm('submissions.change_automationrun')
+
+    def recover(self, request, queryset, restart=False):
+        try:
+            count = retry_runs(list(queryset.values_list('pk', flat=True)), request.user.pk, restart=restart)
+        except BlockingIOError:
+            self.message_user(request, 'The worker is busy. Try again after its current run finishes.', messages.WARNING)
+        except ValueError as exc:
+            self.message_user(request, str(exc), messages.WARNING)
+        else:
+            self.message_user(request, f'Queued {count} request(s). Previous decisions remain in the audit log.')
+
+    @admin.action(description='Retry failed runs from their saved stage', permissions=['operate'])
+    def retry_failed(self, request, queryset):
+        self.recover(request, queryset)
+
+    @admin.action(description='Restart screening and research for held review runs', permissions=['operate'])
+    def restart_review(self, request, queryset):
+        self.recover(request, queryset, restart=True)
+
+
+@admin.register(AutomationControl)
+class AutomationControlAdmin(AuditAdmin):
+    list_display = ['__str__', 'paused', 'reason', 'paused_at', 'alert_attempts', 'alert_sent_at']
+    actions = ['resume']
+
+    def has_operate_permission(self, request):
+        return request.user.has_perm('submissions.change_automationcontrol')
+
+    @admin.action(description='Resume queue after fixing provider settings', permissions=['operate'])
+    def resume(self, request, queryset):
+        if not queryset.filter(pk=1).exists():
+            return
+        try:
+            count = resume_queue(request.user.pk)
+        except BlockingIOError:
+            self.message_user(request, 'The worker is busy. Try again after its current run finishes.', messages.WARNING)
+        else:
+            self.message_user(request, f'Queue resumed; {count} waiting request(s) requeued with their saved work.')
 
 
 @admin.register(AutomationEvent)

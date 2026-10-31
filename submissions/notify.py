@@ -29,6 +29,20 @@ def notify_admin(submission):
         logger.error('Admin notification failed for submission %s', submission.reference)
 
 
+def notify_provider_problem(control):
+    """The caller records acceptance/failure and owns the retry policy."""
+    url = 'https://chainlore.xyz' + reverse('admin:submissions_automationcontrol_changelist')
+    body = '\n'.join([
+        'Chainlore article automation has paused because a provider needs attention.', '',
+        f'Error code: {control.reason}',
+        'No further requests will be processed until the queue is resumed.',
+        'The affected request keeps its completed work and attempt allowance.', '',
+        'Fix the provider credentials, billing, permissions or API configuration,',
+        'then select the queue and use Resume queue in the admin:', url,
+    ])
+    send_mail('Chainlore article queue paused', body, None, [settings.ADMIN_NOTIFICATION_EMAIL])
+
+
 def pending(submission):
     """Whether the submitter left an email and has not yet heard about this decision."""
     return bool(submission.email) and submission.status in FINAL and submission.notified_status != submission.status

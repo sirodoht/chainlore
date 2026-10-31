@@ -11,7 +11,8 @@ from . import ai_providers as ai
 from . import notify
 from .article_validation import InvalidArticle, evidence_urls, extract_draft, validate_draft
 from .catalog import articles
-from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
+from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, Submission
+from .automation_control import deliver_provider_alert, pause_for_provider
 from .publication import publication_lock, publish_site
 
 logger = logging.getLogger(__name__)
@@ -70,6 +71,8 @@ def process(run):
     if not run.research:
         run.research = ai.research(run)
         run.save(update_fields=['research', 'updated_at'])
+    if run.research.get('stop_reason') == 'pause_turn':
+        raise InvalidArticle('research_continuation_limit')
     if run.research.get('stop_reason') != 'end_turn' or len(evidence_urls(run.research)) < 3:
         raise InvalidArticle('research_incomplete_or_insufficient')
     if not run.draft:
@@ -123,6 +126,11 @@ def run_worker():
         return 0
     try:
         with publication_lock(blocking=False):
+            control, _ = AutomationControl.objects.get_or_create(pk=1)
+            if control.paused:
+                deliver_provider_alert(control)
+                deliver_notifications()
+                return 0
             now = timezone.now()
             run = AutomationRun.objects.filter(state__in=ACTIVE).filter(
                 Q(next_attempt_at__isnull=True) | Q(next_attempt_at__lte=now)).order_by('created_at').first()
@@ -141,8 +149,11 @@ def run_worker():
                     else:
                         process(run)
                 except ai.ProviderError as exc:
-                    event(run, 'provider_error', code=str(exc), retryable=exc.retryable)
-                    if exc.retryable and run.attempts < 3:
+                    event(run, 'provider_error', code=str(exc), retryable=exc.retryable, account_problem=exc.account_problem)
+                    if exc.account_problem:
+                        control = pause_for_provider(run, exc)
+                        deliver_provider_alert(control)
+                    elif exc.retryable and run.attempts < 3:
                         run.state = 'retry'
                         run.last_error = str(exc)
                         run.next_attempt_at = now + timedelta(minutes=5 * run.attempts)

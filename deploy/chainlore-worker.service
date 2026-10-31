@@ -15,7 +15,8 @@ Environment=CHAINLORE_PUBLICATION_ROOT=/var/www/chainlore/published
 Environment=CHAINLORE_AUTOMATION_ENABLED=1
 Environment=CHAINLORE_AUTOMATION_DAILY_LIMIT=10
 ExecStart=/var/www/chainlore/app-current/.venv/bin/python manage.py process_requests
-TimeoutStartSec=12min
+# Three research responses at 300s, three other calls at 120s, builds and email.
+TimeoutStartSec=35min
 UMask=0077
 NoNewPrivileges=true
 PrivateTmp=true

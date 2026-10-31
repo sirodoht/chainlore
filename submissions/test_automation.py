@@ -13,6 +13,8 @@ from .article_validation import InvalidArticle, validate_draft
 from .automation import run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .publication import publication_lock, publish_site
+from .automation_control import resume_queue, retry_runs
+from .models import AutomationControl
 
 URLS = ['https://docs.example.com/design', 'https://docs.example.com/history', 'https://news.example.org/report']
 RESEARCH = {'stop_reason': 'end_turn', 'content': [
@@ -213,6 +215,99 @@ class AutomationTests(TestCase):
         response = self.client.get(f'/admin/submissions/automationrun/{run.pk}/change/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.client.post(f'/admin/submissions/automationrun/{run.pk}/change/', {'state': 'published'}).status_code, 403)
+
+    def test_account_failure_pauses_queue_without_spending_attempts_or_advancing(self):
+        second = Submission.objects.create(kind='request', title='Another request')
+        self.research.side_effect = ai.ProviderError('anthropic_http_401', account_problem=True)
+        with override_settings(NOTIFICATIONS_ENABLED=True, ADMIN_NOTIFICATION_EMAIL='admin@example.com'), patch('submissions.automation_control.notify_provider_problem') as alert:
+            run_worker()
+            for _ in range(3):
+                self.assertEqual(run_worker(), 0)
+        run = AutomationRun.objects.get()
+        self.assertEqual(run.state, 'blocked')
+        self.assertEqual(run.attempts, 0)
+        self.assertTrue(run.triage)
+        self.assertTrue(AutomationControl.objects.get().paused)
+        second.refresh_from_db()
+        self.assertEqual(second.status, 'new')
+        self.assertEqual(AutomationRun.objects.count(), 1)
+        alert.assert_called_once()
+        self.triage.assert_called_once()
+        self.research.assert_called_once()
+
+        # Recovery continues from the completed triage without a database edit.
+        self.research.side_effect = None
+        self.assertEqual(resume_queue(actor_id=123), 1)
+        run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'published')
+        self.assertEqual(run.attempts, 1)
+        self.triage.assert_called_once()
+        self.assertTrue(run.events.filter(kind='queue_resumed', data__actor_id=123).exists())
+
+    def test_failed_queue_alert_is_audited_and_retried_without_provider_calls(self):
+        self.triage.side_effect = ai.ProviderError('jev_http_401', account_problem=True)
+        with override_settings(NOTIFICATIONS_ENABLED=True, ADMIN_NOTIFICATION_EMAIL='admin@example.com'), patch('submissions.automation_control.notify_provider_problem', side_effect=smtplib.SMTPException('private mail error')) as alert:
+            run_worker()
+            run_worker()
+            self.assertEqual(alert.call_count, 1)
+            for _ in range(4):
+                AutomationControl.objects.update(alert_retry_at=timezone.now() - timedelta(seconds=1))
+                run_worker()
+        self.assertEqual(alert.call_count, 3)
+        self.triage.assert_called_once()
+        self.assertEqual(AutomationEvent.objects.filter(kind='queue_alert', data__outcome='failed').count(), 3)
+        self.assertNotIn('private mail error', json.dumps(list(AutomationEvent.objects.values_list('data', flat=True))))
+
+    def test_admin_can_resume_and_retry_but_cannot_edit_audit_records(self):
+        from django.contrib.auth.models import Permission
+        self.triage.side_effect = ai.ProviderError('jev_http_401', account_problem=True)
+        run_worker()
+        control = AutomationControl.objects.get()
+        reader = get_user_model().objects.create_user('reader', is_staff=True)
+        reader.user_permissions.add(Permission.objects.get(codename='view_automationcontrol'))
+        self.client.force_login(reader)
+        url = '/admin/submissions/automationcontrol/'
+        self.client.post(url, {'action': 'resume', '_selected_action': [str(control.pk)]})
+        control.refresh_from_db()
+        self.assertTrue(control.paused)
+        operator = get_user_model().objects.create_superuser('queue-operator', password='test password')
+        self.client.force_login(operator)
+        self.assertContains(self.client.get(url), 'Resume queue after fixing provider settings')
+        self.client.post(url, {'action': 'resume', '_selected_action': [str(control.pk)]})
+        control.refresh_from_db()
+        self.assertFalse(control.paused)
+        run = AutomationRun.objects.get()
+        self.assertEqual(run.state, 'queued')
+        run.state = 'failed'
+        run.attempts = 3
+        run.research_session = {'checkpoint': 'keep'}
+        run.save()
+        self.client.post('/admin/submissions/automationrun/', {'action': 'retry_failed', '_selected_action': [str(run.pk)]})
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'queued')
+        self.assertEqual(run.attempts, 0)
+        self.assertEqual(run.research_session, {'checkpoint': 'keep'})
+        self.assertTrue(run.events.filter(kind='operator_retry').exists())
+
+    def test_recovery_respects_lock_and_never_requeues_a_published_article(self):
+        run = AutomationRun.objects.create(submission=self.submission, state='published')
+        self.assertEqual(retry_runs([run.pk], actor_id=1), 0)
+        with publication_lock(), self.assertRaises(BlockingIOError):
+            resume_queue(actor_id=1)
+
+    def test_restart_review_explicitly_clears_stages_but_keeps_audit(self):
+        run = AutomationRun.objects.create(submission=self.submission, state='review', attempts=3,
+                                           triage={'old': True}, research_session={'old': True},
+                                           research=RESEARCH, draft={'insufficient_evidence': True})
+        AutomationEvent.objects.create(run=run, kind='decision', data={'reason': 'previous_hold'})
+        self.assertEqual(retry_runs([run.pk], actor_id=7, restart=True), 1)
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'queued')
+        self.assertEqual(run.attempts, 0)
+        self.assertEqual(run.research_session, {})
+        self.assertEqual(run.triage, {})
+        self.assertTrue(run.events.filter(kind='decision', data__reason='previous_hold').exists())
 
 
 class ValidationTests(TestCase):
