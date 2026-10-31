@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from . import ai_providers as ai
 from . import notify
-from .article_validation import InvalidArticle, evidence_urls, extract_draft, validate_draft
+from .article_validation import InvalidArticle, citable_urls, extract_draft, stub_draft, validate_draft
 from .catalog import articles
 from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .automation_control import deliver_provider_alert, pause_for_provider
@@ -36,6 +36,28 @@ def finish(run, state, reason, url=''):
 def existing_match(title, catalog):
     normalized = slugify(title)
     return next((slug for slug, item in catalog.items() if normalized in (slug, slugify(item['title']))), None)
+
+
+def draft_article(run):
+    # An accepted subject always gets a page: retry the writer once, then use a placeholder.
+    problem = None
+    if citable_urls(run.research):
+        for _ in range(2):
+            try:
+                draft = extract_draft(ai.write_article(run, problem))
+                validate_draft(draft, run.research)
+                return draft
+            except InvalidArticle as exc:
+                problem = str(exc)
+                event(run, 'validation', passed=False, reason=problem)
+            except ai.ProviderError as exc:
+                if exc.retryable or exc.account_problem:
+                    raise
+                problem = str(exc)
+                event(run, 'provider_error', code=problem, retryable=False, account_problem=False)
+                break
+    event(run, 'placeholder_used', reason=problem or 'no_citable_sources')
+    return stub_draft(run.inputs['title'], run.research)
 
 
 def process(run):
@@ -71,11 +93,8 @@ def process(run):
     if not run.research:
         run.research = ai.research(run)
         run.save(update_fields=['research', 'updated_at'])
-    # A labelled draft from thin evidence beats no page, even if research stopped early.
-    if run.research.get('stop_reason') == 'refusal' or not evidence_urls(run.research):
-        raise InvalidArticle('research_refused_or_no_readable_sources')
     if not run.draft:
-        run.draft = extract_draft(ai.write_article(run))
+        run.draft = draft_article(run)
         run.save(update_fields=['draft', 'updated_at'])
     source, digest = validate_draft(run.draft, run.research)
     event(run, 'validation', passed=True, content_hash=digest)
@@ -86,8 +105,8 @@ def process(run):
     if not run.output_review:
         run.output_review = ai.review_output(run)
         run.save(update_fields=['output_review', 'updated_at'])
-    if not ai.confident(run.output_review, 'suitable', 'yes'):
-        finish(run, 'review', 'output_screening_not_confident')
+    if ai.confident(run.output_review, 'suitable', 'no'):
+        finish(run, 'review', 'output_rejected_as_spam_off_topic_or_injection')
         return
     # Respect a manual decision made while provider calls were in progress.
     submission.refresh_from_db()

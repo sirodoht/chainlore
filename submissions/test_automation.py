@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from . import ai_providers as ai
-from .article_validation import InvalidArticle, validate_draft
+from .article_validation import InvalidArticle, stub_draft, validate_draft
 from .automation import run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .publication import publication_lock, publish_site
@@ -147,13 +147,42 @@ class AutomationTests(TestCase):
         self.research.assert_called_once()
         self.assertEqual(self.write_article.call_count, 3)
 
-    def test_validation_failure_never_publishes(self):
-        draft = {**DRAFT, 'markdown': DRAFT['markdown'] + '<script>alert(1)</script>'}
-        self.write_article.return_value = written(draft)
+    def test_rejected_draft_is_retried_with_the_reason(self):
+        bad = {**DRAFT, 'markdown': DRAFT['markdown'] + '<script>alert(1)</script>'}
+        self.write_article.side_effect = [written(bad), written()]
         run_worker()
-        self.assertEqual(AutomationRun.objects.get().state, 'review')
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.assertEqual(self.write_article.call_args.args[1], 'unsafe_markdown')
+        self.assertIn('Test Protocol is a fictional protocol', GeneratedArticle.objects.get().markdown)
+
+    def test_unsafe_drafts_are_discarded_for_a_placeholder(self):
+        bad = {**DRAFT, 'markdown': DRAFT['markdown'] + '<script>alert(1)</script>'}
+        self.write_article.return_value = written(bad)
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.assertEqual(self.write_article.call_count, 2)
+        article = GeneratedArticle.objects.get()
+        self.assertIn('This is a placeholder', article.markdown)
+        self.assertNotIn('alert(1)', article.markdown)
+        self.assertIn('This article is a draft', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+        self.review_output.assert_called_once()
+
+    def test_non_retryable_writer_error_publishes_a_placeholder(self):
+        self.write_article.side_effect = ai.ProviderError('research_context_too_large')
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.assertEqual(self.write_article.call_count, 1)
+
+    def test_writer_account_error_still_pauses_the_queue(self):
+        self.write_article.side_effect = ai.ProviderError('anthropic_http_401', account_problem=True)
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'blocked')
         self.assertFalse(GeneratedArticle.objects.exists())
-        self.review_output.assert_not_called()
+
+    def test_jev_uncertainty_does_not_stop_a_page(self):
+        self.review_output.return_value = decision(suitable='unclear')
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
 
     def test_unapproved_output_never_publishes(self):
         self.review_output.return_value = decision(suitable='no')
@@ -270,15 +299,19 @@ class AutomationTests(TestCase):
                 GeneratedArticle.objects.all().delete()
                 Submission.objects.create(kind='request', title='Test Protocol')
 
-    def test_refused_or_sourceless_research_is_held(self):
-        for research in [{**RESEARCH, 'stop_reason': 'refusal'},
-                         {'stop_reason': 'end_turn', 'content': RESEARCH['content'][:1]}]:
+    def test_refused_or_sourceless_research_still_gets_a_placeholder_page(self):
+        self.submission.title = 'binance'
+        self.submission.save()
+        for slug, research in [('binance', {'stop_reason': 'refusal', 'content': []}),
+                               ('binance', {'stop_reason': 'end_turn', 'content': RESEARCH['content'][:1]})]:
             self.research.return_value = research
             run_worker()
-            run = AutomationRun.objects.latest('pk')
-            self.assertEqual(run.state, 'review')
-            self.assertEqual(run.last_error, 'research_refused_or_no_readable_sources')
-            Submission.objects.create(kind='request', title='Test Protocol')
+            self.assertEqual(AutomationRun.objects.latest('pk').state, 'published')
+            article = GeneratedArticle.objects.get()
+            self.assertEqual((article.slug, article.title), (slug, 'Binance'))
+            self.assertIn('This is a placeholder', article.markdown)
+            article.delete()
+            Submission.objects.create(kind='request', title='binance')
         self.write_article.assert_not_called()
 
     def test_repeated_account_failure_fails_the_run_and_releases_the_queue(self):
@@ -386,14 +419,26 @@ class ValidationTests(TestCase):
         with self.assertRaises(InvalidArticle):
             validate_draft({**STUB, 'markdown': uncited}, RESEARCH)
 
-    def test_only_opened_pages_count_as_evidence(self):
+    def test_search_results_are_citable_but_urls_in_model_text_are_not(self):
         evidence = copy.deepcopy(RESEARCH)
         evidence['content'] = evidence['content'][:1]
         evidence['content'][0]['text'] = json.dumps(URLS)
-        evidence['content'].append({'type': 'web_search_tool_result', 'content': [
-            {'type': 'web_search_result', 'url': url} for url in URLS]})
         with self.assertRaises(InvalidArticle):
             validate_draft(DRAFT, evidence)
+        evidence['content'].append({'type': 'web_search_tool_result', 'content': [
+            {'type': 'web_search_result', 'url': url} for url in URLS]})
+        validate_draft(DRAFT, evidence)
+
+    def test_placeholder_passes_validation_with_any_title_and_sources(self):
+        awkward = {'stop_reason': 'end_turn', 'content': [{'type': 'web_search_tool_result', 'content': [
+            {'type': 'web_search_result', 'url': 'https://example.com/a(b)'},
+            {'type': 'web_search_result', 'url': 'https://example.com/plain?x=1&y=2'}]}]}
+        for title in ['x', 'binance', 'BNB (Binance Coin)', 'Odd <b>name</b>!', 'a' * 200]:
+            for research in [RESEARCH, awkward, {'content': []}]:
+                with self.subTest(title=title[:20]):
+                    draft = stub_draft(title, research)
+                    validate_draft(draft, research)
+                    self.assertNotIn('<', draft['markdown'])
 
     def test_confidence_requires_valid_probability_and_confidence(self):
         for answer in [{}, {'choice': 'yes', 'confidence': 0.99},

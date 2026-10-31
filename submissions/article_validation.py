@@ -47,6 +47,34 @@ def evidence_urls(response):
     return urls
 
 
+def citable_urls(response):
+    """Pages opened, plus real results the search tool returned. Never model-written URLs."""
+    urls = evidence_urls(response)
+    for block in response.get('content', []):
+        if block.get('type') == 'web_search_tool_result' and isinstance(block.get('content'), list):
+            urls.update(item['url'] for item in block['content']
+                        if item.get('type') == 'web_search_result' and public_url(item.get('url', '')))
+    return urls
+
+
+def stub_draft(title, research):
+    """Fixed wording and source links only, so no rejected model text can reach the page."""
+    title = ' '.join(re.sub(r'[^\w ()’\x27.,+-]', ' ', title).split())[:100].strip()
+    title = title.title() if title == title.lower() else title
+    # Hostnames label the links because page titles are untrusted web text.
+    urls = [url for url in sorted(evidence_urls(research)) + sorted(citable_urls(research) - evidence_urls(research))
+            if re.fullmatch(r'https://[^\s()<>\[\]]+', url)][:5]
+    markers = ''.join(f'[^{index}]' for index, _ in enumerate(urls, 1))
+    references = '\n'.join(f'[^{index}]: [{urlsplit(url).hostname}]({url})' for index, url in enumerate(urls, 1))
+    markdown = (f'{title} is the subject of a reader request that Chainlore accepted as a cryptocurrency topic. '
+                'This is a placeholder: automated research could not produce a full article, so the page states '
+                'nothing about the subject beyond its name and lists any sources that were found. '
+                f'It has not been checked and should not be relied on.{markers}\n')
+    if references:
+        markdown += f'\n## References\n\n{references}\n'
+    return {'title': title, 'slug': slugify(title), 'ticker': 'None', 'category': 'Other', 'markdown': markdown}
+
+
 def extract_draft(response):
     require(response.get('stop_reason') == 'end_turn', 'writing_incomplete')
     text = ''.join(block['text'] for block in response.get('content', []) if block.get('type') == 'text')
@@ -74,15 +102,17 @@ def validate_draft(draft, research):
     definitions = re.findall(r'^\[\^(\d+)\]:\s+\[([^\]\n]+)\]\((https://[^\s)]+)\)\s*$', body, re.M)
     markers = re.findall(r'\[\^(\d+)\](?!:)', body)
     ids = [item[0] for item in definitions]
-    require(len(ids) >= 1 and len(ids) == len(set(ids)) and set(ids) == set(markers), 'invalid_footnotes')
+    # With nothing citable the writer never runs, so only a placeholder arrives here unsourced.
+    citable = citable_urls(research)
+    require((len(ids) >= 1 or not citable) and len(ids) == len(set(ids)) and set(ids) == set(markers), 'invalid_footnotes')
     urls = {item[2] for item in definitions}
-    require(urls <= evidence_urls(research), 'source_not_in_research')
-    require('## References' in body, 'missing_references')
+    require(urls <= citable, 'source_not_in_research')
+    require('## References' in body or not citable, 'missing_references')
     # Paragraphs with prose must cite evidence; tables and headings are exempt.
     prose = body.split('## References')[0]
     for paragraph in re.split(r'\n\s*\n', prose):
         lines = paragraph.strip().splitlines()
-        if lines and not lines[0].startswith(('#', '|')):
+        if citable and lines and not lines[0].startswith(('#', '|')):
             require(bool(re.search(r'\[\^\d+\]', paragraph)), 'uncited_paragraph')
     rendered = markdown.markdown(body, extensions=['tables', 'footnotes', 'toc'])
     try:

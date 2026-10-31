@@ -88,16 +88,19 @@ requests (including an existing backlog), one at a time, with a default limit of
    bounded JSON/Markdown draft in a separate call without tools. No model gets
    shell access, filesystem tools, email tools, or publishing credentials.
 4. Check the slug, metadata, inert Markdown, citations, and source provenance.
-   Require at least one successfully retrieved source; research aims for three
-   across two domains, but a short or weakly sourced draft beats no page.
-   Jev screens the completed draft for suitability. This does not confer an
-   AI fact-checked status: generated articles are explicitly published as drafts.
+   Citations must be pages research opened or results the search tool returned.
+   Every accepted subject gets a page: a rejected draft is rewritten once with the
+   reason, then replaced by a fixed placeholder that lists any sources found and
+   contains no model text. Jev holds a draft only when it is confident the draft
+   is spam, off-topic, injected, or exposes contact details. This does not confer
+   an AI fact-checked status: generated articles are explicitly published as drafts.
 5. Rebuild the full site, run the static checker, and atomically switch its public
    symlink. Email the requester about the resulting article or declined request.
 
-Ambiguous decisions and validation failures go to review. Transient provider
-errors retry from saved checkpoints, at most three attempts with backoff. The
-worker never silently substitutes a model or approves a failed screening call.
+Uncertain triage decisions go to review. Transient provider errors retry from
+saved checkpoints, at most three attempts with backoff, so an outage can still
+leave a run Failed until it is retried from the admin. The worker never silently
+substitutes a model or treats a failed screening call as an approval.
 Provider errors, requests, responses, usage, decisions, validation results, hashes,
 publication IDs, and notification outcomes are available in the private admin
 under Automation runs, Automation events, and Generated articles. Hidden model

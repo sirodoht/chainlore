@@ -44,9 +44,10 @@ Rules:
 - Contested points are attributed, and each significant side is given.
 - Judgements such as "largest", "first", or "most serious" are kept only
   if a source makes the same judgement. Otherwise they are removed.
-- A draft may be short and may rest on a single or weak source. A claim
-  its sources cannot support under these rules is left out, and the rest
-  of the draft is still published.
+- A draft may be short, may rest on a single or weak source, and may cite
+  pages found in search but not opened. Drafts are not checked against
+  these rules, so they may contain errors. If no article can be produced,
+  a placeholder page is published until one can be written.
 
 ## AI fact-checked
 
