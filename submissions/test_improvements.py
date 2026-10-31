@@ -1,12 +1,14 @@
 import copy
 import json
+from io import StringIO
+from django.core.management import call_command
 from unittest.mock import patch
 from django.utils import timezone
 from datetime import timedelta
 from . import ai_providers as ai
 from .article_validation import InvalidArticle
 from .automation import run_worker
-from .automation_control import retry_runs
+from .automation_control import retry_runs, resume_approved_improvements
 from .git_publication import commit_and_push, git
 from .improvements import snapshot_article, validate_patch
 from .models import ArticleRevision, AutomationRun, GeneratedArticle, Submission
@@ -127,6 +129,45 @@ class ImprovementTests(AutomationFixture):
         run_worker()
         self.assertEqual(AutomationRun.objects.get().state, 'review')
         self.assertEqual(git(self.remote, 'rev-parse', 'main'), before)
+
+    def test_positive_screening_does_not_need_high_scores(self):
+        result = decision(suitable='yes')
+        result['answers']['suitable'].update(confidence=0.7, probabilities={'yes': 0.8, 'no': 0.18, 'unclear': 0.02})
+        self.review_improvement.return_value = result
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+
+    def test_unclear_screening_is_still_held(self):
+        self.review_improvement.return_value = decision(suitable='unclear')
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'review')
+        self.assertEqual(resume_approved_improvements([AutomationRun.objects.get().pk]), 0)
+
+    def test_recover_approved_draft_without_repeating_model_calls(self):
+        # Recreate a historical hold from the old policy, preserving its paid work.
+        self.review_improvement.return_value = decision(suitable='no')
+        run_worker()
+        run = AutomationRun.objects.get()
+        self.assertEqual(resume_approved_improvements([run.pk]), 0)
+        saved_draft, saved_research = copy.deepcopy(run.draft), copy.deepcopy(run.research)
+        result = decision(suitable='yes')
+        result['answers']['suitable'].update(confidence=0.7, probabilities={'yes': 0.8})
+        run.output_review = result
+        run.save(update_fields=['output_review'])
+        for mock in (self.triage, self.research, self.write_improvement, self.review_improvement):
+            mock.reset_mock()
+        call_command('resume_approved_improvement', str(self.submission.reference), stdout=StringIO())
+        run.refresh_from_db()
+        self.assertEqual(run.draft, saved_draft)
+        self.assertEqual(run.research, saved_research)
+        self.assertEqual(run.output_review, result)
+        run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'published')
+        for mock in (self.triage, self.research, self.write_improvement, self.review_improvement):
+            mock.assert_not_called()
+        self.assertTrue(run.events.filter(kind='operator_resume_approved').exists())
+        self.assertEqual(resume_approved_improvements([run.pk]), 0)
 
     def test_retry_after_push_does_not_duplicate_changes(self):
         with patch('submissions.publication.shutil.copytree', side_effect=OSError('publication unavailable')):

@@ -169,7 +169,9 @@ audit history, including the publication commit. It is never overlaid onto the
 site at build time. A fresh clone can rebuild the complete encyclopedia.
 
 Each publication uses a temporary checkout of the latest remote branch. The worker
-stages only article paths and `INDEX.md`, validates the build, commits as
+stages only article paths and `INDEX.md`, adding a short index description derived
+from the validated article lead while preserving existing editorial descriptions.
+It validates the build and commits as
 `Chainlore Bot <bot@chainlore.xyz>`, and pushes without force. A rejected push leaves
 the public site unchanged; retries clone the latest branch and reuse the saved
 draft. A successful push followed by a publication failure is also resumable,
@@ -236,7 +238,13 @@ The publisher applies exact paragraph/heading anchors to the latest Git source,
 preserving unrelated concurrent edits. Changed or missing anchors stop publication
 and hold the suggestion for review. New footnotes have a unique namespace, leaving
 existing citations intact; a replacement removes an old reference definition only
-if its last citation was in the replaced paragraph. The worker cannot delete whole sections or rewrite
+if its last citation was in the replaced paragraph.
+
+A valid screening **yes** permits publication; confidence and probability scores
+are retained for diagnosis without imposing a second approval threshold. A **no**,
+**unclear**, or malformed result stays in review.
+
+The worker cannot delete whole sections or rewrite
 more than a third of the original prose through replacements. Full rewrites remain
 an editorial task. An interrupted push/publication resumes without applying the
 same changes twice. Each suggestion retains a separate Article revision in admin,
@@ -247,6 +255,12 @@ remove current checker/reviewer fields; previous checks remain in Git history.
 `written_by` is preserved, and the actual additional writer model and effort are
 recorded in the conventional Git commit description. Only the changed article is
 staged for an improvement. Request text, email and research stay private.
+
+Use **Resume approved improvements from their saved draft** to recover an
+improvement that already received a valid yes but was held by the former score
+thresholds. This preserves research, writing and screening results and makes no
+new model calls. The equivalent command is
+`manage.py resume_approved_improvement <submission-reference>`.
 
 To recover a held improvement after a content conflict, use **Restart screening
 and research for held review runs** in the Automation runs admin. This archives

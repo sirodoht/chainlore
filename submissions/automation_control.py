@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from .article_validation import PLACEHOLDER
+from .ai_providers import approved_improvement
 from .models import AutomationControl, AutomationEvent, AutomationRun, Submission
 from .notify import notify_provider_problem
 from .publication import publication_lock
@@ -138,5 +139,30 @@ def retry_runs(ids, actor_id, restart=False):
             run.save()
             AutomationEvent.objects.create(run=run, kind='operator_retry', data={
                 'actor_id': actor_id, 'restart_research': restart, 'previous': previous})
+            count += 1
+        return count
+
+
+def resume_approved_improvements(ids, actor_id=None):
+    """Recover only positive screening decisions, retaining all paid checkpoints."""
+    with publication_lock(blocking=False), transaction.atomic():
+        if AutomationControl.objects.filter(pk=1, paused=True).exists():
+            raise ValueError('Fix the provider settings and resume the queue first.')
+        runs = AutomationRun.objects.filter(
+            pk__in=ids, state='review', last_error='improvement_needs_review',
+            submission__kind='improvement', submission__status='reviewing',
+            article_revision__published_at__isnull=True, article_revision__git_revision='')
+        count = 0
+        for run in runs:
+            if not run.draft or not run.research or not approved_improvement(run.output_review):
+                continue
+            previous = {'state': run.state, 'reason': run.last_error, 'attempts': run.attempts}
+            run.state = 'queued'
+            run.last_error = ''
+            run.attempts = 0
+            run.next_attempt_at = None
+            run.save(update_fields=['state', 'last_error', 'attempts', 'next_attempt_at', 'updated_at'])
+            AutomationEvent.objects.create(run=run, kind='operator_resume_approved', data={
+                'actor_id': actor_id, 'previous': previous, 'decision': 'accept_saved_yes_without_score_threshold'})
             count += 1
         return count

@@ -189,7 +189,7 @@ def process_improvement(run):
     if not run.output_review:
         run.output_review = ai.review_improvement(run, record)
         run.save(update_fields=['output_review', 'updated_at'])
-    if not ai.valid_output_review(run.output_review) or not ai.confident(run.output_review, 'suitable', 'yes'):
+    if not ai.approved_improvement(run.output_review):
         finish(run, 'review', 'improvement_needs_review')
         return
     with transaction.atomic():

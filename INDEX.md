@@ -109,5 +109,5 @@ All pages in Chainlore.
 ## People
 
 - [Satoshi Nakamoto](pages/satoshi-nakamoto.md): Bitcoin's pseudonymous creator and the documentary record.
-- [Vitalik Buterin](pages/vitalik-buterin.md)
+- [Vitalik Buterin](pages/vitalik-buterin.md): Ethereum co-founder and author of its original whitepaper.
 

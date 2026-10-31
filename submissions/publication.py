@@ -12,6 +12,8 @@ import subprocess
 import sys
 import tempfile
 import uuid
+import xml.etree.ElementTree as ET
+import markdown
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
@@ -19,6 +21,26 @@ from django.utils import timezone as django_timezone
 from .categories import CATEGORY_SECTIONS
 from .git_publication import clone_source, commit_and_push, stage_articles
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission, ArticleRevision
+
+
+def article_summary(record):
+    """Use an excerpt of the validated lead, without another model call or new claims."""
+    body = record.markdown.split('---\n', 2)[-1].strip()
+    if 'This is a placeholder:' in body:
+        return 'Draft awaiting fuller coverage.'
+    lead = re.split(r'\n\s*\n', body, maxsplit=1)[0]
+    lead = re.sub(r'\[\^[^\]]+\]', '', lead)
+    tree = ET.fromstring('<div>' + markdown.markdown(lead) + '</div>')
+    paragraph = tree.find('p')
+    text = ' '.join(''.join(paragraph.itertext()).split()) if paragraph is not None else ''
+    text = re.sub(r'^' + re.escape(record.title) + r'\s+(?:is|was|are|were)\s+', '', text, flags=re.I)
+    if not text:
+        return 'Draft awaiting fuller coverage.'
+    if len(text) > 180:
+        text = text[:177].rsplit(' ', 1)[0].rstrip('.,;:') + '…'
+    text = text[:1].upper() + text[1:]
+    # Rendered plain text must remain text when inserted back into Markdown.
+    return re.sub(r'([\\`*{}\[\]<>_])', r'\\\1', text)
 
 
 def index_generated_articles(index, records):
@@ -31,7 +53,7 @@ def index_generated_articles(index, records):
         front = record.markdown.split('---\n', 2)[1] if record.markdown.startswith('---\n') else ''
         category = re.search(r'^category:\s*([^\n]+)', front, re.M)
         heading = CATEGORY_SECTIONS.get(category.group(1).strip() if category else '', 'Other topics')
-        additions.setdefault(heading, []).append(f'- [{record.title}](pages/{record.slug}.md)')
+        additions.setdefault(heading, []).append(f'- [{record.title}](pages/{record.slug}.md): {article_summary(record)}')
     for heading, links in additions.items():
         section = re.search(r'^## ' + re.escape(heading) + r'\s*$', index, re.M)
         if section:

@@ -15,7 +15,7 @@ from . import ai_providers as ai
 from .article_validation import InvalidArticle, public_url, stub_draft, validate_draft
 from .automation import deliver_notifications, run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
-from .publication import index_generated_articles, publication_lock, publish_site
+from .publication import article_summary, index_generated_articles, publication_lock, publish_site
 from .git_publication import git
 from .automation_control import regenerate_placeholders, resume_queue, retry_runs
 from .models import AutomationControl
@@ -802,9 +802,26 @@ class IndexCategoryTests(SimpleTestCase):
     def test_curated_text_and_manual_placement_are_preserved(self):
         index = '# Index\n\n## Exchanges\n\n- [FTX](pages/ftx.md): a curated\n  multiline summary.\n\n## Infrastructure\n\n- [Manual](pages/manual.md): editorial placement.\n'
         result = index_generated_articles(index, [self.record('binance', 'Exchange'), self.record('manual', 'Other')])
-        self.assertIn('- [FTX](pages/ftx.md): a curated\n  multiline summary.\n- [Binance](pages/binance.md)\n\n## Infrastructure', result)
+        self.assertIn('- [FTX](pages/ftx.md): a curated\n  multiline summary.\n- [Binance](pages/binance.md): Body.\n\n## Infrastructure', result)
         self.assertIn('## Infrastructure\n\n- [Manual](pages/manual.md): editorial placement.', result)
         self.assertNotIn('## Other topics', result)
+
+    def test_generated_index_entry_has_a_plain_description_from_its_lead(self):
+        record = self.record('example', 'Concept')
+        record.markdown = '---\ntitle: Example\ncategory: Concept\n---\n\nExample is a **fictional** protocol with a sourced description.[^1]\n\n## References\n\n[^1]: [Source](https://example.com/)\n'
+        result = index_generated_articles('# Index\n', [record])
+        self.assertIn('- [Example](pages/example.md): A fictional protocol with a sourced description.', result)
+        self.assertNotIn('[^1]', result)
+        self.assertNotIn('https://example.com', result)
+        self.assertEqual(index_generated_articles(result, [record]), result)
+
+    def test_summary_is_bounded_and_placeholder_is_labelled(self):
+        record = self.record('example', 'Concept')
+        record.markdown = 'Example is ' + 'documented context ' * 30
+        self.assertLessEqual(len(article_summary(record)), 180)
+        self.assertTrue(article_summary(record).endswith('…'))
+        record.markdown = 'This is a placeholder: no usable research.'
+        self.assertEqual(article_summary(record), 'Draft awaiting fuller coverage.')
 
     def test_unknown_or_missing_metadata_uses_other_topics_not_body_text(self):
         records = [self.record('unknown', 'Unrecognised'), self.record('missing', 'Exchange')]

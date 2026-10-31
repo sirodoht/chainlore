@@ -251,6 +251,11 @@ def review_output(run):
     })
 
 
+def approved_improvement(result):
+    """A valid editorial yes is approval; scores are diagnostic, not another veto."""
+    return valid_output_review(result) and result['answers']['suitable']['choice'] == 'yes'
+
+
 def research_context(response, include_source_text=True):
     # Encrypted search payloads are retained in the private audit but cannot help
     # a fresh model call. Send the cited dossier and the actual result URL list.
