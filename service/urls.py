@@ -6,6 +6,8 @@ from submissions import views
 from submissions.review import dashboard
 
 urlpatterns = [
+    path('submit/all/', views.submission_list, name='submission-list'),
+    path('submit/track/<uuid:reference>/', views.submission_detail, name='submission-detail'),
     path('submit/', views.index, name='submission-index'),
     path('submit/received/<uuid:reference>/', views.received, name='submission-received'),
     path('submit/<str:kind>/', views.submit, name='submission-form'),

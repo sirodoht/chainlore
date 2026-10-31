@@ -1,0 +1,17 @@
+{% extends 'submissions/base.html' %}
+{% block content %}
+<p>Follow article requests, error reports, and improvements from receipt to outcome.</p>
+<p class="tracking-help">Private messages and email addresses stay private. Titles and outcome notes are supplied by editors or published articles.</p>
+<form method="get" class="tracking-filters" aria-label="Filter submissions">
+  <div><label for="submission-type">Type</label><select id="submission-type" name="type"><option value="">All types</option>{% for value,label in kinds.items %}<option value="{{ value }}"{% if value == selected_type %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+  <div><label for="submission-status">Status</label><select id="submission-status" name="status"><option value="">All statuses</option>{% for value,label in statuses.items %}<option value="{{ value }}"{% if value == selected_status %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+  <button type="submit" class="submit-button">Filter</button><a href="{% url 'submission-list' %}">Clear filters</a>
+</form>
+<p class="tracking-count">{{ page.paginator.count }} submission{{ page.paginator.count|pluralize }} · Newest first</p>
+<div class="tracking-table-wrap"><table class="tracking-table"><caption class="sr-only">Submission progress and latest updates</caption>
+<thead><tr><th scope="col">Submission</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Submitted</th><th scope="col">Latest update</th></tr></thead>
+<tbody>{% for item in rows %}<tr><td><a href="{{ item.url }}">{{ item.title }}</a></td><td>{{ item.kind }}</td><td><span class="tracking-status status-{{ item.status }}">{{ item.status_label }}</span></td><td><time datetime="{{ item.created_at|date:'c' }}">{{ item.created_at|date:'j M Y' }}<br>{{ item.created_at|date:'H:i' }} UTC</time></td><td><time datetime="{{ item.updated_at|date:'c' }}">{{ item.updated_at|date:'j M Y' }}<br>{{ item.updated_at|date:'H:i' }} UTC</time></td></tr>
+{% empty %}<tr><td colspan="5">No submissions match these filters. <a href="{% url 'submission-list' %}">View all submissions</a> or <a href="/submit/">make a submission</a>.</td></tr>{% endfor %}</tbody></table></div>
+{% if page.has_other_pages %}<nav class="tracking-pagination" aria-label="Submission pages">{% if page.has_previous %}<a href="?{{ filters }}&amp;page={{ page.previous_page_number }}">Previous</a>{% endif %}<span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a href="?{{ filters }}&amp;page={{ page.next_page_number }}">Next</a>{% endif %}</nav>{% endif %}
+<p><a href="/submit/">Make a submission</a></p>
+{% endblock %}

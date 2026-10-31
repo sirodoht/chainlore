@@ -9,7 +9,7 @@
     {% if field.name == 'website' %}<div class="form-trap" aria-hidden="true">{{ field.label_tag }}{{ field }}</div>
     {% else %}<div class="form-field">{{ field.label_tag }}{% if field.field.required %}<span class="field-required">Required</span>{% endif %}{{ field }}{% if field.help_text %}<div class="helptext" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}{{ field.errors }}</div>{% endif %}
   {% endfor %}
-  <p class="submission-privacy">Your suggestion and email address are stored privately. Accepted article changes are public. Email addresses are never published.</p>
+  <p class="submission-privacy">Your suggestion and email address are stored privately. Submission type, dates, status, and editor-approved summaries appear in the public tracker. Accepted article changes are public. Email addresses are never published.</p>
   <button type="submit" class="submit-button">Submit</button>
 </form>
 {% endblock %}

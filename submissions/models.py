@@ -1,6 +1,6 @@
 import uuid
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 
 
 class Submission(models.Model):
@@ -30,6 +30,8 @@ class Submission(models.Model):
     email = models.EmailField(blank=True)
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.NEW, db_index=True)
     internal_notes = models.TextField(blank=True)
+    public_title = models.CharField(max_length=200, blank=True, help_text='Optional short title approved for public display. Never include contact details.')
+    public_summary = models.TextField(max_length=2000, blank=True, help_text='Public progress note, explanation of changes, or reason for declining. Do not copy private submission text.')
     resulting_url = models.URLField(blank=True, verbose_name='Resulting article or change URL')
     duplicate_of = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='duplicates')
     notified_status = models.CharField(max_length=12, choices=Status.choices, blank=True, verbose_name='Submitter emailed about')
@@ -46,6 +48,39 @@ class Submission(models.Model):
     def clean(self):
         if self.duplicate_of_id == self.reference:
             raise ValidationError({'duplicate_of': 'A submission cannot be a duplicate of itself.'})
+        seen = {self.reference}
+        target = self.duplicate_of
+        while target:
+            if target.pk in seen:
+                raise ValidationError({'duplicate_of': 'Duplicate links cannot form a cycle.'})
+            if self.kind != 'question' and target.kind == 'question':
+                raise ValidationError({'duplicate_of': 'Choose an article request, error report, or improvement.'})
+            seen.add(target.pk)
+            target = target.duplicate_of
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            fields = ['status', 'duplicate_of_id', 'public_title', 'public_summary', 'resulting_url']
+            previous = type(self).objects.filter(pk=self.pk).values(*fields).first()
+            super().save(*args, **kwargs)
+            current = type(self).objects.filter(pk=self.pk).values(*fields).get()
+            if previous and previous != current:
+                label = ('Marked as duplicate' if current['duplicate_of_id'] else
+                         {'new': 'Queued', 'reviewing': 'Review started', 'resolved': 'Resolved',
+                          'declined': 'Declined'}[current['status']])
+                if previous['status'] == current['status'] and previous['duplicate_of_id'] == current['duplicate_of_id']:
+                    label = 'Public update'
+                SubmissionUpdate.objects.create(submission=self, label=label, note=current['public_summary'])
+
+
+class SubmissionUpdate(models.Model):
+    submission = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name='public_updates')
+    label = models.CharField(max_length=100)
+    note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at', 'pk']
 
 
 class RateLimit(models.Model):

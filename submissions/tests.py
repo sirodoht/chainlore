@@ -234,7 +234,7 @@ class SubmissionsTests(TestCase):
         user = get_user_model().objects.create_superuser('editor', password='test-long-password')
         self.client.force_login(user)
         self.assertContains(self.client.get('/admin/submissions/submission/'), str(record.pk)[:8])
-        response = self.client.post(url, {'status': 'resolved', 'internal_notes': 'Clarified in the article.', 'resulting_url': 'https://chainlore.xyz/p/bitcoin/'})
+        response = self.client.post(url, {'status': 'resolved', 'public_summary': 'Corrected the date.', 'internal_notes': 'Clarified in the article.', 'resulting_url': 'https://chainlore.xyz/p/bitcoin/'})
         self.assertEqual(response.status_code, 302)
         record.refresh_from_db()
         self.assertEqual(record.status, 'resolved')
@@ -259,7 +259,7 @@ class SubmissionsTests(TestCase):
         url = f'/admin/submissions/submission/{record.pk}/change/'
         self.client.post(url, {'status': 'reviewing'})
         self.assertEqual(len(mail.outbox), 0)
-        self.client.post(url, {'status': 'resolved', 'resulting_url': 'https://chainlore.xyz/p/bitcoin/'})
+        self.client.post(url, {'status': 'resolved', 'public_summary': 'Corrected the date.', 'resulting_url': 'https://chainlore.xyz/p/bitcoin/'})
         self.assertEqual(len(mail.outbox), 1)
         message = mail.outbox[0]
         self.assertEqual(message.to, ['reader@example.com'])
@@ -267,7 +267,7 @@ class SubmissionsTests(TestCase):
         self.assertIn('the Bitcoin article', message.body)
         self.assertIn('https://chainlore.xyz/p/bitcoin/', message.body)
         self.assertIn(str(record.reference), message.body)
-        self.client.post(url, {'status': 'resolved', 'internal_notes': 'Edited again.'})
+        self.client.post(url, {'status': 'resolved', 'public_summary': 'Corrected the date.', 'internal_notes': 'Edited again.'})
         self.assertEqual(len(mail.outbox), 1)
         record.refresh_from_db()
         self.assertEqual(record.notified_status, 'resolved')
@@ -276,10 +276,10 @@ class SubmissionsTests(TestCase):
     def test_admin_decision_without_email_or_configuration_sends_nothing(self):
         silent = Submission.objects.create(kind='request', title='Topic')
         self.client.force_login(get_user_model().objects.create_superuser('editor', password='test-long-password'))
-        self.client.post(f'/admin/submissions/submission/{silent.pk}/change/', {'status': 'declined'})
+        self.client.post(f'/admin/submissions/submission/{silent.pk}/change/', {'status': 'declined', 'public_summary': 'The original article is accurate.'})
         record = Submission.objects.create(kind='request', title='Topic', email='reader@example.com')
         with override_settings(NOTIFICATIONS_ENABLED=False):
-            response = self.client.post(f'/admin/submissions/submission/{record.pk}/change/', {'status': 'declined'}, follow=True)
+            response = self.client.post(f'/admin/submissions/submission/{record.pk}/change/', {'status': 'declined', 'public_summary': 'The original article is accurate.'}, follow=True)
         self.assertContains(response, 'Email is not configured')
         self.assertEqual(len(mail.outbox), 0)
         record.refresh_from_db()

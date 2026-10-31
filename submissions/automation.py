@@ -33,7 +33,9 @@ def finish(run, state, reason, url=''):
     run.save()
     status = {'published': 'resolved', 'duplicate': 'resolved', 'declined': 'declined'}.get(state, 'reviewing')
     Submission.objects.filter(pk=run.submission_id, status__in=['new', 'reviewing']).update(
-        status=status, resulting_url=url, updated_at=timezone.now())
+        status=status, resulting_url=url, public_summary=(
+            'This request was declined because it is outside the editorial scope or contains instructions that cannot be processed safely.'
+            if state == 'declined' and reason == 'out_of_scope_or_injection' else ''), updated_at=timezone.now())
     event(run, 'decision', state=state, reason=reason, resulting_url=url)
 
 

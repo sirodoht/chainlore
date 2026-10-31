@@ -56,6 +56,8 @@ spam controls, private receipts, and admin access and review operations.
 
 ## Submissions
 
+- `/submit/all/`: public tracker for article requests, errors, and improvements, with type/status filters and pagination.
+- `/submit/track/<reference>/`: progress, public outcome, article/original-submission links, and dated activity history. Receipts link directly here.
 - `/submit/request/`: required article title, with optional scope, sources, and email.
 - `/submit/correction/`: quoted claim and explanation, with optional source links and replacement text.
 - `/submit/improvement/`: article and suggested improvement, with optional section, sources, and email.
@@ -72,8 +74,22 @@ spam controls, private receipts, and admin access and review operations.
 Email is optional and never published. It is available only in the authenticated
 editorial queue for sending status notifications. New submissions notify the configured
 admin; resolving or declining a submission emails the submitter if they supplied an address.
-Submissions are private;
-receipt pages show a reference number without exposing submitted text or email.
+Submission text, email, sources, internal notes, and provider audit payloads stay
+private. The public tracker shows type, dates, status, and approved public titles
+and summaries. Historical private titles are not automatically republished:
+neutral titles use the related published article or a short reference until an
+editor supplies a public title. Resolved automated requests link to the published
+article; improvements also link to the publication commit in their activity history.
+Duplicate submissions link to the original where one exists, or the existing article.
+
+Editors can set **Public title** and **Public summary** in the submission admin.
+A new manual resolved/declined decision requires an outcome note (duplicates are
+exempt); resolved article requests also require the resulting article URL.
+These public changes are recorded as dated updates. Legacy decisions without a
+public explanation say so rather than inventing a reason or transition date.
+Automation history uses a fixed allowlist of milestone labels, never provider
+responses or exception text. Failed/held runs show Needs review; retrying runs
+show Queued. The existing staff automation actions provide retry/recovery.
 Source URLs are validated but never fetched by the submission endpoint.
 
 Configure the admin recipient with `CHAINLORE_ADMIN_EMAIL` or a private

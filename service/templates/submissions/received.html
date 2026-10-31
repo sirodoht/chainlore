@@ -1,7 +1,8 @@
 {% extends 'submissions/base.html' %}
 {% block content %}
 <p>Your submission has been received.</p>
+<div class="tracking-actions"><a class="submit-button" href="{% url 'submission-detail' reference %}">Track this submission</a><a href="{% url 'submission-list' %}">View all submissions</a></div>
 <p>Reference: <code>{{ reference }}</code></p>
-<p>Keep this reference if you need to refer to your submission. If you entered an email address, you will receive a notification when your submission is resolved or declined.</p>
+<p>Bookmark the tracking page to follow progress and see the outcome. If you entered an email address, you will receive a notification when your submission is resolved or declined.</p>
 <p><a href="/all-articles/">Return to the article index</a></p>
 {% endblock %}

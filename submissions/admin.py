@@ -1,5 +1,7 @@
 import smtplib
 from django.conf import settings
+from django import forms
+from django.urls import reverse
 from django.contrib import admin, messages
 from django.utils.html import format_html
 from . import notify
@@ -10,18 +12,47 @@ admin.site.site_title = 'Chainlore admin'
 admin.site.index_title = 'Review queue'
 
 
+class SubmissionReviewForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = '__all__'
+
+    def clean(self):
+        data = super().clean()
+        final = data.get('status') in ('resolved', 'declined')
+        changed = any(name in self.changed_data for name in ('status', 'duplicate_of', 'public_summary'))
+        if self.instance.kind != 'question' and final and changed and not data.get('duplicate_of') and not data.get('public_summary', '').strip():
+            self.add_error('public_summary', 'Explain the outcome or decline reason for the public tracker.')
+        if self.instance.kind == 'request' and data.get('status') == 'resolved' and not data.get('duplicate_of') and not data.get('resulting_url'):
+            self.add_error('resulting_url', 'Link to the published article before resolving this request.')
+        if data.get('resulting_url'):
+            from .catalog import articles
+            from .tracking import result_link
+            if not result_link(data['resulting_url'], articles()):
+                self.add_error('resulting_url', 'Use an existing Chainlore article URL: https://chainlore.xyz/p/article-slug/.')
+        return data
+
+
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ['reference_short', 'kind', 'subject', 'status', 'created_at', 'duplicate_of']
+    form = SubmissionReviewForm
+    list_display = ['reference_short', 'kind', 'subject', 'status', 'created_at', 'updated_at', 'duplicate_of', 'tracking_link']
     list_filter = ['status', 'kind', 'article', 'created_at']
     search_fields = ['reference', 'title', 'article', 'details', 'claim', 'email']
     date_hierarchy = 'created_at'
-    readonly_fields = ['notified_status', 'notified_at', 'reference', 'kind', 'article_link', 'article', 'section', 'article_revision', 'title', 'details', 'claim', 'correction', 'sources', 'email', 'created_at', 'updated_at']
+    readonly_fields = ['tracking_link', 'notified_status', 'notified_at', 'reference', 'kind', 'article_link', 'article', 'section', 'article_revision', 'title', 'details', 'claim', 'correction', 'sources', 'email', 'created_at', 'updated_at']
     autocomplete_fields = ['duplicate_of']
     fieldsets = [
+        ('Public tracker', {'fields': ['tracking_link', 'public_title', 'public_summary']}),
         ('Review', {'fields': ['status', 'internal_notes', 'duplicate_of', 'resulting_url', 'notified_status', 'notified_at']}),
         ('Submission', {'fields': ['reference', 'kind', 'article_link', 'article', 'section', 'article_revision', 'title', 'details', 'claim', 'correction', 'sources', 'email', 'created_at', 'updated_at']}),
     ]
+
+    @admin.display(description='Public tracker')
+    def tracking_link(self, obj):
+        if obj.kind == 'question':
+            return '—'
+        return format_html('<a href="{}">Track submission</a>', reverse('submission-detail', args=[obj.pk]))
 
     @admin.display(description='Reference')
     def reference_short(self, obj):

@@ -2,7 +2,10 @@ import hashlib
 from django.conf import settings
 from django.db import connection, transaction
 from django.http import Http404, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
+from urllib.parse import urlencode
+from . import tracking
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods
 from .catalog import articles, revision
@@ -76,3 +79,35 @@ def development_site(request, path):
     if not path or path.endswith('/'):
         path += 'index.html'
     return serve(request, path, document_root=settings.SITE_ROOT)
+
+
+@require_GET
+@never_cache
+def submission_list(request):
+    kind = request.GET.get('type', '')
+    status = request.GET.get('status', '')
+    records = tracking.queryset()
+    if kind in tracking.KINDS:
+        records = records.filter(kind=kind)
+    else:
+        kind = ''
+    if status in tracking.STATUSES:
+        records = records.filter(tracking_status=status)
+    else:
+        status = ''
+    page = Paginator(records.order_by('-created_at', '-reference'), 25).get_page(request.GET.get('page'))
+    catalog = articles()
+    return render(request, 'submissions/list.html', context(
+        title='All submissions', rows=[tracking.present(row, catalog) for row in page], page=page,
+        kinds=tracking.KINDS, statuses=tracking.STATUSES, selected_type=kind, selected_status=status,
+        filters=urlencode({'type': kind, 'status': status})))
+
+
+@require_GET
+@never_cache
+def submission_detail(request, reference):
+    submission = get_object_or_404(tracking.queryset(), pk=reference)
+    catalog = articles()
+    row = tracking.present(submission, catalog)
+    return render(request, 'submissions/detail.html', context(
+        title=row['title'], item=row, history=tracking.history(submission, catalog)))
