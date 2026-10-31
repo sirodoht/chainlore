@@ -106,8 +106,10 @@ def publish_site(base_release=None):
     os.replace(next_link, output / 'current')
     with transaction.atomic():
         for record in records:
-            if record.published_at is None:
-                GeneratedArticle.objects.filter(pk=record.pk).update(published_at=django_timezone.now())
+            # Keeping an existing page live does not complete its regeneration.
+            if record.published_at is not None:
+                continue
+            GeneratedArticle.objects.filter(pk=record.pk).update(published_at=django_timezone.now())
             # A deploy can finish a publication interrupted after its source was saved.
             if AutomationRun.objects.filter(pk=record.run_id, state__in=['queued', 'running', 'retry']).update(state='published', last_error=''):
                 Submission.objects.filter(automation__pk=record.run_id, status='reviewing').update(

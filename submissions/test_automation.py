@@ -279,6 +279,43 @@ class AutomationTests(TestCase):
         self.assertIn('This is a placeholder', (self.root / 'published/current/p/test-protocol/index.html').read_text())
         self.assertEqual(regenerate_placeholders([run.pk], actor_id=7), 1)
 
+    def test_rebuild_preserves_queued_placeholder_regeneration(self):
+        run = self.publish_placeholder()
+        regenerate_placeholders([run.pk], actor_id=7)
+        publications = run.events.filter(kind='publication').count()
+        with publication_lock():
+            publish_site()
+        run.refresh_from_db()
+        self.submission.refresh_from_db()
+        self.assertEqual(run.state, 'queued')
+        self.assertEqual(self.submission.status, 'reviewing')
+        self.assertEqual(run.events.filter(kind='publication').count(), publications)
+        page = self.root / 'published/current/p/test-protocol/index.html'
+        self.assertIn('This is a placeholder', page.read_text())
+        run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'published')
+        self.assertEqual(self.research.call_count, 2)
+        self.assertNotIn('This is a placeholder', page.read_text())
+
+    def test_rebuild_finishes_checked_replacement_after_publication_failure(self):
+        run = self.publish_placeholder()
+        regenerate_placeholders([run.pk], actor_id=7)
+        with patch('submissions.automation.publish_site', side_effect=OSError('disk issue')):
+            run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'retry')
+        self.assertIsNone(GeneratedArticle.objects.get().published_at)
+        self.assertIn('This is a placeholder', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+        with publication_lock():
+            publish_site()
+        run.refresh_from_db()
+        self.submission.refresh_from_db()
+        self.assertEqual(run.state, 'published')
+        self.assertEqual(self.submission.status, 'resolved')
+        self.assertIsNotNone(GeneratedArticle.objects.get().published_at)
+        self.assertNotIn('This is a placeholder', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+
     def test_regenerate_ignores_full_articles_and_respects_a_paused_queue(self):
         run_worker()
         run = AutomationRun.objects.get()
