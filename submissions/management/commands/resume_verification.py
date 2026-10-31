@@ -2,6 +2,7 @@
 import copy
 import json
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from submissions.models import AutomationRun, Verification, AutomationEvent
@@ -17,6 +18,8 @@ class Command(BaseCommand):
         parser.add_argument('--submission', required=True)
         parser.add_argument('--reopen-incomplete-sources', action='store_true',
                             help='Reopen an automated insufficient-evidence outcome caused solely by missing tool evidence.')
+        parser.add_argument('--increase-report-allowance', action='store_true',
+                            help='Retry a truncated group after raising its output allowance, retaining completed groups.')
 
     def handle(self, *args, **options):
         with publication_lock(blocking=False), transaction.atomic():
@@ -62,7 +65,17 @@ class Command(BaseCommand):
                 except InvalidArticle:
                     raise CommandError('Saved writing response cannot be recovered.') from None
             session = copy.deepcopy(check.session)
-            if contradictory:
+            if options['increase_report_allowance']:
+                batch = next((b for b in session.get('batches', []) if 'report' not in b), None)
+                old_limit = batch.get('output_allowance', max((r.get('usage', {}).get('output_tokens', 0) for r in batch.get('responses', [])), default=0)) if batch else 0
+                if (source_failure or contradictory or check.state != 'incomplete' or
+                        check.report.get('errors') != ['verification_output_incomplete'] or not batch or not old_limit
+                        or settings.VERIFICATION_REPORT_TOKENS <= old_limit
+                        or not batch.get('responses') or any(r.get('stop_reason') != 'max_tokens' for r in batch['responses'])):
+                    raise CommandError('A higher output allowance and a truncated group are required.')
+                batch.setdefault('previous_attempts', []).append({'output_allowance':old_limit,'responses':batch['responses']})
+                batch.update(responses=[], processed_responses=0, output_allowance=settings.VERIFICATION_REPORT_TOKENS)
+            elif contradictory:
                 batch = next((b for b in session.get('batches', []) if 'report' not in b), None)
                 if batch is None:
                     raise CommandError('Contradictory report has no recoverable group checkpoint.')

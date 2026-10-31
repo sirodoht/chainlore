@@ -19,3 +19,13 @@ remain; the new check receives no publication approval and retains revision coun
 
 Regression tests cover truncated source collection, missing references, tool errors,
 crash recovery, genuine checker findings, and guarded reopening of the wrong outcome.
+
+The production recovery completed the missing real search in one call. Its next
+claim group exhausted both 16,000-token report attempts. Report prompts were also
+repeating roughly 40,000 characters of opaque encrypted search data per group.
+These blobs now remain solely in the audit; readable search metadata and fetched
+source content remain in the report prompt. Group report output rises to 32,000
+tokens, keeping two attempts and the unchanged 4M daily / 3M per-run budgets.
+Explicit higher-allowance recovery preserves completed groups, archives the prior
+truncated attempts, and retains all usage charges. Tests cover both data retention
+and refusing recovery without a strictly larger output allowance.

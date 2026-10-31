@@ -178,7 +178,7 @@ another paid call.
 
 Once source collection is complete, the checker
 keeps the candidate and its independently fetched sources, then checks groups of at most four units with at most two report-only attempts per
-group, a 16,000-token output allowance and no tools. Each cited group receives its
+group, a 32,000-token output allowance and no tools. Each cited group receives its
 complete cited documents; uncited facts retain the full source set. Group approvals
 are combined only when every unit is covered, then the full report is validated again. Complete
 reports with factual findings still request revision. Incomplete reports end in an
@@ -202,6 +202,11 @@ add `--reopen-incomplete-sources`. This requires an unchanged candidate, same-da
 evidence, no later paid work, and no factual claim-validation errors. The old
 decision and failed check remain in the audit; the new check must independently
 complete all source and claim checks. Existing revision counts are preserved.
+After an operational increase of the report output allowance,
+`--increase-report-allowance` can retry a truncated group while keeping completed
+groups. It requires a strictly higher allowance and retains old responses and all
+charged usage. Opaque encrypted search blobs stay in the audit; report prompts
+carry readable search metadata and fetched source text.
 
 ### Scheduled upkeep and audit
 

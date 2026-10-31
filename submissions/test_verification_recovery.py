@@ -45,7 +45,7 @@ class VerificationRecoveryTests(TestCase):
         request=call.call_args.args[3]
         self.assertEqual(call.call_args.args[2],'fact_check_report')
         self.assertNotIn('tools',request)
-        self.assertEqual(request['max_tokens'],16000)
+        self.assertEqual(request['max_tokens'],32000)
         data=json.loads(request['messages'][0]['content'])
         self.assertIn('https://example.com/history',data['fetched_sources'])
         self.assertNotIn('writer_research',data)
@@ -196,7 +196,7 @@ class BudgetSettlementTests(TestCase):
         from .ai_providers import call
         transport.return_value.__enter__.return_value.read.return_value=json.dumps({'usage':{'input_tokens':10,'output_tokens':10}}).encode()
         call(self.run,'anthropic','fact_check_report',{'max_tokens':64000,'model':'test'})
-        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'],16000)
+        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'],32000)
 
 @override_settings(VERIFICATION_BATCH_SIZE=2)
 class GroupCoverageTests(TestCase):

@@ -250,7 +250,20 @@ def report_payload(check, units):
                         not u['text'].startswith(('#','category:','ticker: None')) for u in units)
     urls = {canonical(definitions[label]) for label in labels if label in definitions}
     data['fetched_sources'] = sources if uncited_facts or not urls else {url:text for url,text in sources.items() if url in urls}
-    data['freshness_search_results'] = [b for r in evidence_responses(check) for b in r.get('content', []) if b.get('type') == 'web_search_tool_result']
+    # Opaque search blobs are useful in the original tool conversation, but
+    # cannot be read as evidence inside this new JSON user message. Keep them
+    # in the audit, not in every repeated report prompt.
+    data['freshness_search_results'] = []
+    for response in evidence_responses(check):
+        for block in response.get('content', []):
+            if block.get('type') != 'web_search_tool_result':
+                continue
+            saved = copy.deepcopy(block)
+            if isinstance(saved.get('content'), list):
+                for item in saved['content']:
+                    if isinstance(item, dict):
+                        item.pop('encrypted_content', None)
+            data['freshness_search_results'].append(saved)
     batch = current_batch(check)
     if batch and batch.get('validation_errors'):
         data['previous_report_validation_errors'] = batch['validation_errors']
@@ -329,6 +342,8 @@ def step(check):
     elif reporting and len(saved) >= settings.VERIFICATION_REPORT_ATTEMPTS:
         return incomplete(check, 'verification_report_incomplete')
     else:
+        if reporting:
+            progress['output_allowance'] = request['max_tokens']
         response = ai.call(check.run, 'anthropic', 'fact_check_report' if reporting else 'fact_check', request, timeout=600, keep_thinking=True)
         saved.append(response)
         check.save(update_fields=['session'])
