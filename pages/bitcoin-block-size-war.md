@@ -3,7 +3,9 @@ title: Bitcoin block size war
 ticker: None
 category: History
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 

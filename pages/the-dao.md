@@ -3,7 +3,9 @@ title: The DAO
 ticker: DAO
 category: History
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -79,6 +81,14 @@ offering matter regardless of its terminology or technology. Its
 announcement said it had decided not to bring charges in this instance,
 instead publishing its findings to caution market participants.[^release]
 
+## Unclaimed recovery funds
+
+In June 2026, The Block reported that more than 75,000 ETH left from the
+recovery was being staked as an endowment for Ethereum security work.
+The DAO Fund used staking income to support research, tooling, and
+incident response. This was a later use of unclaimed recovery assets,
+not a continuation of the original investment offering.[^endowment]
+
 ## See also
 
 - [Ethereum](ethereum.md)
@@ -90,5 +100,7 @@ instead publishing its findings to caution market participants.[^release]
 [^report]: SEC (2017-07-25). *Report of Investigation Pursuant to Section 21(a) of the Securities Exchange Act of 1934: The DAO*, Release No. 81207. <https://www.sec.gov/litigation/investreport/34-81207.pdf>
 [^attack]: Buterin, V. (2016-06-17). *CRITICAL UPDATE Re: DAO Vulnerability*. Ethereum Foundation. <https://blog.ethereum.org/2016/06/17/critical-update-re-dao-vulnerability>
 [^fork]: Buterin, V. (2016-07-20). *Hard Fork Completed*. Ethereum Foundation. <https://blog.ethereum.org/2016/07/20/hard-fork-completed>
-[^history]: ethereum.org. *Timeline of all Ethereum forks*, DAO fork. <https://ethereum.org/en/history/>
+[^history]: ethereum.org. *Timeline of all Ethereum forks*, DAO fork. <https://ethereum.org/ethereum-forks/>
 [^release]: SEC (2017-07-25). *SEC Issues Investigative Report Concluding DAO Tokens, a Digital Asset, Were Securities*. <https://www.sec.gov/newsroom/press-releases/2017-131>
+
+[^endowment]: The Block (2026-06-18). *The DAO hack at 10: From $50 million exploit to a $130 million Ethereum security fund*. <https://www.theblock.co/news/ecosystems/2026-06-18-ethereum-130-million-security-fund-the-dao-hack-10-years-405248>

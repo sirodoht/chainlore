@@ -3,7 +3,9 @@ title: Three Arrows Capital
 ticker: None
 category: History
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -55,6 +57,11 @@ provides claim forms and notices for creditors, with additional
 materials restricted to approved creditors. A liquidation appointment
 starts a recovery and claims process; it does not itself establish
 that creditors have been repaid.[^liquidators]
+
+As of 31 October 2026, the public liquidation site lists an eighth notice
+of intention to distribute, dated 1 June 2026, following a seventh notice
+in March. These notices document continuing administration; they do not
+by themselves establish a final recovery rate.[^liquidators]
 
 ## Singapore enforcement
 
