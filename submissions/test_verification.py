@@ -75,7 +75,7 @@ class VerificationTests(TestCase):
         self.assertTrue(validate_report(self.check,result,evidence())[0])
 
     def test_hash_freshness_and_source_rules_are_enforced(self):
-        for key,value in [('source_hash','0'*64),('as_of','2000-01-01'),('source_rules_met',False),('freshness_checked',False)]:
+        for key,value in [('source_hash','0'*64),('as_of','2000-01-01'),('source_rules_met',False),('freshness_checked',False),('issues',['Fix the date before publishing'])]:
             result=report();result[key]=value
             self.assertTrue(validate_report(self.check,result,evidence())[0])
 
@@ -83,7 +83,7 @@ class VerificationTests(TestCase):
     def test_independent_checker_and_exact_publication_hash(self,call):
         response=evidence()[0]
         response['model']='checker-model-v1'
-        response['content'].append({'type':'text','text':json.dumps(report())})
+        response['content'].append({'type':'text','text':'```json\n'+json.dumps(report())+'\n```'})
         call.return_value=response
         step(self.check)
         self.assertEqual(self.check.state,'passed')

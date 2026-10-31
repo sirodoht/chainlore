@@ -14,7 +14,7 @@ class Submission(models.Model):
 
     class Status(models.TextChoices):
         NEW = 'new', 'New'
-        REVIEWING = 'reviewing', 'Reviewing'
+        REVIEWING = 'reviewing', 'Processing'
         RESOLVED = 'resolved', 'Resolved'
         DECLINED = 'declined', 'Declined'
         INSUFFICIENT = 'insufficient', 'Insufficient evidence'
@@ -33,7 +33,7 @@ class Submission(models.Model):
     email = models.EmailField(blank=True)
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.NEW, db_index=True)
     internal_notes = models.TextField(blank=True)
-    public_title = models.CharField(max_length=200, blank=True, help_text='Optional short title approved for public display. Never include contact details.')
+    public_title = models.CharField(max_length=200, blank=True, help_text='Optional short public title. Never include contact details.')
     public_summary = models.TextField(max_length=2000, blank=True, help_text='Public progress note, explanation of changes, or reason for declining. Do not copy private submission text.')
     resulting_url = models.URLField(blank=True, verbose_name='Resulting article or change URL')
     duplicate_of = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='duplicates')
@@ -69,7 +69,7 @@ class Submission(models.Model):
             current = type(self).objects.filter(pk=self.pk).values(*fields).get()
             if previous and previous != current:
                 label = ('Marked as duplicate' if current['duplicate_of_id'] else
-                         {'new': 'Queued', 'reviewing': 'Review started', 'resolved': 'Resolved',
+                         {'new': 'Queued', 'reviewing': 'Processing started', 'resolved': 'Resolved',
                           'declined': 'Declined', 'insufficient': 'Insufficient evidence'}[current['status']])
                 if previous['status'] == current['status'] and previous['duplicate_of_id'] == current['duplicate_of_id']:
                     label = 'Public update'
@@ -97,8 +97,8 @@ class AutomationRun(models.Model):
         QUEUED = 'queued', 'Queued'
         RUNNING = 'running', 'Running'
         RETRY = 'retry', 'Retry scheduled'
-        BLOCKED = 'blocked', 'Waiting for provider recovery'
-        REVIEW = 'review', 'Needs review'
+        BLOCKED = 'blocked', 'Blocked'
+        REVIEW = 'review', 'Legacy review hold'
         DECLINED = 'declined', 'Declined'
         PUBLISHED = 'published', 'Published'
         DUPLICATE = 'duplicate', 'Already covered'

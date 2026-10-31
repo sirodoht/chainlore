@@ -119,7 +119,16 @@ def publish_site(base_release=None, import_legacy=False):
         # Validate before committing; a rejected/non-fast-forward push never goes live.
         credits = [f'{record.slug}: {record.writer_credit}' for record in records
                    if isinstance(record, ArticleRevision) and f'pages/{record.slug}.md' in paths]
-        revision = commit_and_push(source, paths, credits) if credits else commit_and_push(source, paths)
+        if settings.AUTONOMOUS_EDITORIAL_ENABLED and any(record.published_at is None for record in records):
+            verification_credits = []
+            for record in records:
+                if record.published_at is not None:
+                    continue
+                check = record.run.verifications.filter(state='passed', approved_hash=record.content_hash).latest('pk')
+                verification_credits.append(f'{record.slug}: {check.checker}; checked {check.completed_at.date()}; source {check.approved_hash}; audit {check.pk}')
+            revision = commit_and_push(source, paths, credits, verification_credits)
+        else:
+            revision = commit_and_push(source, paths, credits) if credits else commit_and_push(source, paths)
         published_hashes = {}
         for record in records:
             published_hashes[record.slug] = hashlib.sha256((source / 'pages' / (record.slug + '.md')).read_bytes()).hexdigest()
@@ -164,7 +173,8 @@ def publish_site(base_release=None, import_legacy=False):
                         elif submission.kind == 'request':
                             submission.public_summary = 'The requested article was independently fact-checked and published.'
                         else:
-                            submission.public_summary = 'A sourced change was independently fact-checked and published. The activity history links to the exact changes.'
+                            from .editorial import change_summary
+                            submission.public_summary = change_summary(run, record)
                     submission.save()
                 AutomationEvent.objects.create(run_id=record.run_id, kind='publication', data={
                     'release': name, 'content_hash': published_hashes[record.slug], 'slug': record.slug,

@@ -4,39 +4,40 @@ Chainlore is an AI native encyclopedia of crypto. Articles cover the
 history, technology, supply, governance, and incidents of blockchains
 and protocols.
 
-## Authorship and review
+## Authorship and verification
 
-The original encyclopedia drafts were written by Opus 5.5 High.
-Each article records and displays its writer model and reasoning effort when
-known. Completed AI fact-checks are credited separately, with the checker
-model, effort, and date. Missing historical attribution is labelled Unknown.
+Articles are written, improved and checked by AI. Each page records the writer
+model and reasoning effort, the checker and check date where applicable, and its
+last substantive update. Historical credits are preserved during edits.
 
-Each article displays an update date and one of three editorial
-statuses from its Markdown source:
+A **Draft** has not completed a full independent check. **AI fact-checked** means
+a separate AI pass checked the final text against live sources under the
+[editorial policy](POLICY.md). The publication gate binds that check to the exact
+article version. Historical human-review credits may remain, but human approval
+is not part of the current editorial workflow.
 
-- Draft: written, but not yet fully fact-checked. May contain errors.
-- AI fact-checked: every claim checked against live sources by an AI
-  that did not write the text. The article shows the check date.
-- Human reviewed: AI fact-checked, then read, spot-checked, and
-  approved by a named reviewer. The article shows the reviewer and date.
+AI verification can still make mistakes. Check dates describe completed work,
+not permanent accuracy. Readers can report errors, and scheduled maintenance
+investigates aging sources and significant developments.
 
-The [editorial policy](POLICY.md) sets out what each status requires and
-the source rules every article must meet.
+## Autonomous editorial workflow
 
-AI fact-checking does not constitute independent human verification.
+Requests, error reports and improvements enter the same automated workflow:
+research, writing or a proposed patch, independent source verification, and
+publication. The writer and verifier use separate contexts; their model credits
+are recorded from provider metadata. The checker independently retrieves sources
+rather than trusting the writer's dossier. Screening is not fact-checking.
 
-## Article requests
+Unsupported work gets further research within fixed limits, then a documented
+outcome if evidence remains insufficient. Existing articles are preserved when a
+proposed change fails. New requests do not receive fabricated filler or an
+unverified placeholder in order to count as completed.
 
-Jev screens article requests for scope, duplication, and attempts to manipulate
-the system. Accepted requests are researched and written by Claude Haiku 5.5.
-After safety checks, these articles are published automatically with a Draft
-label, even if they are thin or weakly sourced. If no article can be produced, a
-placeholder page is published instead. This screening is not a fact-check under
-the editorial policy. Requests that cannot be screened confidently remain in the
-review queue.
-
-Decisions and publication records are kept privately. If a requester supplies
-an email address, a notification is sent when the request is resolved or declined.
+The [submission tracker](/submit/all/) shows progress, outcome links and dated
+milestones. Private messages and email addresses remain private. A requester who
+supplies an email can receive the final outcome. Owner intervention may still be
+needed for credentials, billing, budgets or an exhausted operational recovery;
+ordinary editorial decisions do not wait for a human.
 
 ## Article structure
 

@@ -3,7 +3,7 @@ from submissions.publication import publication_lock, publish_site
 
 
 class Command(BaseCommand):
-    help = 'Commit accepted drafts and atomically publish the repository articles.'
+    help = 'Commit verified candidates and atomically publish the repository articles.'
 
     def add_arguments(self, parser):
         parser.add_argument('--base-release')

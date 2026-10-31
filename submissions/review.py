@@ -1,7 +1,6 @@
 """Staff review of the current publication, with private error-report counts."""
-import calendar
 from collections import Counter
-from datetime import date
+from datetime import date, timedelta
 from urllib.parse import urlencode
 
 from django.contrib import admin
@@ -27,8 +26,8 @@ FILTERS = {
     'draft': 'Drafts',
     'overdue': 'Due for recheck',
     'reports': 'With open error reports',
-    'human': 'Awaiting human review',
-    'reviewed': 'Human reviewed',
+    'human': 'AI fact-checked',
+    'reviewed': 'Historical human review',
 }
 SORTS = {'priority': 'Review priority', 'oldest': 'Oldest full check', 'title': 'Article A–Z'}
 
@@ -38,13 +37,6 @@ def parse_date(value):
         return date.fromisoformat(value)
     except (TypeError, ValueError):
         return None
-
-
-def six_months_after(value):
-    month = value.month + 6
-    year = value.year + (month - 1) // 12
-    month = (month - 1) % 12 + 1
-    return date(year, month, min(value.day, calendar.monthrange(year, month)[1]))
 
 
 def reports_url(slug=None):
@@ -70,7 +62,7 @@ def review_rows(catalog, reports, today):
             not parse_date(page.get('reviewed')) or not page.get('reviewed_by')
         ):
             issues.append('Human review credit missing')
-        due = six_months_after(checked) if checked and checked <= today else None
+        due = checked + timedelta(days=30) if checked and checked <= today else None
         overdue = bool(due and today > due)
         report_count = reports.get(slug, 0)
         reasons = []
@@ -79,7 +71,7 @@ def review_rows(catalog, reports, today):
         if status == 'draft':
             reasons.append('Needs a fact-check')
         if overdue:
-            reasons.append('Full check is over six months old')
+            reasons.append('Full check is over 30 days old')
         reasons.extend(issues)
         rows.append({
             'slug': slug, 'title': page['title'], 'category': page.get('category', ''),
@@ -101,7 +93,7 @@ def dashboard(request):
             request.user.has_perm('submissions.change_submission')):
         raise PermissionDenied
     today = timezone.localdate()
-    context = {**admin.site.each_context(request), 'title': 'Article review', 'today': today,
+    context = {**admin.site.each_context(request), 'title': 'Editorial operations', 'today': today,
                'reports_url': reports_url(), 'filters': FILTERS, 'sorts': SORTS}
     try:
         catalog = articles()
@@ -150,6 +142,13 @@ def dashboard(request):
         'title': lambda row: (row['title'].casefold(), row['slug']),
     }
     rows.sort(key=order[sort])
+    from .models import AutomationRun, AutomationControl, ProviderSpend
+    from django.db.models import Sum
+    from django.conf import settings
+    context.update(operations=list(AutomationRun.objects.select_related('submission').exclude(state__in=['published','duplicate','declined','insufficient']).order_by('-updated_at')[:30]),
+        queue_control=AutomationControl.objects.filter(pk=1).first(),
+        spend=ProviderSpend.objects.filter(created_at__date=today).aggregate(reserved=Sum('reserved_tokens'),input=Sum('input_tokens'),output=Sum('output_tokens')),
+        token_limit=settings.EDITORIAL_DAILY_TOKEN_LIMIT)
     context.update(rows=rows, counts=counts, selected=selected, sort=sort, query=query,
                    open_reports=sum(reports.values()),
                    unmatched_reports=sum(count for slug, count in reports.items() if slug not in catalog))

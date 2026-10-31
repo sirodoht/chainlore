@@ -138,6 +138,8 @@ def reconcile_revision(record, current):
     if current is None:
         raise ImprovementConflict('article_removed_from_git')
     if record.git_revision:
+        if settings.AUTONOMOUS_EDITORIAL_ENABLED and current != record.markdown:
+            raise ImprovementConflict('verified_base_changed')
         # Already pushed; subsequent editorial changes belong to the repository.
         return current
     if settings.AUTONOMOUS_EDITORIAL_ENABLED:

@@ -12,7 +12,8 @@
   and `checked` (date), following POLICY.md. Record the pass and corrections in
   the commit description or `reviews/`. Editing metadata alone is not a new
   fact-check and must not change the check date.
-- Human review uses `reviewed_by` and `reviewed`. Automated request/output
+- Historical human review uses `reviewed_by` and `reviewed`; no human approval
+  is required by the autonomous workflow. Automated request/output
   screening is not fact-checking and must never populate checker credits.
 - Run the static build and checker after article metadata changes. When
   changing automation or attribution recovery, also run the submissions tests

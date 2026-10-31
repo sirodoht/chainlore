@@ -30,6 +30,12 @@ def recover(run, code, conflict=False):
             record.delete()
             run.editorial = {}
             run.research = {}; run.research_session = {}; run.draft = {}; run.output_review = {}
+        generated = GeneratedArticle.objects.filter(run=run, published_at__isnull=True, git_revision='').first()
+        if generated:
+            editorial.event(run, 'conflict_restarted', previous_slug=generated.slug)
+            generated.delete()
+            run.editorial = {}
+            run.research = {}; run.research_session = {}; run.draft = {}; run.output_review = {}
     run.state = 'retry'
     run.next_attempt_at = timezone.now()+timedelta(minutes=5*run.recovery_attempts)
     run.save()
@@ -112,7 +118,10 @@ def run_worker():
                     else:
                         recover(run, str(exc))
                 except InvalidArticle as exc:
-                    editorial.revise(run, str(exc))
+                    if run.editorial.get('stage') == 'triage':
+                        recover(run, str(exc))
+                    else:
+                        editorial.revise(run, str(exc))
                 except GitPublicationError as exc:
                     recover(run, str(exc), conflict=str(exc) in ('verified_base_changed','improvement_passage_changed','article_changed_in_git'))
                 except Exception as exc:
@@ -120,7 +129,7 @@ def run_worker():
                     recover(run, 'worker_'+type(exc).__name__)
                 else:
                     control, _ = AutomationControl.objects.get_or_create(pk=1)
-                    if control.probe_attempts:
+                    if control.probe_attempts and control.blocked_run_id == run.pk and run.state != 'blocked':
                         control.probe_attempts = 0; control.save(update_fields=['probe_attempts','updated_at'])
             deliver_notifications()
             return int(run is not None)

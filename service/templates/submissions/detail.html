@@ -3,12 +3,12 @@
 <p><a href="{% url 'submission-list' %}">← All submissions</a></p>
 <div class="tracking-meta"><span class="tracking-status status-{{ item.status }}">{{ item.status_label }}</span><span>{{ item.kind }}</span></div>
 <dl class="tracking-dates"><dt>Submitted</dt><dd><time datetime="{{ item.created_at|date:'c' }}">{{ item.created_at|date:'j F Y, H:i' }} UTC</time></dd><dt>Latest update</dt><dd><time datetime="{{ item.updated_at|date:'c' }}">{{ item.updated_at|date:'j F Y, H:i' }} UTC</time></dd></dl>
-<section class="tracking-outcome" aria-labelledby="outcome-title"><h2 id="outcome-title">{% if item.status == 'resolved' or item.status == 'declined' or item.status == 'duplicate' %}Outcome{% else %}Progress{% endif %}</h2>
+<section class="tracking-outcome" aria-labelledby="outcome-title"><h2 id="outcome-title">{% if item.status == 'resolved' or item.status == 'declined' or item.status == 'duplicate' or item.status == 'insufficient' %}Outcome{% else %}Progress{% endif %}</h2>
 {{ item.outcome|linebreaks }}
 {% if item.original_url %}<p><a href="{{ item.original_url }}">View original submission</a></p>{% endif %}
 {% if item.result_url %}<p><a href="{{ item.result_url }}">{% if item.status == 'duplicate' %}View existing article{% else %}View resulting article{% endif %}</a></p>{% endif %}
 </section>
 <section aria-labelledby="history-title"><h2 id="history-title">Activity history</h2><ol class="tracking-history">{% for event in history %}<li><time datetime="{{ event.date|date:'c' }}">{{ event.date|date:'j M Y, H:i' }} UTC</time><div><strong>{{ event.label }}</strong>{% if event.note %}{{ event.note|linebreaks }}{% endif %}{% if event.link %}<p><a href="{{ event.link }}">View published changes</a></p>{% endif %}</div></li>{% endfor %}</ol>
-<p class="tracking-help">Earlier manual changes may not have a recorded history. This page shows the current status and available milestones.</p></section>
+<p class="tracking-help">Historical changes may not have a recorded activity log. This page shows the current status and available milestones.</p></section>
 <p class="tracking-reference">Reference: <code>{{ item.reference }}</code></p>
 {% endblock %}

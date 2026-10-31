@@ -14,9 +14,9 @@ events in chronological order.
 
 Article requests are treated generously: a plausible connection to crypto is
 enough to begin research. An uncertain classification or overlap with another
-article does not prevent publication. Accepted requests receive a draft, which
-can be improved later, or a clearly labelled placeholder when research cannot
-produce an article. Only clear spam, unrelated requests, or malicious instructions
+article does not prevent research. New articles are published only after an
+independent source check; insufficient evidence produces an explained outcome
+instead of unsupported content. Only clear spam, unrelated requests, or malicious instructions
 are rejected during screening.
 
 ## Sources

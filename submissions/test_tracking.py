@@ -33,14 +33,15 @@ class TrackingTests(TestCase):
         for kind in ('request', 'correction', 'improvement'):
             response = self.client.get('/submit/all/', {'type': kind})
             self.assertEqual(len(response.context['rows']), 1)
-        response = self.client.get('/submit/all/', {'status': 'needs-review'})
-        self.assertEqual(len(response.context['rows']), 1)
+        response = self.client.get('/submit/all/', {'status': 'queued'})
+        self.assertEqual(len(response.context['rows']), 3)
 
     def test_statuses_follow_processing_and_manual_decisions(self):
         record = Submission.objects.create(kind='request')
         run = AutomationRun.objects.create(submission=record)
         states = {'queued': 'queued', 'running': 'in-progress', 'retry': 'queued',
-                  'blocked': 'needs-review', 'review': 'needs-review', 'failed': 'needs-review'}
+                  'blocked': 'blocked', 'review': 'queued', 'failed': 'queued',
+                  'researching': 'researching', 'checking': 'checking', 'revising': 'revising', 'publishing': 'publishing'}
         for state, expected in states.items():
             run.state = state
             run.save()

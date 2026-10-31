@@ -120,7 +120,10 @@ def write_candidate(run):
         run.draft = draft
         run.editorial['writer_credit'] = response.get('_written_by', 'Unknown')
     run.save(update_fields=['draft', 'editorial', 'updated_at'])
-    begin_check(run, source)
+    if run.editorial.get('no_change'):
+        begin_check(run, source)
+    else:
+        save(run, 'screen', candidate=source)
 
 
 def publish_checked(run, check):
@@ -143,6 +146,10 @@ def publish_checked(run, check):
         if match:
             conclude(run, 'duplicate', 'This subject is already covered by an existing article.', f'https://chainlore.xyz/p/{match}/')
             return
+        old = GeneratedArticle.objects.filter(run=run, published_at__isnull=True).first()
+        if old and old.slug != run.draft['slug']:
+            event(run, 'unpublished_candidate_replaced', previous_slug=old.slug)
+            old.delete()
         GeneratedArticle.objects.update_or_create(run=run, defaults={'slug': run.draft['slug'],
             'title': run.draft['title'], 'markdown': check.approved_source, 'content_hash': check.approved_hash})
     else:
@@ -195,6 +202,15 @@ def process(run):
     if stage == 'write':
         write_candidate(run)
         return
+    if stage == 'screen':
+        result = ai.review_output(run) if run.submission.kind == 'request' else ai.review_improvement(run, run.article_revision)
+        run.output_review = result
+        run.save(update_fields=['output_review', 'updated_at'])
+        if ai.approved_improvement(result):
+            begin_check(run, run.editorial['candidate'])
+        else:
+            revise(run, 'Output screening did not establish that the draft answers the request without unsuitable content.')
+        return
     if stage == 'check':
         check = Verification.objects.get(pk=run.editorial['check_id'], run=run)
         check = check_step(check)
@@ -204,7 +220,25 @@ def process(run):
             publish_checked(run, check)
         return
     if stage == 'publish':
-        check = Verification.objects.get(run=run, state='passed', approved_hash=run.editorial['approved_hash'])
+        check = Verification.objects.filter(run=run, state='passed', approved_hash=run.editorial['approved_hash']).latest('pk')
         publish_checked(run, check)
         return
     raise InvalidArticle('editorial_stage_invalid')
+
+
+def change_summary(run, record):
+    """Describe actual edited sections, using only verified public source text."""
+    import re
+    names = []
+    original = getattr(record, 'original_markdown', '')
+    for edit in run.draft.get('edits', []):
+        anchor = edit.get('anchor', '')
+        before = original.split(anchor, 1)[0] if anchor else ''
+        headings = re.findall(r'^#{2,3} (.+)$', before, re.M)
+        inserted = re.findall(r'^#{2,3} (.+)$', edit.get('markdown', ''), re.M)
+        for heading in inserted or (headings[-1:] if headings else ['Introduction']):
+            if heading in record.markdown and heading not in names:
+                names.append(heading)
+    sections = ', '.join(names[:5])[:200]
+    return (f'Updated {sections} with independently checked source material. ' if sections else
+            'A sourced change was independently fact-checked and published. ') + 'The activity history links to the exact changes.'

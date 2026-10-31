@@ -2,12 +2,17 @@
 {% load static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'submissions/review.css' %}">{% endblock %}
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Home</a> &rsaquo; Article review</div>{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Home</a> &rsaquo; Editorial operations</div>{% endblock %}
 
 {% block content %}
 <div class="review-dashboard">
-  <p class="review-intro">The current published catalogue, checked for review needs on {{ today|date:"j F Y" }} (UTC).
+  <p class="review-intro">The current published catalogue, checked for maintenance needs on {{ today|date:"j F Y" }} (UTC).
     <a href="/policy/">Editorial policy</a> · <a href="{{ reports_url }}">Open error reports</a></p>
+  <section aria-labelledby="operations-title"><h2 id="operations-title">Autonomous pipeline</h2>
+  <p><a href="{% url 'admin:submissions_automationcontrol_changelist' %}">Pause or resume processing</a> · <a href="{% url 'admin:submissions_automationrun_changelist' %}">Run audit and recovery</a> · <a href="{% url 'admin:submissions_verification_changelist' %}">Verification evidence</a></p>
+  <p>Today's conservative token reservations: {{ spend.reserved|default:0 }} / {{ token_limit }}. Reported input: {{ spend.input|default:0 }}; output: {{ spend.output|default:0 }}. Reservations include failed calls and tool allowances; they are a budget ceiling, not an invoice.</p>
+  {% if queue_control.paused %}<p class="errornote">Queue paused: {{ queue_control.reason }}. {% if queue_control.auto_resume_at %}Next recovery probe: {{ queue_control.auto_resume_at }}.{% else %}Operational intervention is required.{% endif %}</p>{% endif %}
+  <table><thead><tr><th>Submission</th><th>Stage</th><th>Last issue</th><th>Retry</th></tr></thead><tbody>{% for run in operations %}<tr><td><a href="/submit/track/{{ run.submission_id }}/">{{ run.submission }}</a></td><td>{{ run.get_state_display }}</td><td>{{ run.last_error|default:'—' }}</td><td>{{ run.next_attempt_at|default:'—' }}</td></tr>{% empty %}<tr><td colspan="4">No active or blocked work.</td></tr>{% endfor %}</tbody></table></section>
   {% if catalog_unavailable %}
     <p class="errornote">The published article catalogue is unavailable. Review counts could not be loaded. Try again after publication completes.</p>
   {% else %}
@@ -17,9 +22,9 @@
     <a href="?filter=draft"><strong>{{ counts.draft }}</strong><span>Drafts</span></a>
     <a href="?filter=overdue"><strong>{{ counts.overdue }}</strong><span>Due for recheck</span></a>
     <a href="{{ reports_url }}"><strong>{{ open_reports }}</strong><span>Open error reports</span></a>
-    <a href="?filter=reviewed"><strong>{{ counts.reviewed }}</strong><span>Human reviewed</span></a>
+    <a href="?filter=reviewed"><strong>{{ counts.reviewed }}</strong><span>Historical review</span></a>
   </nav>
-  <p><a href="?filter=human">{{ counts.human }} AI fact-checked article{{ counts.human|pluralize }} awaiting human review</a>.
+  <p><a href="?filter=human">{{ counts.human }} AI fact-checked article{{ counts.human|pluralize }}</a>.
     Error reports are reader submissions, not confirmed errors. Duplicate reports are counted once.</p>
   {% if unmatched_reports %}<p class="errornote">{{ unmatched_reports }} open error report{{ unmatched_reports|pluralize }} refer to articles outside this catalogue. <a href="{{ reports_url }}">Review the error queue</a>.</p>{% endif %}
   <form method="get" class="review-filters" role="search">
@@ -28,7 +33,7 @@
     <div><label for="review-sort">Sort by</label><select id="review-sort" name="sort">{% for value, label in sorts.items %}<option value="{{ value }}"{% if sort == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
     <button type="submit" class="button">Apply</button><a href="{% url 'review-dashboard' %}">Reset</a>
   </form>
-  <div class="review-table-wrap" role="region" aria-label="Article review table" tabindex="0">
+  <div class="review-table-wrap" role="region" aria-label="Editorial operations table" tabindex="0">
     <table class="review-table">
       <caption>{{ rows|length }} of {{ counts.all }} articles. Priority puts open reports first, then drafts or missing review metadata, then overdue checks.</caption>
       <thead><tr><th scope="col">Article</th><th scope="col">Status and attention</th><th scope="col">Last full fact-check</th><th scope="col">Recheck after</th><th scope="col">Last substantive edit</th><th scope="col">Error reports</th></tr></thead>
@@ -44,7 +49,7 @@
       {% empty %}<tr><td colspan="6">No articles match these filters. <a href="{% url 'review-dashboard' %}">Show all articles</a>.</td></tr>{% endfor %}</tbody>
     </table>
   </div>
-  <p class="review-explanation">Checks more than six calendar months old are due for another pass. Age and reader reports do not change an article's published status. A major event can require an earlier review. Targeted corrections do not reset the full-check date.</p>
+  <p class="review-explanation">Checks more than 30 days old are due for another pass. Age and reader reports do not change an article's published status. A major event can require an earlier review. A new check date is recorded only after verification of the entire resulting article.</p>
   {% endif %}
 </div>
 {% endblock %}

@@ -73,7 +73,9 @@ def resume_queue(actor_id):
             count += 1
         control.paused = False
         control.alert_retry_at = None
-        control.save(update_fields=['paused', 'alert_retry_at', 'updated_at'])
+        control.auto_resume_at = None
+        control.probe_attempts = 0
+        control.save(update_fields=['paused', 'alert_retry_at', 'auto_resume_at', 'probe_attempts', 'updated_at'])
         return count
 
 
@@ -94,6 +96,8 @@ def regenerate_placeholders(ids, actor_id):
             run.research = {}
             run.draft = {}
             run.output_review = {}
+            run.editorial = {}
+            run.recovery_attempts = 0
             run.state = 'queued'
             run.attempts = 0
             run.last_error = ''
@@ -110,7 +114,7 @@ def retry_runs(ids, actor_id, restart=False):
     with publication_lock(blocking=False), transaction.atomic():
         if AutomationControl.objects.filter(pk=1, paused=True).exists():
             raise ValueError('Fix the provider settings and resume the queue first.')
-        runs = AutomationRun.objects.filter(pk__in=ids, state='review' if restart else 'failed',
+        runs = AutomationRun.objects.filter(pk__in=ids, state__in=['review'] if restart else ['failed', 'blocked'],
                                             submission__status__in=['new', 'reviewing'])
         count = 0
         for run in runs:
@@ -132,6 +136,9 @@ def retry_runs(ids, actor_id, restart=False):
                 run.research = {}
                 run.draft = {}
                 run.output_review = {}
+            if restart:
+                run.editorial = {}
+            run.recovery_attempts = 0
             run.state = 'queued'
             run.attempts = 0
             run.last_error = ''
@@ -166,3 +173,15 @@ def resume_approved_improvements(ids, actor_id=None):
                 'actor_id': actor_id, 'previous': previous, 'decision': 'accept_saved_yes_without_score_threshold'})
             count += 1
         return count
+
+
+def pause_queue(actor_id):
+    with publication_lock(blocking=False), transaction.atomic():
+        control, _ = AutomationControl.objects.get_or_create(pk=1)
+        control.paused = True
+        control.reason = 'owner_paused'
+        control.paused_at = timezone.now()
+        control.auto_resume_at = None
+        control.save()
+        for run in AutomationRun.objects.filter(state__in=['queued','running','retry','researching','checking','revising','publishing']):
+            AutomationEvent.objects.create(run=run, kind='queue_paused', data={'actor_id': actor_id, 'reason': 'owner_paused'})

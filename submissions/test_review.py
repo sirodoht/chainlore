@@ -9,7 +9,6 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from .models import Submission
-from .review import six_months_after
 
 
 @override_settings(PASSWORD_HASHERS=['django.contrib.auth.hashers.MD5PasswordHasher'])
@@ -66,22 +65,20 @@ class ReviewDashboardTests(TestCase):
         self.login()
         response = self.client.get(self.url)
         self.assertEqual(response.context['counts'], {
-            'all': 4, 'attention': 2, 'draft': 1, 'overdue': 1, 'reports': 0, 'human': 2, 'reviewed': 1,
+            'all': 4, 'attention': 3, 'draft': 1, 'overdue': 2, 'reports': 0, 'human': 2, 'reviewed': 1,
         })
         rows = {row['slug']: row for row in response.context['rows']}
         self.assertIsNone(rows['draft']['checked'])
         self.assertNotContains(response, 'Historical checker')
         self.assertContains(response, 'Human reviewer')
-        self.assertEqual(rows['old']['due'], date(2026, 10, 30))
-        self.assertFalse(rows['human']['overdue'])
+        self.assertEqual(rows['old']['due'], date(2026, 5, 30))
+        self.assertTrue(rows['human']['overdue'])
         self.assertEqual(rows['human']['status'], 'human-reviewed')
         self.assertEqual(rows['old']['status'], 'ai-fact-checked')
 
-    def test_six_calendar_month_boundary_and_leap_years(self):
-        self.assertEqual(six_months_after(date(2023, 8, 31)), date(2024, 2, 29))
-        self.assertEqual(six_months_after(date(2024, 8, 31)), date(2025, 2, 28))
+    def test_thirty_day_boundary(self):
         self.login()
-        with patch('submissions.review.timezone.localdate', return_value=date(2026, 10, 30)):
+        with patch('submissions.review.timezone.localdate', return_value=date(2026, 5, 30)):
             response = self.client.get(self.url, {'filter': 'overdue'})
         self.assertEqual(response.context['rows'], [])
 
@@ -108,7 +105,7 @@ class ReviewDashboardTests(TestCase):
     def test_filters_search_and_sort(self):
         self.report()
         self.login()
-        for name, expected in [('draft', ['draft']), ('overdue', ['old']), ('reports', ['current']),
+        for name, expected in [('draft', ['draft']), ('overdue', ['human', 'old']), ('reports', ['current']),
                                ('human', ['current', 'old']), ('reviewed', ['human'])]:
             response = self.client.get(self.url, {'filter': name, 'sort': 'title'})
             self.assertEqual([row['slug'] for row in response.context['rows']], expected)
@@ -129,7 +126,7 @@ class ReviewDashboardTests(TestCase):
         self.assertEqual(self.client.get(self.url).context['counts']['draft'], 2)
         self.pages.pop('old')
         self.write_catalog()
-        self.assertEqual(self.client.get(self.url).context['counts']['overdue'], 0)
+        self.assertEqual(self.client.get(self.url).context['counts']['overdue'], 1)
 
     def test_missing_or_future_check_metadata_is_flagged(self):
         self.pages['legacy'] = {'title': 'Old catalogue format', 'sections': {}}
@@ -138,7 +135,7 @@ class ReviewDashboardTests(TestCase):
         self.write_catalog()
         self.login()
         response = self.client.get(self.url, {'filter': 'attention'})
-        self.assertEqual({row['slug'] for row in response.context['rows']}, {'legacy', 'current', 'old', 'draft'})
+        self.assertEqual({row['slug'] for row in response.context['rows']}, {'legacy', 'current', 'old', 'draft', 'human'})
         self.assertContains(response, 'Review metadata unavailable')
         self.assertContains(response, 'Full-check date is in the future')
         self.assertContains(response, 'Full-check date or checker missing')

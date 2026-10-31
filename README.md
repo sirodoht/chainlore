@@ -61,15 +61,14 @@ spam controls, private receipts, and admin access and review operations.
 - `/submit/request/`: required article title, with optional scope, sources, and email.
 - `/submit/correction/`: quoted claim and explanation, with optional source links and replacement text.
 - `/submit/improvement/`: article and suggested improvement, with optional section, sources, and email.
-- `/admin/`: authenticated review queue with filters, search, internal notes,
+- `/admin/`: authenticated operations queue with filters, search, internal notes,
   duplicate links, and a URL for the resulting article change.
-- `/admin/review/`: article review dashboard for staff with submission view or
+- `/admin/review/`: editorial operations dashboard for staff with submission view or
   change permission. It reads status, attribution, and dates from the current
   published catalogue and joins unresolved, non-duplicate error-report counts.
   Search and filter drafts, overdue checks, open reports, or articles awaiting
-  human review. Checks become overdue after six calendar months; this does not
-  automatically change article statuses. Targeted corrections retain the date
-  of the last full fact-check. The admin header links to the dashboard.
+  completed verification. Checks become due after 30 days; this does not
+  automatically change article statuses. A new check date requires verification of the entire resulting article. The admin header links to the dashboard.
 
 Email is optional and never published. It is available only in the authenticated
 editorial queue for sending status notifications. New submissions notify the configured
@@ -77,19 +76,19 @@ admin; resolving or declining a submission emails the submitter if they supplied
 Submission text, email, sources, internal notes, and provider audit payloads stay
 private. The public tracker shows type, dates, status, and approved public titles
 and summaries. Historical private titles are not automatically republished:
-neutral titles use the related published article or a short reference until an
-editor supplies a public title. Resolved automated requests link to the published
+neutral titles use the related published article or a short reference until a
+published title is available. Automated decisions provide public outcomes. Resolved automated requests link to the published
 article; improvements also link to the publication commit in their activity history.
 Duplicate submissions link to the original where one exists, or the existing article.
 
-Editors can set **Public title** and **Public summary** in the submission admin.
+Owner overrides can set **Public title** and **Public summary** in the submission admin. Routine processing does not require these overrides.
 A new manual resolved/declined decision requires an outcome note (duplicates are
 exempt); resolved article requests also require the resulting article URL.
 These public changes are recorded as dated updates. Legacy decisions without a
 public explanation say so rather than inventing a reason or transition date.
 Automation history uses a fixed allowlist of milestone labels, never provider
-responses or exception text. Failed/held runs show Needs review; retrying runs
-show Queued. The existing staff automation actions provide retry/recovery.
+responses or exception text. Held work is re-investigated automatically; retrying runs show Queued and
+operational failures show Blocked with a retry time where available. The existing staff automation actions provide retry/recovery.
 Source URLs are validated but never fetched by the submission endpoint.
 
 Configure the admin recipient with `CHAINLORE_ADMIN_EMAIL` or a private
@@ -97,7 +96,7 @@ Configure the admin recipient with `CHAINLORE_ADMIN_EMAIL` or a private
 with mode `600`, outside the repository and public site. Email delivery uses the
 existing private `postmark-token` file. Duplicate form posts and discarded spam
 do not trigger admin emails. Delivery failures are logged with the submission
-reference, and the submission remains saved for review; there is no automatic retry.
+reference, and the submission remains queued for automated processing; the new-submission alert has no automatic retry.
 
 Article and section links prefill both error-report and improvement forms. Each form has CSRF protection,
 a hidden spam field, and a signed token to prevent repeated posts from creating
@@ -106,200 +105,105 @@ duplicate records. Limits are 10 submissions across all three types per connecti
 hashed addresses and expire at the end of their window; raw addresses are not
 stored in the submission database.
 
-### Automatic article requests
+### Autonomous editorial pipeline
 
-The production `chainlore-worker.timer` runs every minute. It processes new article
-requests and improvement suggestions (including an existing backlog), one at a
-time, with a shared default limit of 10 new runs per UTC day. Error reports remain in the manual queue.
+The production worker runs one durable stage per timer invocation under the
+publication lock. Requests, corrections and improvements share the same workflow.
+Legacy held jobs are re-investigated automatically; they are never bulk-approved.
 
-1. Save an immutable snapshot of title, scope, and source hints. The email field
-   and server secrets are never sent to either model.
-2. Resolve exact existing titles locally. Ask Jev (`jev-latest`) about broad
-   crypto relevance and injected instructions. People, organisations, events,
-   laws, technology, history, culture, and concepts are in scope. Uncertain
-   classifications proceed to research. Reject only clear off-topic/spam or
-   injection findings (confidence at least 0.8 and probability at least 0.9).
-   Duplicate detection uses actual title/slug matches, including the writer's
-   canonical title, rather than model uncertainty about related subjects.
-3. Have `claude-haiku-5-5`, with adaptive thinking at high effort, research with
-   up to eight web searches and six source retrievals (4,000 content tokens each),
-   then write a bounded JSON/Markdown draft in a separate call without tools. No model gets
-   shell access, filesystem tools, email tools, or publishing credentials.
-4. Check the slug, metadata, inert Markdown, citations, and source provenance.
-   Citations must be pages research opened or results the search tool returned.
-   Every accepted subject gets a page: a rejected draft is rewritten once with the
-   reason, then replaced by a fixed placeholder that lists any sources found and
-   contains no model text. Jev holds a draft only when it is confident the draft
-   is spam, off-topic, injected, or exposes contact details. This does not confer
-   an AI fact-checked status: generated articles are explicitly published as drafts.
-5. Clone the article branch, write the accepted Markdown into `pages/` and update
-   `INDEX.md`. Build and check the full site, commit those files, and push. Only
-   after a successful push, atomically switch the public site to that revision.
-   Email the requester about the resulting article or declined request.
+1. Screen broad crypto relevance and injected instructions. Exact existing-title
+   matches resolve as duplicates; fuzzy overlap alone is not a rejection.
+2. Research primary sources and reputable reporting. Existing articles and reported
+   corrections are context, not evidence. Emails are excluded from provider inputs.
+3. Write a draft or targeted patch, preserving original writer attribution.
+4. A separate checker context independently opens every reference and searches for
+   significant developments. It returns an ID-complete inventory of paragraphs and
+   table rows, individual claims, fetched evidence excerpts, and support decisions.
+5. Validate coverage, fetched URLs, excerpts, date and source hash. Persist the actual
+   checker model/effort, report and source fingerprints. Tool failures cannot pass.
+6. Retry unsupported work through at most two research/revision passes. Exhaustion
+   ends as Insufficient evidence and preserves the current article.
+7. Publish only the exact approved source, against its expected Git base. A concurrent
+   edit restarts research against a fresh snapshot. Commit/push precede atomic publication.
+8. Record a public explanation and article/commit links, then deliver outcome notifications.
 
-Missing or malformed screening results go to review. Transient provider errors retry from
-saved checkpoints, at most three attempts with backoff, so an outage can still
-leave a run Failed until it is retried from the admin. The worker never silently
-substitutes a model or treats a failed screening call as an approval.
-Provider errors, requests, responses, usage, decisions, validation results, hashes,
-publication IDs, and notification outcomes are available in the private admin
-under Automation runs, Automation events, and Generated articles. Hidden model
-thinking stays out of audit events and saved research; only the private research
-checkpoint keeps the opaque signed blocks needed to resume a paused turn.
-Notifications retry up to three times, one hour apart;
-SMTP acceptance does not prove inbox delivery. Existing admin-new-submission
-notifications keep their original behavior.
+`Verification` records are private audit artifacts. Their approved source hash must
+match the file being staged. Existing independently checked content is not automatically
+relabelled; this gate applies to new automated work. Historical human credits remain
+supported, but human approval is not a workflow stage.
 
-Research handles `pause_turn` by sending the exact paused assistant content back
-in a capped loop (three responses total). It saves each completed response before
-continuing, so a later error or worker restart resumes from that checkpoint.
-The final research record merges all content blocks and usage; writing and source
-validation can use evidence from every part. Search/fetch allowances are reduced
-across continuations, not reset. Research cut short by the continuation cap still
-goes on to writing from the pages it fetched. Continuations keep both tools, as the API expects, so a spent
-tool keeps one use for any pending call; each continuation can exceed the budget by
-at most one use per tool. Research and writing each allow up to 128,000 output
-tokens, including thinking, at high effort, with a 600-second HTTP timeout.
-The worker's 65-minute deadline covers three research responses, two writing
-attempts, screening, build checks and notifications. An interrupted in-flight HTTP
-request can still lose work that the provider has not returned; completed
-responses are preserved.
+### Recovery and budgets
 
-Missing credentials, HTTP 400/401/402/403/404 configuration/account errors and
-recognized spend-cap errors pause the entire queue in the persistent Automation
-control record. The affected run becomes Waiting for provider recovery without
-consuming an attempt; subsequent worker ticks make no model calls and leave new
-requests queued. The worker alerts the configured admin, logs the pause, and
-records alert acceptance/failure. Failed alerts retry hourly, up to three attempts.
-The admin control remains visible even if email is suppressed or unavailable.
-A run that hits such an error again after a resume is marked Failed instead of
-pausing the queue a second time, so one bad request cannot block those behind it.
-If the problem was account-wide, the next run pauses the queue as usual.
+Transient failures retry with increasing delays, up to three recovery attempts.
+Account/provider failures pause the queue and schedule up to three exponentially
+spaced probes of the pending stage. Exhausted credentials/billing recovery remains
+an explicit operational Blocked state. Owners retain pause/resume and budget controls.
+The dashboard displays blockers and retry times; it is not an editor approval queue.
 
-After fixing the provider settings or billing, select the control in
-`/admin/submissions/automationcontrol/` and choose **Resume queue after fixing
-provider settings**. Under Automation runs, **Retry failed runs from their saved
-stage** recovers failed requests without SQL edits. **Restart screening and
-research for held review runs** deliberately starts fresh screening/research while
-preserving the old audit events. **Regenerate placeholder pages with fresh research**
-re-runs research and writing for a published placeholder, which stays live until a
-replacement passes every check. These operations require the respective change
-permission, respect the worker lock, and record the operator in the audit log;
-ordinary audit fields remain read-only. Resolved/published runs cannot be retried
-through these actions.
+Every paid provider call conservatively reserves input bytes, output-token allowance
+and bounded tool-content allowances before sending. Reservations survive failures and
+crashes. The dashboard displays reservations and reported input/output tokens separately;
+these are token budgets, not exact currency invoices. Dollar billing depends on providers.
 
-Provider keys are read by the worker from `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`,
-or private files `jev-api-key` and `anthropic-api-key` in `CHAINLORE_DATA_DIR`
-(owner `deploy`, mode `600` on Brick). Never put credentials in source, prompts,
-unit files, or public build artifacts. `CHAINLORE_AUTOMATION_ENABLED=1` enables
-processing; `CHAINLORE_AUTOMATION_DAILY_LIMIT` changes the daily run cap. Local
-development defaults to disabled. Stop `chainlore-worker.timer` and the worker
-service together to pause production processing immediately.
+Defaults and environment controls:
 
-Published articles are authoritative in Git: every public article comes from
-`pages/*.md` on `main`. SQLite retains requests, research, draft checkpoints and
-audit history, including the publication commit. It is never overlaid onto the
-site at build time. A fresh clone can rebuild the complete encyclopedia.
+- `CHAINLORE_AUTONOMOUS_EDITORIAL=1`: default autonomous pipeline. Setting 0 retains
+  the legacy pipeline for compatibility/testing only; it is not the production rollout.
+- `CHAINLORE_EDITORIAL_SHADOW=1`: run checks without publishing; passed jobs explicitly
+  stop in a shadow Blocked state. Never claim a shadow result was published.
+- `CHAINLORE_AUTOMATION_DAILY_LIMIT=10`: new jobs per UTC day, including maintenance.
+- `CHAINLORE_DAILY_TOKEN_LIMIT=2000000`: conservative daily reservation ceiling.
+- `CHAINLORE_RUN_TOKEN_LIMIT=500000`: lifetime reservation ceiling per job.
+- `CHAINLORE_CHECKER_MODEL`: explicit checker model; defaults to the configured writer
+  model in a separate context, not an implicit provider/model substitution.
+- `CHAINLORE_MAINTENANCE_ENABLED=1` and `CHAINLORE_MAINTENANCE_DAILY_LIMIT=1`:
+  maintenance runs only after reader work, targeting drafts and checks at least 30 days
+  old. Failed maintenance has a seven-day cooldown rather than an endless paid loop.
 
-Each publication uses a temporary checkout of the latest remote branch. The worker
-stages only article paths and `INDEX.md`, adding a short index description derived
-from the validated article lead while preserving existing editorial descriptions.
-It validates the build and commits as
-`Chainlore Bot <bot@chainlore.xyz>`, and pushes without force. A rejected push leaves
-the public site unchanged; retries clone the latest branch and reuse the saved
-draft. A successful push followed by a publication failure is also resumable,
-without duplicate commits. Existing repository articles win slug collisions.
-Placeholder replacement requires the repository file to match the previous draft's
-hash, so editorial changes cannot be overwritten by regeneration. Removing a
-published article from Git removes it from the next build; database history cannot
-bring it back.
+Daily-budget blocks resume the next day. A per-job budget or exhausted recovery needs
+an operational limit/configuration decision, never an editorial approval. Both remain
+visible and preserve the existing article. API secrets and database files stay private.
 
-`build-info.json` records the article source commit in `revision` and the deployed
-application commit in `app_revision`. Public releases are under
-`published/releases/`, with an atomic `published/current` symlink; the existing
-`current` path points to that symlink. The worker can write only the private data
-and publication directories under systemd's sandbox. Back up SQLite to retain
-requests and audit history; back up Git to retain articles.
+### Scheduled upkeep and audit
 
-The worker and deployment command need Git plus repository write access. On Brick,
-the dedicated SSH key is `/var/www/chainlore/private/article-git-key` and the pinned
-GitHub host keys are `/var/www/chainlore/private/github-known-hosts`, owned by
-`deploy`, mode `600`. Neither belongs in Git, application releases, or public files.
+Maintenance independently checks source availability, significant developments,
+existing claims, categories and related links. Missing related links are selected
+conservatively from article titles already mentioned in the public prose. Known category
+aliases are normalized. No automated topic merges or deletions occur. Changes go through
+the same exact-source verification gate as reader work.
+
+The operations dashboard at `/admin/review/` combines active/blocked jobs, retry times,
+provider token usage, article freshness and open error reports. `/submit/all/` exposes
+safe public progress; raw requests, email and provider payloads are never rendered.
+
+Testing includes malformed/incomplete checker reports, fabricated or unopened sources,
+wrong dates, changed-after-check content, concurrent edits, exhausted revision limits,
+budget blocks and shadow-mode publication prevention. Use `replay_editorial --source FILE --expect passed` to run
+non-publishing checks on saved source snapshots before enabling new provider settings.
+
+Provider credentials are read from `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`,
+or private `jev-api-key` and `anthropic-api-key` files in `CHAINLORE_DATA_DIR`.
+On Brick these files belong to `deploy` with mode `600`. Local processing is
+disabled unless `CHAINLORE_AUTOMATION_ENABLED=1`. No model receives credentials
+or shell, email or filesystem tools. Provider account errors and budget blocks
+are visible in the operations dashboard; owner controls can pause, resume or
+retry saved stages without bypassing verification.
+
+Every public article is authoritative in Git. Publication uses a fresh checkout,
+stages only article paths and `INDEX.md`, validates the full build and pushes
+without force as `Chainlore Bot`. Only a successful push can become the live site.
+`build-info.json` records article `revision` and deployed `app_revision` separately.
+Git retains article history; SQLite retains requests, evidence and workflow audit.
+
+The worker and publisher need Git and repository write access. Brick uses
+`/var/www/chainlore/private/article-git-key` and pinned host keys at
+`/var/www/chainlore/private/github-known-hosts`, owned by `deploy`, mode `600`.
 The service and activation script set `CHAINLORE_ARTICLE_GIT_REMOTE`,
-`CHAINLORE_ARTICLE_GIT_KEY`, and `CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS`.
-`CHAINLORE_ARTICLE_GIT_BRANCH` defaults to `main`. Local runs must explicitly set
-`CHAINLORE_ARTICLE_GIT_REMOTE` to a disposable test repository or the intended
-publication repository; there is no implicit production target.
-
-For migration from database publication, stop the worker and back up SQLite, then
-run `manage.py publish_site --import-legacy` with Git configured. This commits any
-previously published database articles missing from Git, preserving existing repo
-versions and all writer credits. Inspect collisions before migration; the database
-retains the original generated versions. Routine publication never imports old
-published records.
-
-For local processing after setting private credentials:
-
-```sh
-CHAINLORE_AUTOMATION_ENABLED=1 uv run --locked python manage.py process_requests
-```
-
-`manage.py publish_site --base-release dist` publishes the latest repository
-articles and commits any accepted pending drafts without calling a model. It uses
-the same lock as the worker. A failed build leaves the previous public site intact.
-
-### Automatic article improvements
-
-Every article has **Suggest an improvement** links in its sidebar, footer actions,
-and section headings. The form records the article and displayed Git revision;
-section links also prefill the section. Only the article and suggested improvement
-are required. Optional source URLs are validated but never fetched by the web
-endpoint. Improvements share CSRF, honeypot, deduplication, rate limits and private
-receipts with the other forms. Resolved suggestions use the existing email
-notification flow when an email was supplied.
-
-The worker snapshots the latest committed article when it starts, researches the
-suggestion, and asks for targeted additions or paragraph replacements. Suggestions
-such as expanding the length or adding an event section guide the research and
-writing; requested word counts are targets, subject to available evidence. New
-claims must cite sources from that research. A separate editorial screening checks
-that the edit addresses the suggestion and preserves useful coverage; this is not
-a fact-check. Invalid edits get one writing retry. Insufficient evidence, unsuitable
-edits and conflicts go to review without replacing the live page with a placeholder.
-
-The publisher applies exact paragraph/heading anchors to the latest Git source,
-preserving unrelated concurrent edits. Changed or missing anchors stop publication
-and hold the suggestion for review. New footnotes have a unique namespace, leaving
-existing citations intact; a replacement removes an old reference definition only
-if its last citation was in the replaced paragraph.
-
-A valid screening **yes** permits publication; confidence and probability scores
-are retained for diagnosis without imposing a second approval threshold. A **no**,
-**unclear**, or malformed result stays in review.
-
-The worker cannot delete whole sections or rewrite
-more than a third of the original prose through replacements. Full rewrites remain
-an editorial task. An interrupted push/publication resumes without applying the
-same changes twice. Each suggestion retains a separate Article revision in admin,
-including its original source, proposed result and Git commit.
-
-Substantive improvements return the article to `draft`, update `updated`, and
-remove current checker/reviewer fields; previous checks remain in Git history.
-`written_by` is preserved, and the actual additional writer model and effort are
-recorded in the conventional Git commit description. Only the changed article is
-staged for an improvement. Request text, email and research stay private.
-
-Use **Resume approved improvements from their saved draft** to recover an
-improvement that already received a valid yes but was held by the former score
-thresholds. This preserves research, writing and screening results and makes no
-new model calls. The equivalent command is
-`manage.py resume_approved_improvement <submission-reference>`.
-
-To recover a held improvement after a content conflict, use **Restart screening
-and research for held review runs** in the Automation runs admin. This archives
-the earlier proposal in its audit events and takes a fresh Git snapshot. Published
-or already-pushed revisions cannot be restarted this way. Transient Git/provider
-failures use the existing bounded retry and provider-pause controls.
+`CHAINLORE_ARTICLE_GIT_KEY` and `CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS`;
+`CHAINLORE_ARTICLE_GIT_BRANCH` defaults to `main`. Local runs have no implicit
+publication remote. Use disposable repositories for local end-to-end tests.
+`manage.py publish_site --base-release dist` builds the current branch and any
+pending, exactly verified publication under the worker's lock, without model calls.
 
 ## Deploy to Brick
 
@@ -310,7 +214,7 @@ before deploying; publication reads article sources from the remote branch.
 
 ```sh
 git add <changed-files>
-git commit -m "Describe the update"
+git commit -m "feat: describe the update"
 git push
 ./deploy.sh
 ```
@@ -426,3 +330,15 @@ existing database articles from matching writing responses and their requests,
 updates content hashes, and uses `Unknown` when evidence is absent. Placeholder
 pages credit the fixed Chainlore template. Jev screening remains separately
 audited and does not populate `checked_by`.
+
+
+For a real-provider verification replay, use a fresh private `CHAINLORE_DATA_DIR`,
+set `CHAINLORE_EDITORIAL_SHADOW=1`, leave `CHAINLORE_PRODUCTION` and
+`CHAINLORE_AUTOMATION_ENABLED` unset, and leave `CHAINLORE_ARTICLE_GIT_REMOTE`
+empty. Migrate the isolated database, provide the usual provider credential, then
+run `python manage.py replay_editorial --source submissions/fixtures/verification-supported.md --expect passed`.
+Repeat with `verification-false-date.md --expect failed`. The command refuses a
+production configuration, has no publication path, and prints only result codes,
+source hashes and usage. Evidence and provider responses remain in the private
+replay database. A historical article source can be checked the same way; do not
+copy submission contact details into replay fixtures.

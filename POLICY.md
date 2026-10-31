@@ -1,7 +1,9 @@
 # Editorial policy
 
-How a Chainlore page moves from draft to AI fact-checked to human
-reviewed, and what each status promises the reader.
+Chainlore makes editorial decisions autonomously. Research, writing, independent
+verification, corrections and maintenance do not require human approval.
+An automated decision may conclude that evidence is insufficient; it must not
+turn uncertainty into a published assertion.
 
 ## Statuses
 
@@ -9,10 +11,12 @@ reviewed, and what each status promises the reader.
 |---|---|---|
 | Draft | `status: draft` | Written, but not yet fully fact-checked. May contain errors. |
 | AI fact-checked | `status: ai-fact-checked` | Every claim was checked against live sources by an AI that did not write the text. |
-| Human reviewed | `status: human-reviewed` | AI fact-checked, then read, spot-checked, and approved by a named person. |
+| Historical human review | `status: human-reviewed` | Retained only for historical records of an actual named human review; no new human-review stage is required. |
 
-A page moves up one status at a time. Editing a page can move it back
-down; see [Losing a status](#losing-a-status).
+New automated work is private until verification passes. Existing published
+drafts remain honestly labelled and are eligible for scheduled checking.
+Freshness is separate from verification status: the displayed check date is a
+snapshot, not a promise that an article can never become outdated.
 
 ## Authorship and check credits
 
@@ -73,8 +77,8 @@ Rules:
   if a source makes the same judgement. Otherwise they are removed.
 - A draft may be short, may rest on a single or weak source, and may cite
   pages found in search but not opened. Drafts are not checked against
-  these rules, so they may contain errors. If no article can be produced,
-  a placeholder page is published until one can be written.
+  these rules, so they may contain errors. New automated work with insufficient evidence is not published; the request
+  receives an explanation instead. Historical placeholders remain labelled.
 
 ## AI fact-checked
 
@@ -106,60 +110,50 @@ are true.
 
     The commit message lists the errors found and fixed.
 
-## Human reviewed
+## Autonomous decisions and publication
 
-A page may be marked `human-reviewed` only when all of the following are
-true.
+- The writer and checker use separate calls and independent research contexts.
+  They may use the same configured model family; agreement alone is not evidence.
+- The checker opens every reference, searches for significant developments through
+  the check date, and accounts for every paragraph, heading and table row. Its
+  structured claim/evidence report remains in the private audit with fetched-source
+  fingerprints and actual provider model/effort attribution.
+- Software checks coverage, source retrieval, evidence excerpts and dates. These
+  controls constrain the checker; semantic support is still an AI assessment.
+- A passing check is bound to the exact source hash. The publisher cannot substitute
+  changed text or overwrite a different Git base under that approval.
+- At most two corrective research/revision passes follow the initial attempt.
+  Unsupported work ends as Insufficient evidence, preserving the current article.
+- Error reports investigate both the published claim and the suggested correction.
+  A source-supported existing claim may be retained with an explicit outcome.
+- Public outcomes explain publication, duplication, decline or insufficient evidence.
+  Private messages, contact details, model prompts and provider responses stay private.
+- Historical human-review records remain valid as history. They are never created
+  by automation or treated as a required higher level of verification.
 
-1. Already checked. The page is `ai-fact-checked`, and nothing
-   substantive has changed since the check.
-2. Read in full. A named reviewer has read the whole page and
-   confirms that it:
+## Operations and maintenance
 
-    - is neutral, with no promotional or hostile language;
-    - attributes contested claims;
-    - leaves out no major event or criticism the reviewer knows of;
-    - is clear and correctly structured.
+Scheduled jobs check sources, freshness, significant developments and catalogue
+consistency through the same verification gate. Reader submissions take priority;
+maintenance has its own daily limit. Failed checks do not silently remove articles.
 
-3. Sources checked by the reviewer. The reviewer opens the sources
-   themselves, without relying on an AI report, for:
-
-    - every claim in Incidents and controversies;
-    - every claim about a named person;
-    - every figure in the infobox;
-    - at least 10 other references of the reviewer's choosing, spread
-      across the page.
-
-    If one sampled reference fails, the reviewer fixes it and checks 10
-    more. If two or more fail, the page returns to `draft` for a full
-    AI fact-check.
-
-4. No conflict of interest. The reviewer discloses any job, payment,
-   or significant holding related to the subject. Anyone employed or paid
-   by the subject, or by a direct competitor, may not review its page.
-5. Record. The front matter records the review:
-
-        status: human-reviewed
-        checked: 2026-10-30
-        checked_by: Opus 5.5 High
-        reviewed: 2026-11-02
-        reviewed_by: Jane Doe
-
-    The commit message names the reviewer and lists anything they changed.
+Transient failures retry with backoff. Provider outages and budgets appear as
+Blocked with a retry time where available. Exhausted operational recovery remains
+visible to the owner; it is not an editorial approval queue. Owners retain pause,
+credential, budget, audit and rollback controls. No model can change these controls.
 
 ## Losing a status
 
 - Substantive edits move a page back to `draft` until the changed text
   has been fact-checked. Substantive edits are those that add or change a
   claim, date, number, or name, or add or remove a reference. Once the
-  changes pass an AI check, the page becomes `ai-fact-checked`. To regain
-  `human-reviewed`, a reviewer reviews the changed sections under the
-  rules above.
+  changes pass an AI check, the page becomes `ai-fact-checked`. Automated publication completes only after the resulting text passes its
+  own source check; historical human credits are retained in Git.
 - Non-substantive edits keep the page's status. These include fixing
   typos, formatting, and broken links that point to the same document.
-- Age. A check is a snapshot. A page whose `checked` date is more
-  than six months old, or whose subject has had a major event since,
-  should be checked again. Until then it keeps its status, and readers
+- Age. A check is a snapshot. Scheduled maintenance targets articles
+  whose check is at least 30 days old, and investigations may run sooner
+  following reader reports or significant developments. Until then it keeps its status, and readers
   can see the check date.
 
 The `updated` field records the date of the last substantive edit.

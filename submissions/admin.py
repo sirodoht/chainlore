@@ -5,11 +5,11 @@ from django.urls import reverse
 from django.contrib import admin, messages
 from django.utils.html import format_html
 from . import notify
-from .models import Submission
+from .models import Submission, Verification, ProviderSpend
 
 admin.site.site_header = 'Chainlore submissions'
 admin.site.site_title = 'Chainlore admin'
-admin.site.index_title = 'Review queue'
+admin.site.index_title = 'Editorial operations'
 
 
 class SubmissionReviewForm(forms.ModelForm):
@@ -44,7 +44,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     autocomplete_fields = ['duplicate_of']
     fieldsets = [
         ('Public tracker', {'fields': ['tracking_link', 'public_title', 'public_summary']}),
-        ('Review', {'fields': ['status', 'internal_notes', 'duplicate_of', 'resulting_url', 'notified_status', 'notified_at']}),
+        ('Owner override', {'fields': ['status', 'internal_notes', 'duplicate_of', 'resulting_url', 'notified_status', 'notified_at']}),
         ('Submission', {'fields': ['reference', 'kind', 'article_link', 'article', 'section', 'article_revision', 'title', 'details', 'claim', 'correction', 'sources', 'email', 'created_at', 'updated_at']}),
     ]
 
@@ -89,7 +89,7 @@ class SubmissionAdmin(admin.ModelAdmin):
 # Audit records and source artifacts are visible only to authenticated staff.
 # They are append-only in the application; no public endpoints expose them.
 from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, ArticleRevision
-from .automation_control import regenerate_placeholders, resume_queue, retry_runs, resume_approved_improvements
+from .automation_control import regenerate_placeholders, resume_queue, retry_runs, resume_approved_improvements, pause_queue
 
 
 class AuditAdmin(admin.ModelAdmin):
@@ -111,7 +111,7 @@ class AutomationRunAdmin(AuditAdmin):
     list_display = ['id', 'submission', 'state', 'attempts', 'last_error', 'created_at']
     list_filter = ['state', 'created_at']
     search_fields = ['submission__title', 'submission__article', 'submission__reference']
-    actions = ['retry_failed', 'restart_review', 'resume_approved', 'regenerate_placeholder']
+    actions = ['retry_failed', 'restart_review', 'regenerate_placeholder']
 
     def has_operate_permission(self, request):
         return request.user.has_perm('submissions.change_automationrun')
@@ -127,7 +127,7 @@ class AutomationRunAdmin(AuditAdmin):
         else:
             self.message_user(request, f'Queued {count} request(s). Previous decisions remain in the audit log.')
 
-    @admin.action(description='Retry failed runs from their saved stage', permissions=['operate'])
+    @admin.action(description='Retry blocked or failed runs from their saved stage', permissions=['operate'])
     def retry_failed(self, request, queryset):
         self.recover(request, queryset)
 
@@ -147,7 +147,18 @@ class AutomationRunAdmin(AuditAdmin):
 @admin.register(AutomationControl)
 class AutomationControlAdmin(AuditAdmin):
     list_display = ['__str__', 'paused', 'reason', 'paused_at', 'alert_attempts', 'alert_sent_at']
-    actions = ['resume']
+    actions = ['pause', 'resume']
+
+    @admin.action(description='Pause automated processing', permissions=['operate'])
+    def pause(self, request, queryset):
+        if not queryset.filter(pk=1).exists():
+            return
+        try:
+            pause_queue(request.user.pk)
+        except BlockingIOError:
+            self.message_user(request, 'The worker is busy. Retry after its current stage finishes.', messages.WARNING)
+        else:
+            self.message_user(request, 'Processing paused. Saved work is retained.')
 
     def has_operate_permission(self, request):
         return request.user.has_perm('submissions.change_automationcontrol')
@@ -182,3 +193,16 @@ class GeneratedArticleAdmin(AuditAdmin):
 class ArticleRevisionAdmin(AuditAdmin):
     list_display = ['slug', 'run', 'published_at', 'writer_credit', 'git_revision']
     search_fields = ['slug', 'title']
+
+
+@admin.register(Verification)
+class VerificationAdmin(AuditAdmin):
+    list_display = ['id', 'run', 'state', 'checker', 'completed_at', 'source_hash']
+    list_filter = ['state', 'completed_at']
+    search_fields = ['run__submission__title', 'source_hash', 'approved_hash']
+
+
+@admin.register(ProviderSpend)
+class ProviderSpendAdmin(AuditAdmin):
+    list_display = ['run', 'provider', 'stage', 'reserved_tokens', 'input_tokens', 'output_tokens', 'state', 'created_at']
+    list_filter = ['provider', 'state', 'created_at']

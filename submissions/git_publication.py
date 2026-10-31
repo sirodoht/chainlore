@@ -101,7 +101,7 @@ def stage_articles(source, records, index_articles):
     return paths
 
 
-def commit_and_push(source, paths, writing_credits=None):
+def commit_and_push(source, paths, writing_credits=None, verification_credits=None):
     if paths:
         # Credits come from provider metadata. Never include requests or private context.
         message = 'feat(content): publish requested articles'
@@ -109,6 +109,9 @@ def commit_and_push(source, paths, writing_credits=None):
             message = 'feat(content): apply suggested article improvements'
             message += '\n\nAdditional substantive writing passes:\n' + '\n'.join(writing_credits)
             message += ('\nOriginal writer credits preserved. Independent verification is recorded in article metadata and the private verification audit.' if settings.AUTONOMOUS_EDITORIAL_ENABLED else '\nOriginal writer credits preserved. Revised articles return to draft; no fact-check was performed.')
+        if verification_credits:
+            message += '\n\nIndependent fact-checks of final source:\n' + '\n'.join(verification_credits)
+            message += '\nCorrections are visible in this commit diff; structured findings and evidence remain in the private verification audit.'
         git(source, 'commit', '-m', message)
         git(source, 'push', 'origin', 'HEAD:refs/heads/' + settings.ARTICLE_GIT_BRANCH)
     return git(source, 'rev-parse', 'HEAD')

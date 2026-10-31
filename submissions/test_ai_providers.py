@@ -169,4 +169,4 @@ class ProviderTests(TestCase):
             transport.return_value.__enter__.return_value.read.return_value = json.dumps(self.end).encode()
             ai.write_article(self.run)
         self.assertEqual(transport.call_args.kwargs['timeout'], 600)
-        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'], 128000)
+        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'], 16000)
