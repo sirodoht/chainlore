@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
 from . import ai_providers as ai
-from .article_validation import InvalidArticle, stub_draft, validate_draft
+from .article_validation import InvalidArticle, public_url, stub_draft, validate_draft
 from .automation import deliver_notifications, run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .publication import index_generated_articles, publication_lock, publish_site
@@ -242,6 +242,20 @@ class AutomationTests(TestCase):
         self.assertIn('written_by: Chainlore template (no model)', article.markdown)
         self.assertIn('This article is a draft', (self.root / 'published/current/p/test-protocol/index.html').read_text())
         self.review_output.assert_called_once()
+
+    def test_http_source_returned_by_research_publishes_without_rewriting(self):
+        research = copy.deepcopy(RESEARCH)
+        url = URLS[0].replace('https://', 'http://')
+        research['content'][1]['content']['url'] = url
+        self.research.return_value = research
+        self.write_article.return_value = written({**DRAFT, 'markdown': DRAFT['markdown'].replace(URLS[0], url)})
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.write_article.assert_called_once()
+        article = GeneratedArticle.objects.get()
+        self.assertNotIn('This is a placeholder', article.markdown)
+        self.assertIn(url, article.markdown)
+        self.assertIn(f'href="{url}"', (self.root / 'published/current/p/test-protocol/index.html').read_text())
 
     def publish_placeholder(self):
         self.write_article.side_effect = ai.ProviderError('research_context_too_large')
@@ -718,6 +732,28 @@ class ValidationTests(TestCase):
         evidence['content'].append({'type': 'web_search_tool_result', 'content': [
             {'type': 'web_search_result', 'url': url} for url in URLS]})
         validate_draft(DRAFT, evidence)
+
+    def test_http_citations_require_real_research_provenance(self):
+        url = URLS[0].replace('https://', 'http://')
+        draft = {**STUB, 'markdown': STUB['markdown'].replace(URLS[0], url)}
+        research = {'content': [{'type': 'web_search_tool_result', 'content': [
+            {'type': 'web_search_result', 'url': url}]}]}
+        validate_draft(draft, research)
+        placeholder = stub_draft('Example', research)
+        self.assertIn(url, placeholder['markdown'])
+        validate_draft(placeholder, research)
+        with self.assertRaisesRegex(InvalidArticle, 'source_not_in_research'):
+            validate_draft(draft, RESEARCH)
+
+    def test_citation_urls_still_reject_private_hosts_and_unsafe_schemes(self):
+        for url in ['http://example.com/source', 'http://example.com:80/source',
+                    'https://example.com/source', 'https://example.com:443/source']:
+            self.assertTrue(public_url(url), url)
+        for url in ['http://127.0.0.1/source', 'http://10.0.0.1/source',
+                    'http://localhost/source', 'http://host.internal/source',
+                    'http://user:password@example.com/source', 'http://example.com:443/source',
+                    'https://example.com:80/source', 'javascript:alert(1)', 'file:///tmp/source']:
+            self.assertFalse(public_url(url), url)
 
     def test_placeholder_passes_validation_with_any_title_and_sources(self):
         awkward = {'stop_reason': 'end_turn', 'content': [{'type': 'web_search_tool_result', 'content': [

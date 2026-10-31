@@ -27,7 +27,8 @@ def public_url(value):
     try:
         url = urlsplit(value)
         host = url.hostname or ''
-        if url.scheme != 'https' or url.username or url.password or url.port not in (None, 443):
+        default_port = {'http': 80, 'https': 443}.get(url.scheme)
+        if default_port is None or url.username or url.password or url.port not in (None, default_port):
             return False
         if '.' not in host or host.endswith(('.local', '.localhost', '.internal')) or host == 'localhost':
             return False
@@ -67,7 +68,7 @@ def stub_draft(title, research):
     title = title.title() if title == title.lower() else title
     # Hostnames label the links because page titles are untrusted web text.
     urls = [url for url in sorted(evidence_urls(research)) + sorted(citable_urls(research) - evidence_urls(research))
-            if re.fullmatch(r'https://[^\s()<>\[\]]+', url)][:5]
+            if re.fullmatch(r'https?://[^\s()<>\[\]]+', url)][:5]
     markers = ''.join(f'[^{index}]' for index, _ in enumerate(urls, 1))
     references = '\n'.join(f'[^{index}]: [{urlsplit(url).hostname}]({url})' for index, url in enumerate(urls, 1))
     markdown = (f'{title} is the subject of a reader request that Chainlore accepted as a cryptocurrency topic. '
@@ -104,7 +105,7 @@ def validate_draft(draft, research):
     require(not any(c in body for c in ('<', '>', '\x00')) and '```' not in body and '![' not in body, 'unsafe_markdown')
     require(not re.search(r'^# |^---\s*$', body, re.M), 'unexpected_front_matter_or_h1')
     require(not re.search(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', body), 'contact_information')
-    definitions = re.findall(r'^\[\^(\d+)\]:\s+\[([^\]\n]+)\]\((https://[^\s)]+)\)\s*$', body, re.M)
+    definitions = re.findall(r'^\[\^(\d+)\]:\s+\[([^\]\n]+)\]\((https?://[^\s)]+)\)\s*$', body, re.M)
     markers = re.findall(r'\[\^(\d+)\](?!:)', body)
     ids = [item[0] for item in definitions]
     # With nothing citable the writer never runs, so only a placeholder arrives here unsourced.
