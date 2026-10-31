@@ -52,3 +52,11 @@ exchange, staking, and stablecoin coverage. Used protocol specifications,
 operator documentation, and governance records. Curve's compensation
 proposal is not treated as proof of completed payments. Ethena's current
 strategy descriptions and discretionary rewards are attributed to Ethena.
+
+## Bitcoin history and privacy batch
+
+Added Mt. Gox, Lightning Network, and Monero. Mt. Gox uses the trustee's
+16 October 2026 extension to October 2027 and separates initial loss
+estimates, recovered coins, and criminal allegations. Lightning distinguishes
+channel capacity from directional liquidity. Monero describes probabilistic
+privacy and published limitations rather than promising untraceability.

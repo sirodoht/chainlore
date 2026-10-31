@@ -73,6 +73,7 @@ risk analysis.[^stages]
 
 ## See also
 
+- [Lightning Network](lightning-network.md)
 - [Ethereum](ethereum.md)
 - [Arbitrum](arbitrum.md)
 - [Optimism](optimism.md)

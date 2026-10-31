@@ -4,6 +4,7 @@ All pages in Chainlore.
 
 ## Layer 1 blockchains
 
+- [Monero](pages/monero.md): privacy-oriented proof of work, XMR, and tail emission.
 - [Bitcoin](pages/bitcoin.md): the first cryptocurrency, a proof-of-work
   peer-to-peer electronic cash system.
 - [Ethereum](pages/ethereum.md): a proof-of-stake blockchain for
@@ -17,6 +18,7 @@ All pages in Chainlore.
 
 ## Layer 2 networks
 
+- [Lightning Network](pages/lightning-network.md): Bitcoin payment channels, routing, and liquidity.
 - [Arbitrum](pages/arbitrum.md): a family of optimistic rollups that
   settle to Ethereum.
 - [Base](pages/base.md): an Ethereum rollup incubated by Coinbase.
@@ -45,6 +47,7 @@ All pages in Chainlore.
 
 ## Exchanges
 
+- [Mt. Gox](pages/mt-gox.md): the 2014 collapse and subsequent creditor repayments.
 - [Coinbase](pages/coinbase.md): exchange, custody provider, and developer
   of Base, with a commercial role in USDC.
 - [FTX](pages/ftx.md): a cryptocurrency exchange that collapsed and filed

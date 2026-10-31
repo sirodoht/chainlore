@@ -368,6 +368,9 @@ issuance.[^faq]
 
 ## See also
 
+- [Lightning Network](lightning-network.md)
+- [Monero](monero.md)
+- [Mt. Gox](mt-gox.md)
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 
 - [Ethereum](ethereum.md)

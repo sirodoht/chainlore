@@ -72,6 +72,8 @@ wallet presents.[^erc20]
 
 ## See also
 
+- [Lightning Network](lightning-network.md)
+- [Monero](monero.md)
 - [MetaMask](metamask.md)
 
 - [Bitcoin](bitcoin.md)
