@@ -10,13 +10,16 @@ class Submission(models.Model):
         REQUEST = 'request', 'Article request'
         IMPROVEMENT = 'improvement', 'Article improvement'
         CORRECTION = 'correction', 'Error report'
+        MAINTENANCE = 'maintenance', 'Scheduled maintenance'
 
     class Status(models.TextChoices):
         NEW = 'new', 'New'
         REVIEWING = 'reviewing', 'Reviewing'
         RESOLVED = 'resolved', 'Resolved'
         DECLINED = 'declined', 'Declined'
+        INSUFFICIENT = 'insufficient', 'Insufficient evidence'
 
+    maintenance_key = models.CharField(max_length=180, blank=True, null=True, unique=True)
     reference = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     kind = models.CharField(max_length=12, choices=Kind.choices)
     article = models.SlugField(blank=True)
@@ -67,7 +70,7 @@ class Submission(models.Model):
             if previous and previous != current:
                 label = ('Marked as duplicate' if current['duplicate_of_id'] else
                          {'new': 'Queued', 'reviewing': 'Review started', 'resolved': 'Resolved',
-                          'declined': 'Declined'}[current['status']])
+                          'declined': 'Declined', 'insufficient': 'Insufficient evidence'}[current['status']])
                 if previous['status'] == current['status'] and previous['duplicate_of_id'] == current['duplicate_of_id']:
                     label = 'Public update'
                 SubmissionUpdate.objects.create(submission=self, label=label, note=current['public_summary'])
@@ -100,9 +103,17 @@ class AutomationRun(models.Model):
         PUBLISHED = 'published', 'Published'
         DUPLICATE = 'duplicate', 'Already covered'
         FAILED = 'failed', 'Failed'
+        RESEARCHING = 'researching', 'Researching'
+        CHECKING = 'checking', 'Checking'
+        REVISING = 'revising', 'Revising'
+        PUBLISHING = 'publishing', 'Publishing'
+        INSUFFICIENT = 'insufficient', 'Insufficient evidence'
 
     submission = models.OneToOneField(Submission, on_delete=models.PROTECT, related_name='automation')
     state = models.CharField(max_length=16, choices=State.choices, default=State.QUEUED, db_index=True)
+    editorial = models.JSONField(default=dict)
+    recovery_attempts = models.PositiveIntegerField(default=0)
+    reserved_tokens = models.PositiveIntegerField(default=0)
     inputs = models.JSONField(default=dict)
     triage = models.JSONField(default=dict)
     research = models.JSONField(default=dict)
@@ -150,6 +161,8 @@ class AutomationControl(models.Model):
     """Singleton circuit breaker, shared by every worker invocation."""
     id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
     paused = models.BooleanField(default=False)
+    auto_resume_at = models.DateTimeField(null=True, blank=True)
+    probe_attempts = models.PositiveIntegerField(default=0)
     reason = models.CharField(max_length=200, blank=True)
     blocked_run = models.ForeignKey(AutomationRun, null=True, blank=True, on_delete=models.PROTECT)
     paused_at = models.DateTimeField(null=True, blank=True)
@@ -179,3 +192,30 @@ class ArticleRevision(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Verification(models.Model):
+    run = models.ForeignKey(AutomationRun, on_delete=models.PROTECT, related_name='verifications')
+    source = models.TextField()
+    source_hash = models.CharField(max_length=64, db_index=True)
+    state = models.CharField(max_length=12, default='pending')
+    checker = models.CharField(max_length=250, blank=True)
+    session = models.JSONField(default=dict)
+    report = models.JSONField(default=dict)
+    evidence = models.JSONField(default=dict)
+    approved_source = models.TextField(blank=True)
+    approved_hash = models.CharField(max_length=64, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+
+class ProviderSpend(models.Model):
+    """Conservative token reservations survive crashes and bound API expenditure."""
+    run = models.ForeignKey(AutomationRun, on_delete=models.PROTECT, related_name='spend')
+    provider = models.CharField(max_length=20)
+    stage = models.CharField(max_length=50)
+    reserved_tokens = models.PositiveIntegerField()
+    input_tokens = models.PositiveIntegerField(default=0)
+    output_tokens = models.PositiveIntegerField(default=0)
+    state = models.CharField(max_length=12, default='reserved')
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -140,6 +140,14 @@ def reconcile_revision(record, current):
     if record.git_revision:
         # Already pushed; subsequent editorial changes belong to the repository.
         return current
+    if settings.AUTONOMOUS_EDITORIAL_ENABLED:
+        from .verification import digest, require_verified
+        require_verified(record)
+        if current == record.markdown:
+            return current
+        if digest(current) != record.base_content_hash:
+            raise ImprovementConflict('verified_base_changed')
+        return record.markdown
     validate_patch(record, record.run.draft, record.run.research)
     return apply_patch(record, record.run.draft, current)
 

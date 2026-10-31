@@ -148,7 +148,7 @@ def deliver_notifications():
     # SMTP acceptance is recorded, not claimed to prove inbox delivery.
     now = timezone.now()
     runs = AutomationRun.objects.filter(
-        state__in=['published', 'duplicate', 'declined'], notification_attempts__lt=3,
+        state__in=['published', 'duplicate', 'declined', 'insufficient'], notification_attempts__lt=3,
         submission__status__in=notify.FINAL,
     ).exclude(submission__email='').exclude(
         submission__notified_status=F('submission__status'),
@@ -172,6 +172,9 @@ def deliver_notifications():
 
 
 def run_worker():
+    if settings.AUTONOMOUS_EDITORIAL_ENABLED:
+        from .autonomous_worker import run_worker as autonomous
+        return autonomous()
     if not settings.AUTOMATION_ENABLED:
         return 0
     try:

@@ -92,7 +92,7 @@ class AutomationFixture(TestCase):
         (self.site / 'build-info.json').write_text(json.dumps({'revision': 'a' * 40, 'release': 'test'}))
         override = override_settings(ARTICLE_GIT_REMOTE=str(self.remote), ARTICLE_GIT_KEY='', ARTICLE_GIT_BRANCH='main', DATA_DIR=self.root, PUBLICATION_ROOT=self.root / 'published',
                                      SITE_ROOT=self.site, ARTICLE_CATALOG=self.site / 'article-catalog.json',
-                                     AUTOMATION_ENABLED=True, AUTOMATION_DAILY_LIMIT=10, NOTIFICATIONS_ENABLED=False)
+                                     AUTOMATION_ENABLED=True, AUTONOMOUS_EDITORIAL_ENABLED=False, AUTOMATION_DAILY_LIMIT=10, NOTIFICATIONS_ENABLED=False)
         override.enable()
         self.addCleanup(override.disable)
         self.submission = Submission.objects.create(kind='request', title='Test Protocol', email='private@example.net')

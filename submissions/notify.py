@@ -7,7 +7,7 @@ from django.utils import timezone
 from .catalog import articles
 from .models import Submission
 
-FINAL = {Submission.Status.RESOLVED, Submission.Status.DECLINED}
+FINAL = {Submission.Status.RESOLVED, Submission.Status.DECLINED, Submission.Status.INSUFFICIENT}
 logger = logging.getLogger(__name__)
 
 
@@ -61,7 +61,10 @@ def notify(submission):
         if submission.resulting_url:
             lines += ['', f'You can see the result here: {submission.resulting_url}']
     else:
-        lines.append('We have decided not to act on it.')
+        lines.append('We could not establish sufficient evidence for a change.' if submission.status == 'insufficient' else 'We have decided not to act on it.')
+    if submission.public_summary:
+        lines += ['', submission.public_summary]
+    lines += ['', 'Track the outcome: https://chainlore.xyz' + reverse('submission-detail', args=[submission.pk])]
     lines += ['', f'Reference: {submission.reference}', '',
               'You are receiving this because you left your email address with your submission. '
               'We will not email you about it again.', '', 'Chainlore', 'https://chainlore.xyz/']

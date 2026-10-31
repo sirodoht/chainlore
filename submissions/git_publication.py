@@ -49,6 +49,9 @@ def stage_articles(source, records, index_articles):
     if (source / 'pages').is_symlink() or (source / 'INDEX.md').is_symlink():
         raise GitPublicationError('unsafe_article_path')
     for record in records:
+        from .verification import require_verified
+        if record.published_at is None:
+            require_verified(record)
         if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', record.slug):
             raise GitPublicationError('invalid_stored_slug')
         relative = f'pages/{record.slug}.md'
@@ -77,6 +80,8 @@ def stage_articles(source, records, index_articles):
                 if digest != record.base_content_hash:
                     raise GitPublicationError('article_changed_in_git')
             elif existing is not None:
+                if settings.AUTONOMOUS_EDITORIAL_ENABLED:
+                    raise GitPublicationError('article_changed_in_git')
                 # A new page appeared while research was running. Publish the repo version.
                 continue
             elif record.git_revision:
@@ -103,7 +108,7 @@ def commit_and_push(source, paths, writing_credits=None):
         if writing_credits:
             message = 'feat(content): apply suggested article improvements'
             message += '\n\nAdditional substantive writing passes:\n' + '\n'.join(writing_credits)
-            message += '\nOriginal writer credits preserved. Revised articles return to draft; no fact-check was performed.'
+            message += ('\nOriginal writer credits preserved. Independent verification is recorded in article metadata and the private verification audit.' if settings.AUTONOMOUS_EDITORIAL_ENABLED else '\nOriginal writer credits preserved. Revised articles return to draft; no fact-check was performed.')
         git(source, 'commit', '-m', message)
         git(source, 'push', 'origin', 'HEAD:refs/heads/' + settings.ARTICLE_GIT_BRANCH)
     return git(source, 'rev-parse', 'HEAD')

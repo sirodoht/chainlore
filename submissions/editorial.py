@@ -1,0 +1,210 @@
+"""Checkpointed autonomous editorial state machine. One bounded stage per tick."""
+from datetime import timedelta
+import hashlib
+import json
+from django.conf import settings
+from django.utils import timezone
+from . import ai_providers as ai
+from .article_validation import InvalidArticle, citable_urls, extract_draft, validate_draft
+from .attribution import attribute_source
+from .improvements import snapshot_article, validate_patch, apply_patch
+from .models import AutomationEvent, ArticleRevision, GeneratedArticle, Submission, Verification
+from .verification import digest, step as check_step
+
+ACTIVE = ['queued', 'running', 'retry', 'researching', 'checking', 'revising', 'publishing']
+
+
+def event(run, kind, **data):
+    AutomationEvent.objects.create(run=run, kind=kind, data=data)
+
+
+def save(run, stage=None, **values):
+    run.editorial.update(values)
+    if stage:
+        run.editorial['stage'] = stage
+    run.save(update_fields=['editorial', 'state', 'updated_at'])
+
+
+def conclude(run, state, summary, url='', duplicate=None):
+    run.state = state
+    run.last_error = ''
+    run.next_attempt_at = None
+    run.save()
+    status = {'published': 'resolved', 'duplicate': 'resolved', 'declined': 'declined',
+              'insufficient': 'insufficient'}.get(state, 'reviewing')
+    submission = Submission.objects.get(pk=run.submission_id)
+    if submission.status in ('new', 'reviewing'):
+        submission.status = status
+        submission.public_summary = summary
+        submission.resulting_url = url
+        if duplicate:
+            submission.duplicate_of = duplicate
+        submission.save()
+    event(run, 'decision', state=state, reason=summary, resulting_url=url)
+
+
+def prepare(run):
+    from .catalog import articles
+    from .automation import existing_match
+    record = None
+    if run.submission.kind in ('correction', 'improvement', 'maintenance'):
+        record = ArticleRevision.objects.filter(run=run).first() or snapshot_article(run)
+    else:
+        match = existing_match(run.inputs['title'], articles())
+        if match:
+            url = f'https://chainlore.xyz/p/{match}/'
+            original = Submission.objects.filter(status='resolved', resulting_url=url).exclude(pk=run.submission_id).exclude(automation__state='duplicate').order_by('created_at').first()
+            conclude(run, 'duplicate', 'This subject is already covered by an existing article.', url, original)
+            return
+    # Legacy unpublished output never skips the new verification gate.
+    run.state = 'researching'
+    Submission.objects.filter(pk=run.submission_id, status='new').update(status='reviewing', updated_at=timezone.now())
+    run.editorial = {'stage': 'triage', 'revisions': 0}
+    run.save()
+    event(run, 'attempt_started', policy_version=3)
+    if run.submission.kind == 'maintenance':
+        from .maintenance import enrich
+        begin_check(run, enrich(record.original_markdown, record.slug))
+
+
+def begin_check(run, source):
+    check = Verification.objects.create(run=run, source=source, source_hash=digest(source))
+    run.state = 'checking'
+    save(run, 'check', check_id=check.pk, candidate=source)
+    event(run, 'checking_started', source_hash=check.source_hash)
+
+
+def insufficient(run, reason):
+    conclude(run, 'insufficient', reason)
+
+
+def revise(run, reason):
+    count = run.editorial.get('revisions', 0)
+    if count >= settings.EDITORIAL_MAX_REVISIONS:
+        insufficient(run, 'The evidence or checks did not establish a publishable change after the available research and revision attempts. The existing article has been preserved.')
+        return
+    run.inputs['verification_feedback'] = reason
+    run.research = {}
+    run.research_session = {}
+    run.draft = {}
+    run.output_review = {}
+    run.state = 'revising'
+    run.editorial.update(stage='research', revisions=count+1, feedback=reason)
+    run.save()
+    event(run, 'revision_requested', attempt=count+1)
+
+
+def write_candidate(run):
+    kind = run.submission.kind
+    problem = run.editorial.get('feedback')
+    if kind == 'request':
+        response = ai.write_article(run, problem)
+        draft = extract_draft(response)
+        source, _ = validate_draft(draft, run.research)
+        source, _ = attribute_source(source, response.get('_written_by', 'Unknown'))
+        run.draft = draft
+        run.editorial['writer_credit'] = response.get('_written_by', 'Unknown')
+    else:
+        record = run.article_revision
+        response = ai.write_improvement(run, record, problem)
+        draft = extract_draft(response)
+        if draft.get('insufficient_evidence'):
+            # A checker can validate the existing article independently; a no-edit
+            # writer response never by itself dismisses a correction report.
+            run.editorial['no_change'] = True
+            source = record.original_markdown
+        else:
+            validate_patch(record, draft, run.research)
+            source = apply_patch(record, draft, record.original_markdown)
+            run.editorial['no_change'] = False
+        run.draft = draft
+        run.editorial['writer_credit'] = response.get('_written_by', 'Unknown')
+    run.save(update_fields=['draft', 'editorial', 'updated_at'])
+    begin_check(run, source)
+
+
+def publish_checked(run, check):
+    from .catalog import articles
+    from .publication import publication_lock, publish_site
+    if settings.EDITORIAL_SHADOW:
+        run.state = 'blocked'
+        run.last_error = 'shadow_verified_not_published'
+        run.next_attempt_at = None
+        run.save()
+        event(run, 'shadow_verified', approved_hash=check.approved_hash)
+        return
+    kind = run.submission.kind
+    if run.editorial.get('no_change') and kind == 'improvement':
+        insufficient(run, 'Independent checking supported the existing article, but the suggested improvement could not be substantiated.')
+        return
+    if kind == 'request':
+        from .automation import existing_match
+        match = existing_match(run.draft['title'], articles())
+        if match:
+            conclude(run, 'duplicate', 'This subject is already covered by an existing article.', f'https://chainlore.xyz/p/{match}/')
+            return
+        GeneratedArticle.objects.update_or_create(run=run, defaults={'slug': run.draft['slug'],
+            'title': run.draft['title'], 'markdown': check.approved_source, 'content_hash': check.approved_hash})
+    else:
+        record = run.article_revision
+        record.markdown = check.approved_source
+        record.content_hash = check.approved_hash
+        record.writer_credit = run.editorial.get('writer_credit', '')
+        record.save()
+    run.state = 'publishing'
+    save(run, 'publish', approved_hash=check.approved_hash)
+    # Worker owns the lock. Publisher also verifies the exact source against the
+    # latest Git base before committing, so a concurrent edit invalidates approval.
+    publish_site()
+
+
+def process(run):
+    run.submission.refresh_from_db()
+    if run.submission.status not in ('new', 'reviewing'):
+        run.state = 'published' if run.submission.status == 'resolved' else run.submission.status
+        run.save(update_fields=['state', 'updated_at'])
+        return
+    if not run.editorial.get('stage'):
+        prepare(run)
+        return
+    stage = run.editorial['stage']
+    if stage == 'triage':
+        from .catalog import articles
+        result = ai.triage(run, {slug: data['title'] for slug,data in articles().items()})
+        run.triage = result
+        run.save(update_fields=['triage', 'updated_at'])
+        if not ai.valid_triage(result):
+            raise InvalidArticle('screening_response_invalid')
+        if ai.confident(result, 'scope', 'out_of_scope'):
+            conclude(run, 'declined', 'The request is outside the encyclopedia’s cryptocurrency scope.')
+        elif ai.confident(result, 'injection', 'injection'):
+            conclude(run, 'declined', 'The submission contains instructions to control the system rather than an article request or factual correction.')
+        else:
+            save(run, 'research')
+        return
+    if stage == 'research':
+        run.state = 'researching'
+        if not run.research:
+            run.research = ai.research(run)
+            run.save(update_fields=['research', 'updated_at'])
+        if not citable_urls(run.research):
+            revise(run, 'Research did not return usable evidence; try different primary sources.')
+        else:
+            save(run, 'write')
+        return
+    if stage == 'write':
+        write_candidate(run)
+        return
+    if stage == 'check':
+        check = Verification.objects.get(pk=run.editorial['check_id'], run=run)
+        check = check_step(check)
+        if check.state == 'failed':
+            revise(run, check.report)
+        elif check.state == 'passed':
+            publish_checked(run, check)
+        return
+    if stage == 'publish':
+        check = Verification.objects.get(run=run, state='passed', approved_hash=run.editorial['approved_hash'])
+        publish_checked(run, check)
+        return
+    raise InvalidArticle('editorial_stage_invalid')

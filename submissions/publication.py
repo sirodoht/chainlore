@@ -96,13 +96,14 @@ def publish_site(base_release=None, import_legacy=False):
     info = json.loads(source_info.read_text()) if source_info.exists() else {'revision': 'development', 'release': 'development'}
     name = 'generated-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:12]
     target = releases / name
-    eligible = Q(published_at__isnull=True, run__state__in=['queued', 'running', 'retry'],
+    ready_states = ['publishing'] if settings.AUTONOMOUS_EDITORIAL_ENABLED else ['queued', 'running', 'retry']
+    eligible = Q(published_at__isnull=True, run__state__in=ready_states,
                  run__submission__status='reviewing')
     if import_legacy:
         eligible |= Q(published_at__isnull=False)
     records = list(GeneratedArticle.objects.filter(eligible).order_by('slug'))
     revisions = list(ArticleRevision.objects.filter(
-        published_at__isnull=True, run__state__in=['queued', 'running', 'retry'],
+        published_at__isnull=True, run__state__in=ready_states,
         run__submission__status='reviewing').exclude(markdown='').select_related('run').order_by('created_at'))
     # Serialize suggestions for the same article. A later one is picked up by its worker tick.
     seen = {record.slug for record in records}
@@ -148,9 +149,23 @@ def publish_site(base_release=None, import_legacy=False):
                 continue
             type(record).objects.filter(pk=record.pk).update(published_at=django_timezone.now())
             # A deploy can finish a publication interrupted after its source was saved.
-            if AutomationRun.objects.filter(pk=record.run_id, state__in=['queued', 'running', 'retry']).update(state='published', last_error=''):
-                Submission.objects.filter(automation__pk=record.run_id, status='reviewing').update(
-                    status='resolved', resulting_url=f'https://chainlore.xyz/p/{record.slug}/', updated_at=django_timezone.now())
+            if AutomationRun.objects.filter(pk=record.run_id, state__in=ready_states).update(state='published', last_error='', updated_at=django_timezone.now()):
+                submission = Submission.objects.get(automation__pk=record.run_id)
+                if submission.status == 'reviewing':
+                    submission.status = 'resolved'
+                    submission.resulting_url = f'https://chainlore.xyz/p/{record.slug}/'
+                    if settings.AUTONOMOUS_EDITORIAL_ENABLED:
+                        run = AutomationRun.objects.get(pk=record.run_id)
+                        submission.public_title = record.title
+                        if submission.kind == 'maintenance':
+                            submission.public_summary = 'The article was independently checked against live sources and refreshed where evidence supported changes.'
+                        elif run.editorial.get('no_change'):
+                            submission.public_summary = 'An independent source check supported the existing article. No factual correction was justified; its check record has been refreshed.'
+                        elif submission.kind == 'request':
+                            submission.public_summary = 'The requested article was independently fact-checked and published.'
+                        else:
+                            submission.public_summary = 'A sourced change was independently fact-checked and published. The activity history links to the exact changes.'
+                    submission.save()
                 AutomationEvent.objects.create(run_id=record.run_id, kind='publication', data={
                     'release': name, 'content_hash': published_hashes[record.slug], 'slug': record.slug,
                     'revision': revision, 'decision': 'committed_article_published'})

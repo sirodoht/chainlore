@@ -49,6 +49,13 @@ def call(run, provider, stage, payload, timeout=120, keep_thinking=False):
         url = 'https://api.anthropic.com/v1/messages'
         headers = {'x-api-key': credential('anthropic-api-key', 'ANTHROPIC_API_KEY'),
                    'anthropic-version': '2023-06-01'}
+    reservation = None
+    if settings.AUTONOMOUS_EDITORIAL_ENABLED:
+        from .budgets import reserve
+        payload = copy.deepcopy(payload)
+        if 'max_tokens' in payload:
+            payload['max_tokens'] = min(payload['max_tokens'], settings.EDITORIAL_OUTPUT_TOKENS)
+        reservation = reserve(run, provider, stage, payload)
     headers['Content-Type'] = 'application/json'
     AutomationEvent.objects.create(run=run, kind=stage + '_request', data=without_thinking(payload))
     request = urllib.request.Request(url, headers=headers, data=json.dumps(payload).encode())
@@ -77,6 +84,9 @@ def call(run, provider, stage, payload, timeout=120, keep_thinking=False):
         raise ProviderError(f'{provider}_invalid_json') from None
     if not isinstance(result, dict):
         raise ProviderError(f'{provider}_invalid_response')
+    if reservation:
+        from .budgets import complete
+        complete(reservation, result)
     stripped = without_thinking(result)
     AutomationEvent.objects.create(run=run, kind=stage + '_response', data=stripped)
     return result if keep_thinking else stripped
@@ -141,7 +151,7 @@ def confident(result, name, expected):
 def research_payload(run):
     policy = (settings.BASE_DIR / 'POLICY.md').read_text()
     task = {'task': 'Research this requested subject using live web search.', 'untrusted_request': run.inputs}
-    if run.inputs.get('kind') == 'improvement':
+    if run.inputs.get('kind') in ('improvement', 'correction', 'maintenance'):
         task.update(task='Research the suggested improvement to this existing article. Focus searches on the requested additions or clarifications and gather enough sourced detail for the requested scope. The existing article is context, not verified evidence.',
                     existing_article=run.article_revision.original_markdown)
     return {
