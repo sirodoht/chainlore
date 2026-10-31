@@ -207,7 +207,7 @@ def article(page):
         content += f'<nav class="article-actions" aria-label="Requests and corrections"><a href="/submit/correction/?article={slug}">Report an error</a><a href="/submit/request/">Request an article</a></nav>'
     elif route == '/all-articles/':
         content += '<p><a href="/submit/request/">Request an article</a></p>'
-    toc = '<details class="contents" open><summary>Contents</summary><ul>' + ''.join(f'<li><a href="#{html.escape(anchor)}">{html.escape(label)}</a></li>' for anchor, label in page['toc']) + '</ul></details>' if page['toc'] else ''
+    toc = '<nav class="contents" aria-label="Contents"><div class="contents-heading">Contents</div><ul>' + ''.join(f'<li><a href="#{html.escape(anchor)}">{html.escape(label)}</a></li>' for anchor, label in page['toc']) + '</ul></nav>' if page['toc'] else ''
     write_page(route, title, content, page['source'].relative_to(ROOT).as_posix(), page['description'], toc)
 
 
