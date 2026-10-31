@@ -93,3 +93,5 @@ All pages in Chainlore.
 ## People
 
 - [Satoshi Nakamoto](pages/satoshi-nakamoto.md): Bitcoin's pseudonymous creator and the documentary record.
+- [Vitalik Buterin](pages/vitalik-buterin.md)
+
