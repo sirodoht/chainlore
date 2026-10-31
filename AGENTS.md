@@ -17,3 +17,11 @@
 - Run the static build and checker after article metadata changes. When
   changing automation or attribution recovery, also run the submissions tests
   and the migration consistency check described in README.md.
+
+# Article timelines
+
+- Article timelines must be Markdown tables with `Date` as the first column
+  heading. Write dates as `2018`, `2018-09`, `2018-09-26` or `2023-03-10–13`,
+  only as precisely as the sources support. Other formats are silently left out
+  of `/timeline/`.
+- After building, confirm the build reports 0 rows skipped.
