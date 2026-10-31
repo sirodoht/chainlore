@@ -6,7 +6,7 @@ written_by: Opus 5.5 High
 status: ai-fact-checked
 checked: 2026-10-30
 checked_by: Opus 5.5 High
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # Aave
@@ -262,9 +262,20 @@ technical service provider.[^governance-docs]
   open. LlamaRisk said the position was over-collateralised and did not
   put suppliers at risk.[^binance-response] As supplier withdrawals
   pushed the largest stablecoin pools to 92–100% utilisation, LlamaRisk
-  proposed temporary cuts to their Slope2 interest-rate parameter[^binance-caps]
-  and lower borrow and draw caps ahead of a staged unfreeze.[^binance-draw]
-  As of 30 October 2026 the markets remain frozen.[^binance-response]
+  temporarily lowered their Slope2 interest-rate parameter[^binance-caps]
+  and reduced borrow and draw caps ahead of a staged
+  unfreeze.[^binance-draw][^binance-rollback] On 30 October Aave announced
+  that the affected V3 and V4 markets had been unfrozen.[^binance-reopened]
+  Reopening retained zero loan-to-value ratios on V3 and zero collateral
+  factors on V4 for specified assets, including USDT and USDC, restricting
+  their use as collateral for new borrowing.[^binance-rollback]
+- tBTC restriction (October 2026). After Threshold paused tBTC minting
+  and redemptions, Aave's guardian froze the tBTC reserve on V3 Ethereum
+  Core at 10:01 UTC on 31 October. LlamaRisk said this stopped new tBTC
+  deposits and additional borrowing power from tBTC. Repayments,
+  withdrawals and liquidations remained available, and existing
+  liquidation thresholds were unchanged. This action affected only that
+  reserve, rather than pausing an entire market.[^tbtc-freeze]
 - Aave Labs and the DAO (2025–2026). In December 2025 a delegate found
   that fees from a new CoW Swap integration in Aave Labs' interface went
   to Aave Labs rather than the DAO. Zeller said Aave Labs, "in the
@@ -322,6 +333,8 @@ technical service provider.[^governance-docs]
 | 2026-04-18 | rsETH exploit; rsETH markets frozen |
 | 2026-05-10 | WETH unfreeze completed |
 | 2026-10-29 | Markets frozen after Binance hack |
+| 2026-10-30 | Aave announces V3 and V4 reopening, with collateral restrictions retained |
+| 2026-10-31 | tBTC reserve frozen on V3 Ethereum Core after Threshold's minting and redemption pause |
 
 ## See also
 
@@ -336,6 +349,10 @@ technical service provider.[^governance-docs]
 - [Liquidation](liquidation.md)
 
 ## References
+
+[^binance-rollback]: LlamaRisk (2026-10-30). *Binance Hot Wallet Exploit: Aave's Response*, 13:49 UTC update, post 18. <https://governance.aave.com/t/binance-hot-wallet-exploit-aaves-response/25954/18>
+[^binance-reopened]: Aave (2026-10-30). *Update following the Binance incident*, official announcement at 13:57 UTC (syndicated post text). <https://cdn.syndication.twimg.com/tweet-result?id=2116167595237720167&lang=en&token=0>
+[^tbtc-freeze]: LlamaRisk (2026-10-31). *tBTC Mint & Redeem Pause: Aave's Response*. <https://governance.aave.com/t/tbtc-mint-redeem-pause-aaves-response/25965>
 
 [^kulechov]: The Block. *Stani Kulechov* (profile). <https://www.theblock.co/profile/350181/stani-kulechov>
 [^ethlend-ico]: Finance Magnates (2017). *ETHLend's LEND token raises over $10 million in 30 minutes*. <https://www.financemagnates.com/thought-leadership/ethlends-lend-token-raises-10-million-30-minutes/>
