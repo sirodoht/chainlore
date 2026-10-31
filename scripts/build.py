@@ -115,6 +115,9 @@ def render(path):
     wikipedia_backlinks(tree)
     for link in tree.iter('a'):
         url = urlsplit(link.get('href', ''))
+        if url.netloc and url.scheme in ('', 'http', 'https') and url.hostname != 'chainlore.xyz':
+            link.set('rel', ' '.join(dict.fromkeys([*link.get('rel', '').split(), 'external'])))
+            link.set('aria-label', f'{plain(link)} (external link)')
         if not url.scheme and not url.netloc and url.path.endswith('.md'):
             target = (path.parent / url.path).resolve()
             key = target.relative_to(ROOT).as_posix()
@@ -165,7 +168,7 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
     if source.startswith('pages/'):
         report_error_link = '<a href="/submit/correction/?' + urlencode({'article': Path(source).stem}) + '">Report an error</a>'
     source_url = '/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source
-    source_link = f'<a href="{html.escape(source_url, quote=True)}">View Markdown source <span aria-hidden="true">↗</span></a>' if route != '/' else ''
+    source_link = f'<a href="{html.escape(source_url, quote=True)}">View Markdown source</a>' if route != '/' else ''
     output = TEMPLATE.substitute(title=html.escape(title + ' - Chainlore') if route != '/' else 'Chainlore - The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
         source_link=source_link,
@@ -233,7 +236,7 @@ def homepage(pages):
 <section class="panel"><h2>Featured article</h2><div class="eyebrow">{feature['meta']['category']} blockchain</div><h3 class="feature-title"><a href="/p/hyperliquid/">Hyperliquid</a><small>HYPE</small></h3><div class="feature-lead">{feature['lead']}</div><div class="feature-bottom"><span>History · Technology · Governance</span><a href="/p/hyperliquid/">Full article →</a></div></section>
 <section class="panel blue"><h2>More articles</h2>{rows}<p class="more-link"><a href="/all-articles/">All {len(pages)} articles →</a></p></section>
 </div>
-<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Fact-check credits appear on each article. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a> · <a href="https://github.com/sirodoht/chainlore">Source code</a></p></section></div>'''
+<div class="home-bottom"><section><h2>Subjects</h2>{index_html}<p><a href="/all-articles/">Article index →</a></p></section><section><h2>About Chainlore</h2><p>Articles cover the history, technology, supply, governance, and incidents of blockchains and protocols.</p><p>Fact-check credits appear on each article. Article statuses: {statuses}.</p><p><a href="/about/">Authorship and review</a> · <a href="/policy/">Editorial policy</a> · <a href="/vision/">Editorial scope</a> · <a href="https://github.com/sirodoht/chainlore" rel="external" aria-label="Source code (external link)">Source code</a></p></section></div>'''
     write_page('/', 'Chainlore', content, description='An AI native encyclopedia of crypto, with articles on blockchains, stablecoins, protocols, and incidents.', active='Main page')
 
 
