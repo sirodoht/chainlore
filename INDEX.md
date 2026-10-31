@@ -129,3 +129,7 @@ All pages in Chainlore.
 
 - [Satoshi Nakamoto](pages/satoshi-nakamoto.md): Bitcoin's pseudonymous creator and the documentary record.
 - [Vitalik Buterin](pages/vitalik-buterin.md): Ethereum co-founder and author of its original whitepaper.
+
+## Concepts
+
+- [Elliptic curve cryptography](pages/elliptic-curve-cryptography.md): Elliptic curve cryptography (ECC) refers to cryptographic schemes built on the arithmetic of points on elliptic curves over finite fields. This is an unverified draft, not…
