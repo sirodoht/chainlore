@@ -204,7 +204,8 @@ class AutomationTests(AutomationFixture):
         def remove(checkout):
             (checkout / 'pages/test-protocol.md').unlink()
             index = checkout / 'INDEX.md'
-            index.write_text(index.read_text().replace('- [Test Protocol](pages/test-protocol.md)\n', ''))
+            index.write_text('\n'.join(line for line in index.read_text().splitlines()
+                                      if not line.startswith('- [Test Protocol](pages/test-protocol.md)')) + '\n')
 
         self.edit_remote(remove)
         with publication_lock():
