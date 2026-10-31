@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Sum
 from submissions.models import AutomationRun, Submission, Verification
-from submissions.verification import digest, step
+from submissions.verification import digest, step, inventory
 from submissions.ai_providers import ProviderError
 from submissions.article_validation import InvalidArticle
 from submissions.budgets import BudgetExceeded
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         run = AutomationRun.objects.create(submission=submission, state='checking', inputs={'replay': True})
         check = Verification.objects.create(run=run, source=source, source_hash=digest(source))
         try:
-            for _ in range(3 + settings.VERIFICATION_REPORT_ATTEMPTS):
+            for _ in range(3 + ((len(inventory(source)[0])+settings.VERIFICATION_BATCH_SIZE-1)//settings.VERIFICATION_BATCH_SIZE)*settings.VERIFICATION_REPORT_ATTEMPTS):
                 check = step(check)
                 if check.state != 'pending':
                     break

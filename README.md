@@ -156,7 +156,7 @@ Defaults and environment controls:
   stop in a shadow Blocked state. Never claim a shadow result was published.
 - `CHAINLORE_AUTOMATION_DAILY_LIMIT=10`: new jobs per UTC day, including maintenance.
 - `CHAINLORE_DAILY_TOKEN_LIMIT=2000000`: shared daily call-admission budget.
-- `CHAINLORE_RUN_TOKEN_LIMIT=1000000`: lifetime call-admission budget per job.
+- `CHAINLORE_RUN_TOKEN_LIMIT=1500000`: lifetime call-admission budget per job.
 - `CHAINLORE_CHECKER_MODEL`: explicit checker model; defaults to the configured writer
   model in a separate context, not an implicit provider/model substitution.
 - `CHAINLORE_MAINTENANCE_ENABLED=1` and `CHAINLORE_MAINTENANCE_DAILY_LIMIT=1`:
@@ -168,8 +168,10 @@ an operational limit/configuration decision, never an editorial approval. Both r
 visible and preserve the existing article. API secrets and database files stay private.
 
 Interrupted or malformed verification output does not trigger rewriting. The checker
-keeps the candidate and its independently fetched sources, then gets at most two
-report-only attempts with a 32,000-token output allowance and no tools. Complete
+keeps the candidate and its independently fetched sources, then checks groups of at most four units with at most two report-only attempts per
+group, a 16,000-token output allowance and no tools. Each cited group receives its
+complete cited documents; uncited facts retain the full source set. Group approvals
+are combined only when every unit is covered, then the full report is validated again. Complete
 reports with factual findings still request revision. Incomplete reports end in an
 explicit operational block; they never confer publication approval. Saved reports
 are assessed after a restart before another paid call. Evidence from a different

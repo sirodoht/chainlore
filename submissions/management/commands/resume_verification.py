@@ -44,6 +44,7 @@ class Command(BaseCommand):
                 except InvalidArticle:
                     raise CommandError('Saved writing response cannot be recovered.') from None
             session = copy.deepcopy(check.session)
+            session.pop('batches', None)
             session.update(mode='report', report_responses=[], processed_report_responses=0, recovered_from=check.pk)
             recovered = Verification.objects.create(run=run,source=check.source,source_hash=check.source_hash,session=session)
             # The legacy path requested a rewrite solely because the report was

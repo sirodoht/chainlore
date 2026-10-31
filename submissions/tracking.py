@@ -109,6 +109,7 @@ EVENT_LABELS = {
     'operational_block': 'Operational blocker', 'budget_block': 'Processing budget reached',
     'shadow_verified': 'Verification passed in test mode',
     'verification_retry': 'Continuing verification from saved evidence',
+    'verification_group_checked': 'A group of claims passed verification',
     'verification_incomplete': 'Verification report could not be completed',
     'verification_recovered': 'Verification resumed from saved evidence',
 }

@@ -12,6 +12,7 @@ from .test_verification import SOURCE, evidence, report
 from . import editorial
 
 
+@override_settings(VERIFICATION_BATCH_SIZE=100)
 class VerificationRecoveryTests(TestCase):
     def setUp(self):
         self.run=AutomationRun.objects.create(submission=Submission.objects.create(kind='correction',status='reviewing'),
@@ -44,7 +45,7 @@ class VerificationRecoveryTests(TestCase):
         request=call.call_args.args[3]
         self.assertEqual(call.call_args.args[2],'fact_check_report')
         self.assertNotIn('tools',request)
-        self.assertEqual(request['max_tokens'],32000)
+        self.assertEqual(request['max_tokens'],16000)
         data=json.loads(request['messages'][0]['content'])
         self.assertIn('https://example.com/history',data['fetched_sources'])
         self.assertNotIn('writer_research',data)
@@ -67,7 +68,7 @@ class VerificationRecoveryTests(TestCase):
 
     @patch('submissions.ai_providers.call')
     def test_saved_response_is_assessed_after_crash_without_another_paid_call(self,call):
-        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report','report_responses':[self.finished()]}
+        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report','batches':[{'ids':[u['id'] for u in report()['units']],'responses':[self.finished()]}]}
         self.check.save()
         step(self.check)
         call.assert_not_called()
@@ -156,4 +157,38 @@ class BudgetSettlementTests(TestCase):
         from .ai_providers import call
         transport.return_value.__enter__.return_value.read.return_value=json.dumps({'usage':{'input_tokens':10,'output_tokens':10}}).encode()
         call(self.run,'anthropic','fact_check_report',{'max_tokens':64000,'model':'test'})
-        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'],32000)
+        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'],16000)
+
+@override_settings(VERIFICATION_BATCH_SIZE=2)
+class GroupCoverageTests(TestCase):
+    def setUp(self):
+        self.run=AutomationRun.objects.create(submission=Submission.objects.create(kind='request'))
+        self.check=Verification.objects.create(run=self.run,source=SOURCE,source_hash=digest(SOURCE))
+        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report'}
+        self.check.save()
+
+    @patch('submissions.ai_providers.call')
+    def test_only_complete_group_coverage_can_approve(self,call):
+        def answer(run,provider,stage,request,**kwargs):
+            data=json.loads(request['messages'][0]['content'])
+            result=report();ids={u['id'] for u in data['units']}
+            self.assertLessEqual(len(ids),2)
+            result['units']=[u for u in result['units'] if u['id'] in ids]
+            return {'stop_reason':'end_turn','model':'checker-test','content':[{'type':'text','text':json.dumps(result)}]}
+        call.side_effect=answer
+        step(self.check)
+        self.assertEqual(self.check.state,'pending')
+        self.assertEqual(self.check.approved_hash,'')
+        self.check.refresh_from_db()
+        while self.check.state=='pending':step(self.check)
+        self.assertEqual(self.check.state,'passed')
+        self.assertEqual({u['id'] for u in self.check.report['assessment']['units']},{u['id'] for u in report()['units']})
+        self.assertEqual(len(self.check.report['assessment']['units']),len(report()['units']))
+
+    @patch('submissions.ai_providers.call')
+    def test_whole_report_cannot_skip_current_group_contract(self,call):
+        call.return_value={'stop_reason':'end_turn','model':'checker-test','content':[{'type':'text','text':json.dumps(report())}]}
+        step(self.check)
+        self.assertEqual(self.check.state,'pending')
+        self.assertEqual(self.check.report['errors'],['verification_report_incomplete'])
+        self.assertEqual(self.check.approved_hash,'')
