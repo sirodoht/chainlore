@@ -1,7 +1,7 @@
 ---
 title: Automated market maker
 ticker: None
-category: Decentralised finance
+category: DeFi
 written_by: GPT-6-Astra high
 status: ai-fact-checked
 checked: 2026-10-31

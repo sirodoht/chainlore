@@ -1,7 +1,7 @@
 ---
 title: Binance
 ticker: BNB
-category: Exchanges
+category: Exchange
 written_by: Unknown
 status: ai-fact-checked
 checked: 2026-10-31

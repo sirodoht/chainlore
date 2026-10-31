@@ -8,6 +8,8 @@ CATEGORY_SECTIONS = {
     'Exchange': 'Exchanges',
     'Regulation': 'Legislation',
     'Infrastructure': 'Infrastructure',
+    'Culture': 'Culture',
+    'History': 'History',
     'Person': 'People',
     'Organisation': 'Organisations',
     'Event': 'Events',
