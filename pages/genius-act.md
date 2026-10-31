@@ -3,7 +3,9 @@ title: GENIUS Act
 ticker: —
 category: Regulation
 written_by: Opus 5.5 High
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -13,14 +15,14 @@ The **Guiding and Establishing National Innovation for U.S. Stablecoins
 Act**, or **GENIUS Act**, is a United States federal law that regulates
 payment [stablecoins](stablecoin.md). Signed by President Donald Trump on
 18 July 2025 as Public Law 119-27, it limits issuance to permitted
-issuers, requires one-to-one reserves in cash and short-term government
+issuers, requires one-to-one reserves in cash and other permitted liquid
 assets, bars issuers from paying interest to holders, and states that
-compliant payment stablecoins are not securities or commodities. It takes
-effect no later than 18 January 2027.[^act][^morgan-lewis] Critics in
+payment stablecoins from permitted issuers are not securities or commodities. It takes
+effect on 18 January 2027.[^act][^occ-final] Critics in
 Congress objected that it does not stop the president's family from
 profiting from its own stablecoin, and banks say it leaves room for
 exchanges to pay rewards on stablecoin
-balances.[^block-warren][^block-banks]
+balances.[^warren-letter][^block-banks]
 
 | | |
 |---|---|
@@ -31,7 +33,7 @@ balances.[^block-warren][^block-banks]
 | Senate vote | 68 to 30 (2025-06-17) |
 | House vote | 308 to 122 (2025-07-17) |
 | Signed | 2025-07-18 |
-| Takes effect | No later than 2027-01-18 |
+| Takes effect | 2027-01-18 |
 | Sale restriction begins | 2028-07-18 |
 | Regulators | Comptroller of the Currency, Federal Reserve, FDIC, National Credit Union Administration, Treasury, state regulators |
 | Text | [Public Law 119-27](https://www.congress.gov/119/plaws/publ27/PLAW-119publ27.htm) |
@@ -39,10 +41,9 @@ balances.[^block-warren][^block-banks]
 ## Background
 
 Before the Act, stablecoin issuers in the United States had no federal
-framework of their own. New York regulated issuers it had licensed,
+framework specifically for stablecoin issuance.[^mayer-brown] New York regulated issuers it had licensed,
 through guidance published on 8 June 2022 that required full reserves and
-redemption at par.[^nydfs] The two largest dollar stablecoins, USDT and
-USDC, had each faced questions about their reserves: [Tether](tether.md)
+redemption at par.[^nydfs] USDT and USDC had each faced questions about their reserves: [Tether](tether.md)
 settled with the New York Attorney General and the Commodity Futures
 Trading Commission in 2021, and [USDC](usdc.md) fell to about 86 cents
 when Silicon Valley Bank failed in March 2023.[^nyag][^cftc][^fed-svb]
@@ -75,7 +76,7 @@ or House stablecoin legislation.[^decrypt-house] During the Republican
 leadership's "Crypto Week", holdouts in the party delayed procedural
 votes.[^coindesk-house] The House passed the Senate text unamended on 17
 July, by 308 to 122, and Trump signed it the next
-day.[^mayer-brown][^block-signing]
+day.[^mayer-brown][^act]
 
 ## Provisions
 
@@ -94,26 +95,35 @@ securities.[^act]
 
 Permitted issuers fall into three groups: subsidiaries of insured
 depository institutions, federal qualified issuers, and state qualified
-issuers. A state qualified issuer with up to US$10 billion outstanding
-may stay under a state regime if that regime is substantially similar to
-the federal framework. Above that level it must move to federal oversight
-within 360 days or stop issuing until it falls back under the
-limit.[^act]
+issuers. A state qualified issuer with up to US$10 billion in consolidated
+outstanding issuance may stay under a state regime if that regime is substantially similar to
+the federal framework and is approved by the Stablecoin Certification
+Review Committee. Above that level it must move to federal oversight
+within 360 days or stop issuing new coins from the date it crosses the
+threshold until it falls back under the limit. The federal regulator may
+grant a waiver allowing continued state-only supervision.[^act]
 
 ### Reserves and disclosure
 
 Issuers must hold identifiable reserves of at least one to one. Eligible
 assets are:[^act]
 
-- US coins and currency, and balances at a Federal Reserve Bank
-- deposits at insured depository institutions
-- Treasury bills, notes, and bonds with 93 days or less to maturity
-- overnight repurchase and reverse repurchase agreements on Treasury
-  collateral
-- shares of registered government money market funds that invest only in
-  those assets
-- other similarly liquid federal government assets approved by a regulator
-- tokenised forms of the eligible assets
+- US coins and currency, and balances at a Federal Reserve Bank.[^act]
+- Deposits withdrawable on demand, or insured shares, at insured depository
+  institutions, subject to regulatory limits.[^act]
+- Treasury bills, notes, and bonds with 93 days or less remaining to
+  maturity, or issued with a maturity of 93 days or less.[^act]
+- Money from overnight repurchase agreements backed by Treasury bills with
+  maturities of 93 days or less.[^act]
+- Overnight reverse repurchase agreements collateralised by Treasuries,
+  subject to the Act's overcollateralisation, clearing or counterparty
+  conditions.[^act]
+- Securities of registered investment companies or government money market
+  funds invested solely in the preceding eligible assets.[^act]
+- Other similarly liquid federal government-issued assets approved by the
+  relevant regulator.[^act]
+- Tokenised forms of eligible cash, deposits, Treasuries, fund securities,
+  or other approved government assets, complying with applicable law.[^act]
 
 Reserves generally may not be pledged, rehypothecated, or reused. Issuers
 must publish their redemption policy and fees, and must publish the
@@ -129,20 +139,21 @@ annual financial statements.[^act]
 Section 4 states that no permitted or foreign issuer may pay a holder
 "any form of interest or yield (whether in cash, tokens, or other
 consideration) solely in connection with the holding, use, or retention
-of such payment stablecoin".[^act] The provision names issuers, which is
-the basis of the [dispute over rewards](#stablecoin-rewards).
+of such payment stablecoin". The provision names issuers, which is
+the basis of the [dispute over rewards](#stablecoin-rewards).[^act][^block-banks]
 
 ### Activities and technology companies
 
-Issuers may only issue and redeem stablecoins, manage reserves, provide
-custody, and carry out activities that directly support those functions.
+Issuers may issue and redeem stablecoins, manage reserves, provide
+custody, and carry out activities that directly support those functions,
+as well as certain regulator-authorised incidental activities.
 They may not make services conditional on buying another product. A
 public company not predominantly engaged in financial activities may
 issue only with a unanimous finding of the Stablecoin Certification
 Review Committee, which comprises the Treasury Secretary, the Federal
 Reserve chair or vice chair for supervision, and the FDIC chair. The
-company must also agree to limits on using transaction data for
-advertising.[^act]
+company must also comply with restrictions on using transaction data for
+advertising, with a consumer-consent exception.[^act]
 
 ### Money laundering, sanctions, and freezing
 
@@ -169,7 +180,9 @@ unless a permitted issuer issued it. That date is 18 July 2028.[^act][^jones-day
 Section 18 exempts a foreign issuer if Treasury finds its home regime
 comparable, it registers with the Comptroller, and it keeps enough
 reserves at a US financial institution to meet US customers' liquidity
-needs. A foreign issuer's coin may be offered in the United States only
+needs, unless a reciprocal arrangement permits otherwise. Its home
+jurisdiction must not be subject to comprehensive US sanctions or a Treasury
+determination of primary money-laundering concern. A foreign issuer's coin may be offered in the United States only
 if the issuer can comply with lawful orders. The prohibition does not
 cover direct transfers between individuals or self-custody
 wallets.[^act]
@@ -188,7 +201,7 @@ enactment or 120 days after regulators issue final rules.[^act] Treasury
 asked for public comment on 19 September 2025. Proposals followed from
 the Federal Deposit Insurance Corporation (FDIC), the National Credit
 Union Administration (NCUA), the Office of the Comptroller of the
-Currency (OCC), and Treasury:[^morgan-lewis]
+Currency (OCC), Treasury, and later the Federal Reserve:[^morgan-lewis][^fed-proposal]
 
 | Date | Agency | Subject |
 |---|---|---|
@@ -199,6 +212,7 @@ Currency (OCC), and Treasury:[^morgan-lewis]
 | 2026-04-10 | FDIC | Prudential standards[^morgan-lewis] |
 | 2026-04-10 | FinCEN, OFAC | Anti-money laundering and sanctions programs[^morgan-lewis] |
 | 2026-08-18 | Treasury | Issuance, offer, and sale under section 3[^jones-day] |
+| 2026-09-29 | Federal Reserve | Rules for Board-supervised issuers and the prohibition on tying stablecoin services to other products[^fed-proposal] |
 
 The OCC issued a final rule on 21 October 2026, after the one-year
 deadline, effective 18 January 2027. WilmerHale describes it as the first
@@ -206,24 +220,29 @@ final rule from a federal banking agency. Compared with the March
 proposal, it dropped a rebuttable presumption on prohibited yield, cut
 the daily liquidity floor from 10% to 5%, and removed a requirement for
 large issuers to hold insured deposits. It keeps a US$5 million minimum
-capital floor and two-business-day redemption, and requires notice to the
-OCC within 24 hours if redemption requests pass 10% of outstanding value
-in 24 hours. Approved issuers are not grandfathered.[^wilmerhale]
+capital floor and a general two-business-day redemption limit, and requires notice to the
+OCC within 24 hours if redemption requests exceed 10% of any brand's
+outstanding value in 24 hours. Already-approved OCC issuers are not
+grandfathered; applicants with pending applications may obtain a temporary
+waiver.[^wilmerhale][^occ-final]
 
-As of 31 October 2026 this article has not confirmed final rules from
-Treasury, the FDIC, the NCUA, or the Federal Reserve.
+Treasury also published an interim final rule on 30 September 2026 for
+reviewing state-regulator certifications, effective that day. It sets
+procedures and forms, with submissions dependent on approval of the
+information collection; comments are due by 30 November. This is distinct
+from the substantive issuer rules. As of 31 October 2026, the Federal
+Reserve's September proposal is still in its comment period, which also
+ends on 30 November.[^treasury-interim][^fed-proposal]
 
 ## Criticism
 
 ### Conflicts of interest
 
-Senator Elizabeth Warren argued in October 2025 that the law was a
-"light-touch regulatory framework for crypto banks", and asked Treasury
+Senator Elizabeth Warren argued in October 2025 that the law created
+a lightly regulated framework for stablecoin issuers, and asked Treasury
 how its rules would be shielded from conflicts of interest tied to
 President Trump, whose family's World Liberty Financial sponsors the USD1
-stablecoin.[^block-warren] Bartlett Naylor of Public Citizen said
-lawmakers had "forfeited their opportunity to confront Trump's crypto
-grift".[^decrypt-house] The Act says that existing ethics rules bar
+stablecoin.[^warren-letter] The Act says that existing ethics rules bar
 members of Congress and senior executive branch officials from issuing a
 payment stablecoin during public service.[^act] Decrypt reported that
 critics say this still leaves the president and vice president, and
@@ -264,9 +283,9 @@ Tether announced USAT for the US market in September 2025 and launched it in Jan
 through Anchorage Digital Bank.[^usat-announce][^usat-launch] CoinDesk
 reported in July 2026 that USDT faced the two-year countdown to the sale
 restriction on US platforms.[^genius-countdown] Circle received a
-national trust charter from the OCC in July 2026, and World Liberty
-Financial received preliminary conditional approval for one in August
-2026.[^block-occ-circle][^block-wlf]
+national trust charter from the OCC in July 2026, and the OCC gave
+preliminary conditional approval to a proposed World Liberty Trust Company in August 2026. Conditional approval does not
+authorise the proposed bank to begin operations.[^block-occ-circle][^wlf-decision]
 
 ## Timeline
 
@@ -280,14 +299,16 @@ Financial received preliminary conditional approval for one in August
 | 2025-07-18 | President Trump signs the Act |
 | 2025-08 | Bank groups ask Congress to extend the interest ban |
 | 2025-09-19 | Treasury requests public comment |
-| 2025-12-19 | First agency proposal, from the FDIC |
+| 2025-12-19 | FDIC issuer-application proposal |
 | 2026-03-02 | OCC proposal |
 | 2026-07-18 | One-year rulemaking deadline |
 | 2026-08-18 | Treasury proposes offer and sale rules |
 | 2026-09-15 | CLARITY Act fails to advance in the Senate |
+| 2026-09-29 | Federal Reserve proposal published |
+| 2026-09-30 | Treasury interim final state-certification procedures |
 | 2026-10-21 | OCC final rule |
-| 2027-01-18 | Latest effective date; OCC rule takes effect |
-| 2028-07-18 | Restriction on sales of non-permitted stablecoins begins |
+| 2027-01-18 | Act and OCC rule take effect |
+| 2028-07-18 | Restrictions on platform stablecoin sales begin |
 
 ## See also
 
@@ -313,7 +334,6 @@ Financial received preliminary conditional approval for one in August
 [^mayer-brown]: Mayer Brown (2025). *GENIUS Act signed into law: US enacts federal stablecoin legislation*. <https://www.mayerbrown.com/en/insights/publications/2025/07/genius-act-signed-into-law-us-enacts-federal-stablecoin-legislation>
 [^decrypt-house]: Decrypt (2025). *Trump pushes House to pass GENIUS Act as lawmakers debate crypto oversight*. <https://decrypt.co/325996/trump-pushes-house-genius-act-lawmakers-debate-crypto>
 [^coindesk-house]: CoinDesk (2025). *GENIUS Act for stablecoins passes House on way to being first major U.S. crypto law*. <https://www.coindesk.com/policy/2025/07/17/genius-act-for-stablecoins-passes-house-on-way-to-be-first-major-u-s-crypto-law>
-[^block-signing]: The Block (2025). *Trump signs stablecoin GENIUS Act, cementing first major crypto framework in US law*. <https://theblock.co/post/363425/trump-signs-stablecoin-genius-act-cementing-first-major-crypto-framework-in-us-law>
 [^jones-day]: Jones Day (2026). *U.S. Treasury proposes GENIUS Act rules for stablecoin issuance, offer, and sale*. <https://www.jonesday.com/en/insights/2026/08/us-treasury-proposes-genius-act-rules-for-stablecoin-issuance-offer-and-sale>
 [^block-treasury]: The Block (2026). *Treasury issues GENIUS Act rule proposal, seeks comment on state oversight for smaller issuers*. <https://www.theblock.co/post/396093/treasury-genius-act-rule-proposal-seeks-comment-oversight-smaller-issuers>
 [^wilmerhale]: WilmerHale (2026). *OCC finalizes GENIUS Act rule for permitted payment stablecoin issuers, easing several key proposed requirements and raising new issues*. <https://www.wilmerhale.com/en/insights/client-alerts/20261027-occ-finalizes-genius-act-rule-for-permitted-payment-stablecoin-issuers-easing-several-key-proposed-requirements-and-raising-new-issues>
@@ -325,4 +345,9 @@ Financial received preliminary conditional approval for one in August
 [^usat-launch]: CoinDesk (2026). *Tether takes the fight to Circle with a new 'made in America' stablecoin*. <https://www.coindesk.com/business/2026/01/27/tether-debuts-federally-regulated-usat-stablecoin-via-anchorage-digital>
 [^genius-countdown]: CoinDesk (2026). *Tether's USDT hits 2-year countdown threatening its position on U.S. crypto platforms*. <https://www.coindesk.com/news-analysis/2026/07/17/tether-s-usdt-hits-2-year-countdown-threatening-its-position-on-u-s-crypto-platforms>
 [^block-occ-circle]: The Block (2026). *Stablecoin firm Circle wins final OCC approval to open national trust bank*. <https://theblock.co/post/407876/stablecoin-firm-circle-wins-final-occ-approval-to-open-national-trust-bank>
-[^block-wlf]: The Block (2026). *OCC grants conditional approval for Trump-backed World Liberty National Trust bank*. <https://theblock.co/news/regulation/2026-08-14-occ-grants-conditional-approval-trump-world-liberty-national-trust-bank-411906>
+
+[^occ-final]: Office of the Comptroller of the Currency (2026). *Implementing the GENIUS Act for the issuance of stablecoins by entities subject to OCC jurisdiction*, final rule, published 23 October. <https://www.govinfo.gov/content/pkg/FR-2026-10-23/html/2026-21706.htm>
+[^fed-proposal]: Board of Governors of the Federal Reserve System (2026). *Implementing the Federal Reserve Board’s responsibilities under the GENIUS Act*, proposed rule, 29 September. <https://www.govinfo.gov/content/pkg/FR-2026-09-29/html/2026-19860.htm>
+[^treasury-interim]: Department of the Treasury (2026). *Forms and procedures for review of state certifications by the Stablecoin Certification Review Committee*, interim final rule, 30 September. <https://www.govinfo.gov/content/pkg/FR-2026-09-30/html/2026-19966.htm>
+[^wlf-decision]: Office of the Comptroller of the Currency (2026). *Corporate Decision 1385: application to charter World Liberty Trust Company*, 14 August (archived copy). <https://upload.wikimedia.org/wikipedia/commons/a/a6/Corporate_Decision_1385_Re_Application_to_Charter_World_Liberty_Trust_Company.pdf?utm_campaign=index&utm_content=original&utm_source=commons.wikimedia.org>
+[^warren-letter]: Elizabeth Warren (2025). *Comment to Treasury on GENIUS Act implementation*, 20 October. <https://www.banking.senate.gov/imo/media/doc/ew_treasury_genius_anprm_comment.pdf>

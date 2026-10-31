@@ -3,7 +3,9 @@ title: Monero
 ticker: XMR
 category: Layer 1
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -22,7 +24,7 @@ leadership.[^about][^spec]
 | Consensus | Proof of work |
 | Mining algorithm | RandomX[^about] |
 | Target block interval | Two minutes[^spec] |
-| Tail emission | 0.6 XMR per block[^faq] |
+| Base tail subsidy | 0.6 XMR per block before block-size penalties[^spec][^faq] |
 
 ## Privacy mechanisms
 
@@ -47,11 +49,17 @@ of specialised mining hardware. The project's stated aim is to broaden
 participation in mining; the design objective should not be confused with
 a guarantee against concentration among miners.[^about]
 
-Monero has no fixed terminal supply. Its tail emission began on 9 June
-2022 and provides 0.6 XMR per block, targeting one block every two minutes.
-This maintains a continuing block subsidy alongside transaction fees.
-Because the absolute issuance rate is fixed while the outstanding supply
-grows, its percentage contribution to supply declines over time.[^faq]
+Monero's tail emission began on 9 June 2022, with a base subsidy of
+0.6 XMR per block and a target interval of
+two minutes. Block-size penalties can reduce the subsidy. Continuing
+issuance alongside transaction fees means there is no fixed terminal
+supply, while a constant base subsidy represents a declining percentage
+of the growing supply.[^faq][^spec]
+
+As of 31 October 2026, the published technical specification still
+describes ring signatures. A developer work plan for the proposed
+FCMP++/Carrot upgrade explicitly labels its estimated schedule as
+nonbinding; it is not an activation commitment.[^spec][^upgrade-plan]
 
 ## Limits and research
 
@@ -81,3 +89,4 @@ all Monero transactions can be traced.[^research]
 [^spec]: Monero documentation. *Monero technical specification*. <https://docs.getmonero.org/technical-specs/>
 [^faq]: Monero Project. *Frequently asked questions*. <https://www.getmonero.org/get-started/faq/>
 [^research]: Hammad, N. and Victor, F. (2024). *Monero traceability heuristics: wallet application bugs and the Mordinal-P2Pool perspective*. <https://arxiv.org/abs/2408.05332>
+[^upgrade-plan]: Jeffro256. *FCMP++/Carrot implementation plan*. <https://github.com/jeffro256/fcmp-carrot-plan>

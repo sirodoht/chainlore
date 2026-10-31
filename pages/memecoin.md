@@ -3,7 +3,9 @@ title: Memecoin
 ticker: None
 category: Culture
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -33,7 +35,7 @@ a coin can acquire a community beyond the original joke.[^doge]
 
 Later token-launch platforms made creating new coins a repeatable process.
 A 2026 research paper on pump.fun examined coins created on [Solana](solana.md)
-between January 2024 and January 2026. Its description of the platform
+between 14 January 2024 and 14 January 2026. Its description of the platform
 shows creators supplying a name, symbol, and image, with optional descriptions
 and social links. The cultural packaging and the onchain token are related
 but distinct components.[^research]
@@ -41,11 +43,11 @@ but distinct components.[^research]
 ## Trading and manipulation
 
 The CFTC's 2018 advisory describes pump-and-dump schemes in thinly traded
-cryptocurrencies: organisers accumulate an asset, encourage buying through
-promotional messages, and sell into the resulting demand. Later buyers
+cryptocurrencies: organisers encourage buying through promotional
+messages and sell into the resulting demand. Later buyers
 can be left with losses as prices fall. The advisory predates many current
 memecoin platforms and concerns a trading practice, not a finding that
-every meme-themed token is fraudulent.[^cftc]
+every meme-themed token is fraudulent.[^cftc][^cftc-release]
 
 The pump.fun study identified patterns it classified as wash trading,
 creator-address obfuscation, coordinated selling, copycat coins, and
@@ -82,6 +84,7 @@ transaction.[^interpretation][^staff]
 [^doge]: Dogecoin. *The history of Dogecoin*. <https://dogecoin.com/dogepedia/articles/history-of-dogecoin/>
 [^staff]: SEC Division of Corporation Finance (27 February 2025). *Staff statement on meme coins*. <https://www.sec.gov/newsroom/speeches-statements/staff-statement-meme-coins>
 [^cftc]: CFTC (2018). *Customer advisory: beware virtual currency pump-and-dump schemes*. <https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/beware_virtual_currency_pump_dump.html>
-[^research]: *Meme coin factories: uncovering large-scale manipulations on pump.fun* (September 2026). Research preprint. <https://arxiv.org/abs/2609.10246>
+[^research]: Szwajcok, N. et al. (September 2026). *Meme coin factories: uncovering large-scale manipulations on pump.fun*. Author version of an ACM CCS 2026 paper. <https://arxiv.org/html/2609.10246v1>
 [^response]: Crenshaw, C. (27 February 2025). *Response to staff statement on meme coins: what does it meme?*. <https://www.sec.gov/newsroom/speeches-statements/crenshaw-response-staff-statement-meme-coins-022725>
 [^interpretation]: SEC (17 March 2026). *SEC clarifies the application of federal securities laws to crypto assets*. <https://www.sec.gov/newsroom/press-releases/2026-30-sec-clarifies-application-federal-securities-laws-crypto-assets>
+[^cftc-release]: CFTC (15 February 2018). *CFTC issues customer advisory on cryptocurrency pump-and-dump schemes*. <https://www.cftc.gov/PressRoom/PressReleases/7697-18>

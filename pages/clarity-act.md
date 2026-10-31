@@ -3,7 +3,9 @@ title: CLARITY Act
 ticker: —
 category: Regulation
 written_by: Opus 5.5 High
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -15,13 +17,13 @@ up a federal framework for the trading of crypto assets other than payment
 [stablecoins](stablecoin.md). It is not law. The House of Representatives
 passed it on 17 July 2025, but the Senate has not: on 15 September 2026 a
 vote to begin debate failed by 49 to 50, short of the 60 votes
-needed.[^roll199][^fintechweekly] The bill would divide authority over
+needed.[^roll199][^senate-vote] The bill would divide authority over
 crypto markets between the Securities and Exchange Commission (SEC) and the
 Commodity Futures Trading Commission (CFTC), exempt many
 decentralised-finance activities from registration, and, in the Senate
 Banking text, ban payments on stablecoin balances that work like bank
-interest. As of October 2026, the sources opened for this article report no
-further floor vote.[^orrick][^fintechweekly]
+interest. As of 31 October 2026, it remains an unenacted bill following
+the failed motion to proceed.[^hr-rs][^senate-vote][^orrick]
 
 | | |
 |---|---|
@@ -39,9 +41,11 @@ further floor vote.[^orrick][^fintechweekly]
 
 ## Background
 
-Before the bill, no federal statute said which crypto assets are securities
-and which are commodities. The House had tried to answer that in the
-previous Congress. It passed the Financial Innovation and Technology for
+The bill seeks a dedicated statutory framework dividing crypto-market
+oversight between the SEC and CFTC; existing securities and commodities
+laws already apply to crypto assets and transactions.[^orrick] The House
+had considered a similar framework in the previous Congress. It passed the
+Financial Innovation and Technology for
 the 21st Century Act (FIT21), H.R. 4763, on 22 May 2024 by 279 to 136, with
 71 Democrats voting yes.[^roll226] EY describes FIT21 as a similar bill to
 the CLARITY Act.[^ey]
@@ -56,9 +60,9 @@ commodity-backed stablecoins and issuer accounting.[^ey]
 
 ### House
 
-Rep. French Hill of Arkansas, who chairs the House Financial Services
+Rep. French Hill of Arkansas, then chair of the House Financial Services
 Committee, introduced H.R. 3633 on 29 May 2025. The original cosponsors
-included Glenn Thompson of Pennsylvania, who chairs the Agriculture
+included Glenn Thompson of Pennsylvania, then chair of the Agriculture
 Committee, and Reps. Craig, Emmer, Johnson of South Dakota, Davis of North
 Carolina, Steil, Torres and Davidson. The bill was referred to both
 committees.[^hr-ih][^marketsmedia]
@@ -130,19 +134,15 @@ September 2026. Cloture failed 49 to 50; it needed 60. All 49 votes in
 favour came from Republicans, and Republicans Susan Collins, Josh Hawley,
 Jerry Moran and Tillis voted no. The Defiant reported that Tillis voted no
 so that he could enter a motion to reconsider, which he did about a minute
-after the result.[^defiant-vote] Because the vote concerned only the motion
-to proceed, the Senate never voted on the substance of the
-bill.[^fintechweekly]
+after the result.[^defiant-vote][^senate-vote] The vote concerned the motion
+to proceed, rather than final passage of the
+bill.[^senate-vote]
 
-Two days later, seven Democratic senators who had worked on the text,
-including Gallego, Gillibrand and Warner, called the result a setback "but
-not the end" and recommitted to a bipartisan deal, according to FinTech
-Weekly.[^fintechweekly] The Senate's work period ran from 5 October to 6
-November, overlapping the 3 November midterm elections, and FinTech Weekly
-called a post-election lame-duck session the most plausible window for
-another attempt.[^fintechweekly] As of October 2026, none of the sources
-opened reports that a new vote has been scheduled, and the outcome of
-Tillis's motion is not reported.[^orrick][^fintechweekly]
+The Senate calendar lists 5 October to 6 November as a non-legislative
+state work period, rather than a period of regular floor business in
+Washington.[^senate-calendar] Orrick's 2 October assessment described
+passage during this Congress as unlikely, while noting that Tillis's motion
+to reconsider preserved a route to revive the bill.[^orrick]
 
 ## Provisions
 
@@ -151,7 +151,7 @@ below are labelled by the version they come from: the House-passed text of
 17 July 2025 (the engrossed bill), and the Banking Committee substitute
 reported in the Senate on 1 June 2026. The Agriculture Committee's bill and
 the September combined drafts are described only where a source opened for
-this article describes them.
+this article describes them.[^hr-eh][^hr-rs][^crs]
 
 ### Division of authority between the SEC and CFTC
 
@@ -162,7 +162,8 @@ system. It excludes securities, including notes and investment contracts
 that give the holder a claim on the revenues, profits or assets of the
 issuer.[^hr-eh] The CFTC would have exclusive jurisdiction over spot-market
 transactions in digital commodities carried out on, or subject to the rules
-of, a registered entity or by a person registered with the CFTC. That
+of, an entity registered or required to register with the CFTC, or by
+another entity registered or required to register with it. That
 jurisdiction would not cover bank custody activities or the offer and sale
 of an investment contract involving a digital commodity.[^hr-eh] Permitted
 payment stablecoins, defined by reference to the GENIUS Act, are removed
@@ -173,7 +174,8 @@ as separate from the digital commodity itself. It amends the securities
 laws so that "investment contract" does not include an "investment contract
 asset", and exempts certain primary sales by an issuer from registration.
 To use the exemption, the blockchain must be certified as mature or be
-intended to become mature within four years, the issuer may take in no more
+intended to become mature under a four-year timetable, subject to SEC
+extensions; the issuer may take in no more
 than US$50 million over 12 months (adjusted for inflation), and no
 purchaser may hold more than 10 per cent of the outstanding units.[^hr-eh]
 A further section would treat digital commodities as "covered securities",
@@ -187,7 +189,8 @@ originator or related person. Network tokens are treated as non-securities
 for the purposes of the securities laws. The SEC would write a "Regulation
 Crypto" with an exemption from registration for offerings of ancillary
 assets of up to the greater of US$50 million per calendar year for up to
-four years or 10 per cent of the outstanding supply, and an originator
+four years or 10 per cent of the total dollar value of the outstanding
+ancillary assets at the time of the offering, and an originator
 could raise no more than US$200 million in total under the exemption.
 Antifraud provisions would continue to apply to those offerings.[^hr-rs]
 CRS describes the September combined draft as giving the CFTC exclusive
@@ -209,8 +212,8 @@ Reports criticised this process as largely self-attested.[^consumerreports]
 
 *Banking Committee substitute.* The substitute does not use the "mature
 blockchain" label. Instead it defines "coordinated control" through SEC
-rulemaking, and a network token that depends on such control would be an
-ancillary asset.[^hr-rs][^crs]
+rulemaking and imposes requirements on originators selling ancillary
+assets linked to distributed ledgers under coordinated control.[^hr-rs][^crs]
 
 ### Registration of exchanges, brokers and dealers
 
@@ -274,7 +277,8 @@ no counterpart to the Senate's section on interest and yield.[^hr-eh]
 
 *Banking Committee substitute.* Section 404 prohibits any "covered party",
 meaning a digital asset service provider and its affiliates, other than a
-registered stablecoin issuer, from paying interest or yield to a US
+permitted payment stablecoin issuer or an OCC-registered foreign payment
+stablecoin issuer, from paying interest or yield to a US
 customer or user in two cases: solely for holding payment stablecoins, or
 on a stablecoin balance in a way that is economically or functionally
 equivalent to interest on a bank deposit. Rewards tied to "bona fide
@@ -286,7 +290,8 @@ rebates for payments, providing liquidity or posting collateral, and
 participating in governance or staking, which may be calculated by
 reference to a balance, duration or tenure. The section also bars evasion,
 protects a firm that relied in good faith on the rules from penalties if it
-cures a breach within 90 days, and bars marketing a stablecoin as a deposit
+comes into compliance within 90 days and has not committed a substantially
+similar past violation. It also bars marketing a stablecoin as a deposit
 or as government-backed.[^hr-rs] A sense-of-Congress clause states both
 that deposit-like payments may inhibit depository institutions and that
 activity-based rewards are critical to innovation.[^hr-rs]
@@ -296,7 +301,8 @@ interest but does not reach third parties such as exchanges, which banks
 call a loophole. The September combined draft would bar third-party yield
 equivalent to deposit interest, allow payments tied to bona fide
 transactions or activity, and let the Treasury Secretary block third-party
-yield within 18 months if it harms community bank deposits.[^crs]
+yield if, within 18 months of enactment, it has a substantial detrimental
+impact on community bank deposits.[^crs]
 CoinDesk's 1 May report said the earlier text assigned rulemaking to
 Treasury and the CFTC; the reported Banking text names the SEC, CFTC and
 Treasury jointly.[^coindesk-yield][^hr-rs] The [GENIUS Act](genius-act.md)
@@ -379,8 +385,8 @@ blamed Democratic politics. Others expected the SEC and CFTC to act without
 legislation; CoinDesk reported that the SEC had put "Regulation Crypto
 Assets" out for comment in August and that CFTC Chair Selig had reportedly
 told staff to draft a market-structure regime under existing authority.
-Industry figures noted that agency rules can be reversed by a later
-administration while a statute cannot.[^coindesk-clarity]
+Orrick notes that agency rules are more vulnerable than legislation to
+judicial challenges and reversal by a future administration.[^coindesk-clarity][^orrick]
 
 ## Timeline
 
@@ -423,9 +429,11 @@ administration while a statute cannot.[^coindesk-clarity]
 [^cointelegraph-ethics]: Cointelegraph (2026). *Here's why the CLARITY Act's ethics deal may be so hard to reach*. <https://cointelegraph.com/magazine/heres-why-the-clarity-acts-ethics-deal-may-be-so-hard-to-reach>
 [^defiant-sept10]: The Defiant (2026). *CLARITY Act revised text five days before cloture vote*. <https://thedefiant.io/news/regulation/clarity-act-revised-text-five-days-before-cloture-vote>
 [^defiant-vote]: The Defiant (2026). *Senate blocks CLARITY Act 49-50 with no Democratic votes to proceed*. <https://thedefiant.io/news/regulation/senate-blocks-clarity-act-49-50-with-no-democratic-votes-to-proceed>
-[^fintechweekly]: FinTech Weekly (2026). *CLARITY Act: the Senate vote failed 49 to 50. The fight now moves to the regulators*. <https://www.fintechweekly.com/news/clarity-act-cloture-vote-fails-49-50-september-2026>
 [^orrick]: Orrick (2026). *The CLARITY Act stalls in the Senate: what's next for digital asset regulation*. <https://www.orrick.com/en/Insights/2026/10/The-CLARITY-Act-Stalls-in-the-Senate-Whats-Next-for-Digital-Asset-Regulation>
 [^coindesk-clarity]: CoinDesk (2026). *Crypto industry reacts after Clarity Act fails Senate vote*. <https://www.coindesk.com/policy/2026/09/15/clarity-act-fails-in-senate-here-is-how-the-crypto-industry-is-reacting>
 [^aba-july]: ABA Banking Journal (2026). *ABA, ICBA join state associations in urging Senate to strengthen stablecoin yield provisions in CLARITY Act*. <https://bankingjournal.aba.com/2026/07/aba-icba-join-state-associations-in-urging-senate-to-strengthen-stablecoin-yield-provisions-in-clarity-act/>
 [^pymnts]: PYMNTS (2026). *White House seeks law enforcement support for blockchain section of CLARITY Act*. <https://www.pymnts.com/?p=3901402>
 [^consumerreports]: Consumer Reports (2025). *House approves CLARITY Act without needed protections for consumers and investors*. <https://advocacy.consumerreports.org/press_release/house-approves-clarity-act-without-needed-protections-for-consumers-and-investors/>
+
+[^senate-vote]: US Senate (2026). *Roll call vote 234, cloture on the motion to proceed to H.R. 3633, 15 September*. <https://www.senate.gov/legislative/LIS/roll_call_votes/vote1192/vote_119_2_00234.htm>
+[^senate-calendar]: US Senate (2026). *2026 tentative legislative schedule*. <https://www.senate.gov/legislative/2026_schedule.htm>

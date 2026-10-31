@@ -3,14 +3,16 @@ title: Binance
 ticker: BNB
 category: Exchanges
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
 # Binance
 
-Binance is a cryptocurrency exchange founded in 2017 by Changpeng Zhao
-and Yi He. Its history includes expansion into related services, US
+Binance is a cryptocurrency exchange founded in 2017. Its founders include
+Changpeng Zhao and Yi He. Its history includes expansion into related services, US
 criminal and regulatory proceedings, and major security incidents.
 As of 31 October 2026, the company was investigating a newly disclosed
 hot-wallet theft that it valued at approximately $6.3 billion.[^about][^doj][^incident]
@@ -19,7 +21,7 @@ hot-wallet theft that it valued at approximately $6.3 billion.[^about][^doj][^in
 |---|---|
 | Business | Cryptocurrency exchange |
 | Launch | July 2017[^about] |
-| Founders | Changpeng Zhao and Yi He[^about] |
+| Founders include | Changpeng Zhao and Yi He[^about] |
 | Co-CEOs listed in October 2026 | Richard Teng and Yi He[^about] |
 | Related token ecosystem | BNB Chain[^bridge] |
 | US platform operator | BAM Trading Services, operating Binance.US[^us] |
@@ -42,10 +44,11 @@ to identify the entity concerned.[^us]
 In June 2021, the UK's Financial Conduct Authority imposed restrictions
 on Binance Markets Limited. Its notice said that this company could not
 undertake regulated activities without prior written consent. The FCA
-subsequently said the company had complied with the requirements, while
-the restrictions remained in place. This was a notice about regulated
-activity and a named entity, not a ban on every cryptocurrency transaction
-by UK residents.[^fca]
+said in August 2021 that the company had complied with the requirements,
+while the restrictions remained in place. A later update records the
+cancellation of Binance Markets Limited's FCA permissions on 30 May 2023.
+The notices concern the regulatory position of named entities; they do not
+amount to a ban on every cryptocurrency transaction by UK residents.[^fca]
 
 On 21 November 2023, Binance Holdings Limited pleaded guilty to offences
 involving the Bank Secrecy Act, money-transmitter registration, and the
@@ -66,10 +69,10 @@ criminal case respectively.[^sec][^pardon]
 ### 2019 hot-wallet theft
 
 On 7 May 2019, Binance disclosed a withdrawal of 7,000 BTC by attackers.
-It said API keys, two-factor authentication codes, and other information
-had been compromised, suspended deposits and withdrawals for a security
-review, and committed its Secure Asset Fund for Users, or SAFU, to cover
-the loss.[^2019]
+It said API keys and two-factor authentication codes had been compromised,
+with other information potentially affected. It suspended deposits and
+withdrawals for a security review and committed its Secure Asset Fund for
+Users, or SAFU, to cover the loss.[^2019]
 
 ### 2022 BNB Chain bridge exploit
 
@@ -113,6 +116,6 @@ deposits and unaffected services were operating. As of this article's
 [^doj]: US Department of Justice (21 November 2023). *United States v. Changpeng Zhao*. <https://www.justice.gov/criminal/case/united-states-v-changpeng-zhao>
 [^sec]: SEC (29 May 2025). *Litigation release 26316*. <https://www.sec.gov/enforcement-litigation/litigation-releases/lr-26316>
 [^pardon]: US Department of Justice (21 October 2025). *Executive grant of clemency: Changpeng Zhao*. <https://www.justice.gov/pardon/media/1416576/dl>
-[^2019]: Binance (7 May 2019; subsequently updated). *Binance security breach update*. <https://www.binance.com/en/support/announcement/detail/360028031711>
+[^2019]: Binance (7 May 2019; subsequently updated). *Binance security breach update*. <https://www.binance.com/en-PH/support/announcement/detail/360028031711>
 [^bridge]: BNB Chain (7 October 2022). *BNB Chain ecosystem update*. <https://www.bnbchain.org/en/blog/bnb-chain-ecosystem-update>
 [^incident]: Binance (30 October 2026). *Security incident update #2*. <https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751>

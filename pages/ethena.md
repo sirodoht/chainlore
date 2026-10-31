@@ -3,7 +3,9 @@ title: Ethena
 ticker: ENA
 category: DeFi
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -60,11 +62,23 @@ composition, new strategies, future revenue allocation, and the membership
 and remit of the Risk Committee. ENA and sUSDe therefore represent different
 roles within the system.[^ena]
 
+An October 2026 governance update reported approval of a fee-switch
+proposal linking ENA buybacks to USDe supply milestones. Activation was
+conditional on a 14-day average USDe supply of at least $7.5 billion;
+approval alone did not establish that this threshold had been met.[^q3]
+
 The protocol's risk documentation lists funding, liquidation, custody,
 exchange failure, and backing-asset risks. It specifically acknowledges
 that negative perpetual-futures funding can require Ethena to pay rather
 than receive funding. A hedge against price direction does not remove
 those operating costs or dependencies.[^risks][^funding]
+
+Following Binance's disclosure of the 29 October 2026 hot-wallet breach,
+AMBCrypto and TokenPost reported Ethena's statement that its unrealised
+profit-and-loss exposure to Binance was about $8.8 million. This was
+reported exposure, not a confirmed loss. Ethena's risk documentation says
+its backing assets remain with off-exchange custodians, while unsettled
+profit and loss creates exposure to an exchange failure.[^binance-incident][^binance-exposure][^tokenpost][^exchange-risk]
 
 ## See also
 
@@ -82,3 +96,8 @@ those operating costs or dependencies.[^risks][^funding]
 [^ena]: Ethena. *ENA*. <https://docs.ethena.fi/overview/ena.md>
 [^risks]: Ethena. *Risks*. <https://docs.ethena.fi/protocol-overview/risks.md>
 [^funding]: Ethena. *Funding risk*. <https://docs.ethena.fi/protocol-overview/risks/funding-risk.md>
+[^q3]: Blockworks Advisory (13 October 2026). *Ethena's July–September 2026 governance update*. Ethena governance forum. <https://gov.ethenafoundation.com/t/ethena-s-july-september-2026-governance-update/857>
+[^binance-incident]: Binance (30 October 2026). *Security incident update*. <https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751>
+[^binance-exposure]: Njiri, B. (30 October 2026). *'Our collateral resides off-exchange': Ethena downplays $8.8M Binance exposure*. AMBCrypto. <https://ambcrypto.com/our-collateral-resides-off-exchange-ethena-downplays-8-8m-binance-exposure/>
+[^tokenpost]: Kim, J. (30 October 2026). *Ethena puts USDe's unrealized Binance exposure at $8.8 million*. TokenPost. <https://www.tokenpost.com/news/business/45230>
+[^exchange-risk]: Ethena. *Exchange failure risk*. <https://docs.ethena.fi/protocol-overview/risks/exchange-failure-risk>

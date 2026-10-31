@@ -3,7 +3,9 @@ title: Blockchain oracle
 ticker: None
 category: Infrastructure
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -35,11 +37,13 @@ unavailable.[^intro]
 
 ## Price feeds
 
-Chainlink describes its Data Feeds as aggregating information from multiple
-sources through oracle networks and publishing reports onchain. Lending
+Chainlink describes many of its Data Feeds as aggregating information
+from multiple sources through oracle networks and publishing reports onchain. Lending
 applications can use the reported prices to value collateral and settle
 positions. The data source, reporting process, and receiving application
-are separate parts of that arrangement.[^feeds]
+are separate parts of that arrangement. Some feeds rely on a single
+underlying data source, so multiple oracle nodes do not necessarily mean
+multiple independent sources.[^feeds][^quality]
 
 [Uniswap](uniswap.md) v2 provides a different input: prices derived from
 trading pools. It accumulates prices over time, allowing an application to

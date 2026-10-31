@@ -3,7 +3,9 @@ title: Cryptocurrency wallet
 ticker: None
 category: Infrastructure
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -30,6 +32,13 @@ A wallet interface is distinct from the account: compatible software can
 access the same account. Ethereum also has contract accounts, whose authority
 is defined by program logic rather than a private key belonging to the
 contract itself.[^ethereum][^accounts]
+
+The distinction is not absolute: Ethereum's EIP-7702 allows an externally
+owned account to delegate execution to contract code while retaining its
+address and signing key. Depending on the delegated code, this can support
+batched operations and sponsored transaction fees. Authorising a delegation
+therefore grants more power than simply connecting a wallet interface to
+an application.[^delegation]
 
 Custody describes who can sign. MetaMask's documentation distinguishes
 wallets controlled by the user from services that control keys for
@@ -89,3 +98,4 @@ wallet presents.[^erc20]
 [^erc20]: Vogelsteller, F. and Buterin, V. (2015). *ERC-20: Token Standard*. <https://eips.ethereum.org/EIPS/eip-20>
 
 [^custody]: MetaMask. *What is a self-custodial wallet?* <https://support.metamask.io/start/metamask-is-a-self-custodial-wallet>
+[^delegation]: Ethereum Improvement Proposals. *EIP-7702: Set Code for EOAs*. <https://eips.ethereum.org/EIPS/eip-7702>

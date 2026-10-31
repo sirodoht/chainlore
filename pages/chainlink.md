@@ -3,7 +3,9 @@ title: Chainlink
 ticker: LINK
 category: Infrastructure
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -22,7 +24,7 @@ aggregation. Chainlink announced its Ethereum mainnet launch on
 | Original whitepaper | 2017-09-04 |
 | Mainnet launch announcement | 2019-05-30 |
 | Token | LINK |
-| Original token network | Ethereum[^token] |
+| Token standard on Ethereum | ERC-677[^token] |
 | Example service | Data Feeds[^feeds] |
 
 ## History and design
@@ -38,6 +40,12 @@ information, and interest rates. Its documentation describes aggregation
 from multiple sources and use in collateral valuation and settlement.
 The specific feed determines what is measured; a contract must select
 and interpret the relevant report.[^feeds]
+
+By 2026, Chainlink also offered the Cross-Chain Interoperability Protocol
+(CCIP) and the Chainlink Runtime Environment (CRE). Its 21 October quarterly
+review reported that CCIP 2.0 had gone live in the third quarter and
+described CRE coordinating institutional workflows across blockchain
+systems.[^q3]
 
 ## Offchain reporting
 
@@ -72,6 +80,7 @@ those decisions.[^quality]
 |---|---|
 | 2017-09-04 | First Chainlink whitepaper dated[^paper] |
 | 2019-05-30 | Ethereum mainnet launch announced[^launch] |
+| 2026-10-21 | Quarterly review reports CCIP 2.0 live[^q3] |
 
 ## See also
 
@@ -87,3 +96,4 @@ those decisions.[^quality]
 [^ocr]: Chainlink. *Offchain Reporting*. <https://docs.chain.link/architecture-overview/off-chain-reporting>
 [^token]: Chainlink. *LINK token contracts*. <https://docs.chain.link/resources/link-token-contracts>
 [^quality]: Chainlink. *Selecting quality data feeds*. <https://docs.chain.link/data-feeds/selecting-data-feeds>
+[^q3]: Chainlink (21 October 2026). *Chainlink quarterly review: Q3, 2026*. <https://chain.link/blog/quarterly-review-q3-2026>

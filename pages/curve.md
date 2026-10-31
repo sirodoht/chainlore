@@ -3,7 +3,9 @@ title: Curve
 ticker: CRV
 category: DeFi
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -37,6 +39,11 @@ relationship. It does not establish that a stablecoin remains redeemable
 or that two assets must keep the same value. Curve's broader exchange
 documentation also covers volatile-asset markets.[^paper][^intro]
 
+On 29 October 2026, Curve announced StableSwap on Stellar mainnet,
+describing it as its first deployment outside the Ethereum Virtual
+Machine ecosystem. The implementation uses Stellar's Soroban contracts;
+the initial web interface was released as a beta.[^stellar]
+
 ## Lending and crvUSD
 
 Curve describes crvUSD as a collateralised-debt stablecoin and Llamalend
@@ -54,8 +61,8 @@ potential boosts to liquidity incentives.[^vecrv]
 
 Gauge-weight votes determine where CRV emissions are distributed. The
 governance documentation distinguishes these votes from broader proposals
-to change the protocol. Governance decisions for deployments on other
-networks can originate on Ethereum and be communicated across chains.[^governance]
+to change the protocol. For deployments on other EVM networks, governance
+decisions can originate on Ethereum and be communicated across chains.[^governance]
 
 ## Incidents
 
@@ -80,6 +87,7 @@ incident, distinct from a change to the onchain contracts.[^domain]
 | 2023-07 | Several Curve pools exploited[^compensation] |
 | 2023-12-17 | Compensation proposal published[^compensation] |
 | 2025-05-12 | curve.fi domain hijacked[^domain] |
+| 2026-10-29 | Curve announces StableSwap on Stellar mainnet[^stellar] |
 
 ## See also
 
@@ -96,3 +104,4 @@ incident, distinct from a change to the onchain contracts.[^domain]
 [^governance]: Curve. *DAO and governance overview*. <https://docs.curve.finance/user/dao/overview>
 [^compensation]: Curve governance forum (17 December 2023). *Proposal to recompensate LPs affected by Curve pool exploit*. <https://gov.curve.finance/t/proposal-to-recompensate-lps-affected-by-curve-pool-exploit/9825/>
 [^domain]: Curve (19 May 2025). *Curve domain incident*. <https://news.curve.finance/curve-domain-incident/>
+[^stellar]: Curve (29 October 2026). *Curve is live on Stellar*. <https://news.curve.finance/curve-is-live-on-stellar/>

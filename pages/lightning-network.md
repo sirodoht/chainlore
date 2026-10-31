@@ -3,7 +3,9 @@ title: Lightning Network
 ticker: None
 category: Layer 2
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -64,11 +66,25 @@ with Bitcoin mainnet support. It targeted developers and technical users
 and recommended experimenting with small amounts during that early
 phase.[^bolts][^beta]
 
+On 23 October 2026, Lightning Labs announced the mainnet alpha of
+Wavelength, a toolkit connecting wallets to Lightning through an Ark-like
+settlement layer. Its design lets end users make Lightning payments
+without operating their own Lightning nodes or channels; the announcement
+covered Bitcoin, with stablecoin support described as future work.[^wavelength]
+
 Watchtowers can monitor for channel breaches while a user's node is
 offline. In lnd, the watchtower service must be enabled and configured;
 Lightning Labs recommends a separate machine and network for resilience.
 It is a monitoring mechanism, not a substitute for available liquidity or
 reliable node operation.[^watchtower][^liquidity]
+
+In a disclosure published on 21 September 2026, Lightning Labs described
+an invoice-accounting flaw affecting lnd's invoice HTLC interceptor.
+A cancelled payment could be recorded as settled, potentially causing an
+operator to release goods without receiving payment. The lnd defect was
+fixed in version 0.19.0-beta, released on 22 May 2025. A separate trigger
+in tapd was patched in version 0.5.1; the disclosure said both fixes were
+needed for full protection in the affected combined setup.[^invoice-bug]
 
 ## See also
 
@@ -83,3 +99,5 @@ reliable node operation.[^watchtower][^liquidity]
 [^beta]: Osuntokun, O. (15 March 2018). *Announcing our first Lightning mainnet release, lnd 0.4-beta!*. <https://lightning.engineering/posts/2018-03-15-lnd-beta/>
 [^liquidity]: Lightning Labs. *Understanding liquidity*. <https://docs.lightning.engineering/the-lightning-network/liquidity/understanding-liquidity>
 [^watchtower]: Lightning Labs. *Configuring watchtowers*. <https://docs.lightning.engineering/lightning-network-tools/lnd/watchtower>
+[^wavelength]: Lightning Labs (23 October 2026). *Wavelength mainnet launch*. <https://lightning.engineering/posts/2026-10-23-wavelength-mainnet-launch/>
+[^invoice-bug]: Lightning Labs (21 September 2026). *LND/TAPD: cancelled HTLC marked settled*. <https://security.lightning.engineering/2026/09/21/lnd-tapd-cancelled-htlc-marked-settled.html>

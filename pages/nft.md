@@ -3,7 +3,9 @@ title: Non-fungible token
 ticker: None
 category: Culture
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -28,8 +30,8 @@ terms.[^ethereum][^report]
 
 ERC-721 specifies how a contract identifies each token, records its owner,
 and authorises transfers. A token ID is meaningful together with its
-contract address: two collections can use the same number for different
-tokens. The standard includes individual approvals and operator approval
+contract address on a given chain: two collections can use the same number
+for different tokens. The standard includes individual approvals and operator approval
 covering an owner's tokens.[^721]
 
 ERC-1155 supports multiple token types within one contract, including both

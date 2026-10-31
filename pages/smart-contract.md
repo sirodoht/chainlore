@@ -3,7 +3,9 @@ title: Smart contract
 ticker: None
 category: Infrastructure
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -44,6 +46,10 @@ An Ethereum contract account is controlled by its code. Its rules may
 authorise particular accounts to perform privileged operations; being
 deployed on a public chain does not itself make every operation open to
 everyone.[^accounts][^intro]
+
+Ethereum also allows externally owned accounts to delegate to contract code
+under EIP-7702. The delegated code executes in the account's context, so its
+permissions and implementation affect the account's security.[^delegation]
 
 A proxy delegates execution to an implementation contract while retaining
 its own storage. An upgrade changes which implementation it uses. ERC-1967
@@ -88,3 +94,4 @@ that the supplied information accurately represents the outside world.[^oracles]
 [^security]: Solidity documentation. *Security considerations*. <https://docs.soliditylang.org/en/latest/security-considerations.html>
 [^oracles]: ethereum.org. *Oracles*. <https://ethereum.org/en/developers/docs/oracles/>
 [^frontier]: Ethereum Foundation (30 July 2015). *Ethereum launches*. <https://blog.ethereum.org/2015/07/30/ethereum-launches>
+[^delegation]: Ethereum Improvement Proposals. *EIP-7702: Set Code for EOAs*. <https://eips.ethereum.org/EIPS/eip-7702>

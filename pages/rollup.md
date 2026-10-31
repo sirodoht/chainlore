@@ -3,7 +3,9 @@ title: Rollup
 ticker: None
 category: Infrastructure
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -18,8 +20,8 @@ validity rollups differ in how those results are verified.[^optimistic][^zk]
 | | |
 |---|---|
 | Type | Layer 2 scaling architecture |
-| Main verification families | Optimistic proofs and validity proofs |
-| Data publication on Ethereum | Calldata or blobs[^blobs] |
+| Main verification families | Optimistic rollups with fault proofs; validity rollups |
+| Data publication on Ethereum | Calldata or blobs[^optimistic][^zk] |
 | Operational roles | Sequencing, proposing state, challenging or proving |
 | Risk framework | L2Beat stages and project risk assessments[^stages] |
 
