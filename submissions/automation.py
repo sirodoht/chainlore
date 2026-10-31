@@ -5,7 +5,7 @@ import logging
 import smtplib
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils import timezone
 from django.utils.text import slugify
 from . import ai_providers as ai
@@ -130,8 +130,14 @@ def process(run):
 def deliver_notifications():
     # SMTP acceptance is recorded, not claimed to prove inbox delivery.
     now = timezone.now()
-    runs = AutomationRun.objects.filter(state__in=['published', 'duplicate', 'declined'], notification_attempts__lt=3).filter(
-        Q(notification_retry_at__isnull=True) | Q(notification_retry_at__lte=now)).select_related('submission')
+    runs = AutomationRun.objects.filter(
+        state__in=['published', 'duplicate', 'declined'], notification_attempts__lt=3,
+        submission__status__in=notify.FINAL,
+    ).exclude(submission__email='').exclude(
+        submission__notified_status=F('submission__status'),
+    ).filter(
+        Q(notification_retry_at__isnull=True) | Q(notification_retry_at__lte=now),
+    ).select_related('submission').order_by('created_at', 'pk')
     for run in runs[:10]:
         if not notify.pending(run.submission):
             continue

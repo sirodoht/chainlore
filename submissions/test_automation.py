@@ -11,7 +11,7 @@ from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
 from . import ai_providers as ai
 from .article_validation import InvalidArticle, stub_draft, validate_draft
-from .automation import run_worker
+from .automation import deliver_notifications, run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .publication import index_generated_articles, publication_lock, publish_site
 from .automation_control import regenerate_placeholders, resume_queue, retry_runs
@@ -361,6 +361,30 @@ class AutomationTests(TestCase):
         self.assertEqual(AutomationEvent.objects.filter(kind='notification').count(), 3)
         self.triage.assert_not_called()
         self.assertNotIn('private failure', json.dumps(list(AutomationEvent.objects.values_list('data', flat=True))))
+
+    @override_settings(NOTIFICATIONS_ENABLED=True, EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
+    def test_notifications_filter_completed_recipients_before_batch_limit(self):
+        from django.core import mail
+        skipped = []
+        for index in range(12):
+            submission = Submission.objects.create(
+                kind='request', title=f'Old request {index}', status='reviewing' if index % 3 == 2 else 'resolved',
+                email='' if index % 3 == 0 else 'done@example.net',
+                notified_status='resolved' if index % 3 == 1 else '',
+            )
+            skipped.append(AutomationRun.objects.create(submission=submission, state='published').pk)
+        for index in range(11):
+            submission = Submission.objects.create(kind='request', title=f'Pending request {index}',
+                                                   status='resolved', email='pending@example.net')
+            AutomationRun.objects.create(submission=submission, state='published')
+        deliver_notifications()
+        self.assertEqual(len(mail.outbox), 10)
+        deliver_notifications()
+        self.assertEqual(len(mail.outbox), 11)
+        deliver_notifications()
+        self.assertEqual(len(mail.outbox), 11)
+        self.assertFalse(AutomationRun.objects.filter(pk__in=skipped, notification_attempts__gt=0).exists())
+        self.assertEqual(Submission.objects.filter(email='pending@example.net', notified_status='resolved').count(), 11)
 
     def test_manual_decision_during_generation_prevents_publication(self):
         def review(run):
