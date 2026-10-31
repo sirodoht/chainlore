@@ -43,8 +43,6 @@ class SubmissionForm(forms.Form):
         else:
             self.fields.pop('title')
             self.fields['details'].label = 'What is incorrect, and why?'
-            self.fields['sources'].required = True
-            self.fields['sources'].label = 'Source links'
         for name, field in self.fields.items():
             if isinstance(field.widget, forms.Textarea):
                 field.widget.attrs['maxlength'] = field.max_length

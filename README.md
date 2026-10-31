@@ -57,7 +57,7 @@ spam controls, private receipts, and admin access and review operations.
 ## Submissions
 
 - `/submit/request/`: required article title, with optional scope, sources, and email.
-- `/submit/correction/`: quoted claim, explanation, source links, and optional replacement text.
+- `/submit/correction/`: quoted claim and explanation, with optional source links and replacement text.
 - `/submit/improvement/`: article and suggested improvement, with optional section, sources, and email.
 - `/admin/`: authenticated review queue with filters, search, internal notes,
   duplicate links, and a URL for the resulting article change.

@@ -101,16 +101,33 @@ class SubmissionsTests(TestCase):
         self.assertIn('title', response.context['form'].errors)
         self.assertFalse(Submission.objects.exists())
 
-    def test_correction_requires_claim_and_valid_sources(self):
+    def test_correction_requires_claim_and_validates_provided_sources(self):
         response = self.client.post('/submit/correction/', self.data(claim='', sources=''))
         self.assertIn('claim', response.context['form'].errors)
-        self.assertIn('sources', response.context['form'].errors)
+        self.assertNotIn('sources', response.context['form'].errors)
         response = self.client.post('/submit/correction/', self.data(claim='Incorrect claim', sources='javascript:alert(1)'))
         self.assertIn('sources', response.context['form'].errors)
         self.assertFalse(Submission.objects.exists())
         response = self.client.post('/submit/correction/', self.data(claim='Incorrect claim', sources='https://example.com/reference', correction='Replacement text', section='History'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Submission.objects.get().section, 'History')
+
+    def test_correction_accepts_missing_or_blank_sources(self):
+        form = self.client.get('/submit/correction/').context['form']
+        self.assertFalse(form.fields['sources'].required)
+        self.assertEqual(form.fields['sources'].label, 'Source links (optional)')
+        for sources in (None, '', '   '):
+            with self.subTest(sources=sources):
+                data = self.data(details=f'Incorrect date: {sources!r}')
+                if sources is None:
+                    data.pop('sources')
+                else:
+                    data['sources'] = sources
+                response = self.client.post('/submit/correction/', data)
+                self.assertEqual(response.status_code, 302)
+                record = Submission.objects.get(details=data['details'])
+                self.assertEqual(record.sources, '')
+                self.assertEqual(record.kind, 'correction')
 
     def test_invalid_article_and_length_are_rejected(self):
         response = self.client.post('/submit/correction/', self.data(article='../../private'))
