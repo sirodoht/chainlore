@@ -3,7 +3,9 @@ title: BNB Chain
 ticker: BNB
 category: Layer 1
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -50,7 +52,10 @@ The post-Fusion documentation describes the shutdown of Beacon Chain
 transaction processing and its normal cross-chain communication with BSC.
 Recovery of eligible remaining assets uses a separate migration process.
 It explicitly warns that BEP-2 or BEP-8 assets not bound or mirrored to BSC
-cannot be recovered through that process.[^recovery]
+cannot be recovered through that process. BNB Chain's later notice says
+the hosted recovery tool was discontinued on 1 July 2026 and replaced
+by an open-source tool run locally; its workflow still requires an
+approval-server signature.[^recovery][^self-service]
 
 ## Security incidents and upgrades
 
@@ -67,7 +72,15 @@ changes intended to improve operation at that pace. It scheduled Pasteur
 for 25 August, with changes to bridge signature verification, validator
 key rotation, and block utilisation. The announcement's throughput
 figures were testnet benchmarks, not measurements of ordinary mainnet
-traffic.[^pasteur]
+traffic. A September follow-up states that Pasteur activated on
+25 August 2026.[^pasteur][^post-pasteur]
+
+As of 31 October 2026, the release notes identify v1.8.1 as a Chapel
+testnet release for Jenner, with no mainnet activation scheduled in
+that release. Its listed changes include a compliant-asset token standard,
+a payment lane reserving block capacity, and millisecond timestamps.
+Those release notes do not establish that these features are already
+active on mainnet.[^jenner]
 
 ## Governance and dependencies
 
@@ -95,3 +108,7 @@ consensus and cross-chain trust.[^bsc][^incident][^pasteur]
 [^recovery]: BNB Chain documentation. *Post-Fusion FAQ*. <https://docs.bnbchain.org/bc-fusion/post-fusion/faq/>
 [^incident]: BNB Chain (2022-10-07). *BNB Chain Ecosystem Update*. <https://www.bnbchain.org/en/blog/bnb-chain-ecosystem-update>
 [^pasteur]: BNB Chain (2026-08-14). *Pasteur Hardfork Arrives on BSC Mainnet on August 25*. <https://www.bnbchain.org/en/blog/pasteur-hardfork-arrives-on-bsc-mainnet-on-august-25>
+
+[^self-service]: BNB Chain documentation. *Token Recovery Tool Sunset — Phase 3 (Self-Service)*. <https://docs.bnbchain.org/announce/token-recovery-sunset-phase3/>
+[^post-pasteur]: BNB Chain (2026-09-14). *Post-Pasteur Hard Fork: BSC Packs 28% More Gas Per Block With More Scale Ahead*. <https://www.bnbchain.org/en/blog/post-pasteur-hard-fork-bsc-packs-28-more-gas-per-block-with-more-scale-ahead>
+[^jenner]: BNB Chain. *Release Notes*, v1.8.1 (2026-10-16). <https://www.bnbchain.org/en/releases>

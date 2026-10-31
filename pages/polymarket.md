@@ -3,7 +3,9 @@ title: Polymarket
 ticker: None
 category: Decentralised finance
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -46,10 +48,11 @@ quantity. Available bids, asks, and depth determine execution.[^prices]
 ## Resolution
 
 A market's rules specify its resolution source, end date, and treatment
-of ambiguous cases. Once a binary outcome is resolved, winning shares
-redeem for the stated dollar payout and losing shares become worthless.
-The rules matter because an apparently straightforward question may
-require a particular announcement or data source.[^resolution]
+of ambiguous cases. In an ordinary binary resolution, winning shares
+redeem for $1 and losing shares become worthless. The documentation also
+allows an unknown or 50–50 resolution in which each outcome token redeems
+for $0.50. An apparently straightforward question may require a particular
+announcement or data source.[^resolution]
 
 The documented UMA process allows a proposer to post a bond and nominate
 an outcome, followed by a challenge period. Disputed cases can reach
@@ -74,6 +77,22 @@ specific legal entity; it does not establish that every product or
 international service carrying the Polymarket name has the same
 regulatory status.[^us]
 
+On 28 October 2026, Michigan's gaming regulator announced that Polymarket
+US had agreed to stop offering new sports-related event contracts to
+Michigan customers and close remaining positions by 25 November. The
+regulator said Polymarket's appeal of an earlier injunction ruling
+remained pending. As of 31 October, federal designation had therefore
+not eliminated disputes over state gambling regulation.[^michigan]
+
+## October 2026 security incident
+
+On 29 October 2026, Polymarket temporarily halted trading after a security
+incident involving a third-party provider. Reuters reported the company's
+statement that it had fixed the issue, restored trading, referred the
+incident to UK law enforcement, and would reimburse affected traders.
+That statement was a reimbursement commitment, not confirmation that all
+reimbursements had been completed as of 31 October.[^security]
+
 ## See also
 
 - [Blockchain oracle](blockchain-oracle.md)
@@ -89,3 +108,6 @@ regulatory status.[^us]
 [^resolution]: Polymarket documentation. *Resolution*. <https://docs.polymarket.com/concepts/resolution>
 [^cftc]: CFTC (2022-01-03). *CFTC Orders Event-Based Binary Options Markets Operator to Pay $1.4 Million Penalty*. <https://www.cftc.gov/PressRoom/PressReleases/8478-22>
 [^us]: CFTC. *Designated Contract Markets: QCX LLC d/b/a Polymarket US*. <https://www.cftc.gov/IndustryOversight/IndustryFilings/TradingOrganizations/49571>
+
+[^michigan]: Michigan Gaming Control Board (2026-10-28). *Polymarket backs down as Michigan's relentless crackdown on unlicensed sports betting continues*. <https://www.michigan.gov/mgcb/news/2026/10/28/polymarket-backs-down-in-michigan>
+[^security]: Reuters (2026-10-29), republished by StreetInsider. *Polymarket resumes trading after third-party security breach, to reimburse users*. <https://new.streetinsider.com/Reuters/Polymarket%2Bresumes%2Btrading%2Bafter%2Bthird-party%2Bsecurity%2Bbreach,%2Bto%2Breimburse%2Busers/27256837.html>

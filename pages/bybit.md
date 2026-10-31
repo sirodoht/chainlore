@@ -3,7 +3,9 @@ title: Bybit
 ticker: None
 category: Exchange
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -52,7 +54,7 @@ multisignature wallet used by Bybit. Signers were deceived into approving
 a transaction that changed wallet logic, allowing the attacker to take
 control and drain the assets. The attack illustrates how multiple
 signatures can still authorise a malicious action if signers rely on
-misleading transaction information.[^analysis]
+misleading transaction information.[^analysis][^forensics]
 
 Bybit's published timeline states that it processed withdrawals during
 the response and covered the resulting ETH shortfall through partner
@@ -75,6 +77,11 @@ of a website or a familiar brand name consequently does not establish
 that the same contract is available through every regional
 entity.[^contracts]
 
+The FMA separately licensed Bybit Payments GmbH as an electronic-money
+institution on 4 August 2026, authorising electronic-money issuance and
+specified payment services. This is a different legal entity and licence
+from Bybit EU GmbH's crypto-asset service authorisation.[^payments][^fma]
+
 ## Timeline
 
 | Date | Event |
@@ -83,6 +90,7 @@ entity.[^contracts]
 | 2025-02-21 | Ethereum wallet theft |
 | 2025-02-26 | FBI publishes its North Korea attribution |
 | 2025-05-28 | Austrian authorisation for Bybit EU GmbH |
+| 2026-08-04 | Austrian electronic-money licence for Bybit Payments GmbH |
 
 ## See also
 
@@ -99,3 +107,6 @@ entity.[^contracts]
 [^fbi]: FBI (2025-02-26). *North Korea Responsible for $1.5 Billion Bybit Hack*. <https://www.ic3.gov/PSA/2025/PSA250226>
 [^analysis]: BlockSec (2025-02-25). *Bybit $1.5B Hack: In-Depth Analysis of the Malicious Safe Wallet Upgrade Attack*. <https://blocksec.com/blog/bybit-1-5-b-hack-in-depth-analysis-of-the-malicious-safe-wallet-upgrade-attack>
 [^fma]: Austrian Financial Market Authority (2025-05-30). *Granting of Authorisation Bybit EU GmbH*. <https://www.fma.gv.at/en/granting-of-authorisation-bybit-eu-gmbh/>
+
+[^forensics]: Sygnia (2025-03-16). *Bybit — What We Know So Far*. <https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/>
+[^payments]: Austrian Financial Market Authority (2026-08-04). *Konzessionserteilung Bybit Payments GmbH*. <https://www.fma.gv.at/konzessionserteilung-bybit-payments-gmbh/>

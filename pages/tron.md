@@ -3,7 +3,9 @@ title: TRON
 ticker: TRX
 category: Layer 1
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -18,8 +20,8 @@ resources called Bandwidth and Energy.[^sr][^resources]
 | | |
 |---|---|
 | Native asset | TRX |
-| Founder | Justin Sun[^history] |
-| Mainnet launch | 31 May 2018, according to TRON's history[^history] |
+| Founder | Justin Sun, according to TRON DAO[^history] |
+| Mainnet launch | 31 May 2018, according to TRON's launch announcement[^launch] |
 | Consensus | Delegated proof of stake |
 | Active block producers | 27 Super Representatives |
 | Contract execution | TRON Virtual Machine, or TVM[^resources] |
@@ -54,6 +56,12 @@ producers relevant to governance. Holding TRX alone does not make an
 account a block producer: the account must participate in the staking,
 voting, or candidacy mechanisms appropriate to its role.[^sr][^stake]
 
+TRON DAO's third-quarter 2026 report says Proposal 107 activated
+Ethereum-aligned features from the GreatVoyage v4.8.2 “Pyrrho” upgrade.
+It highlights secp256r1 signature support, which enables contracts to
+verify signatures used by common device-security systems. This is an
+example of protocol capabilities changing through governance.[^history]
+
 ## Stablecoin use
 
 Tether announced its TRON integration in March 2019, using the TRC-20
@@ -80,8 +88,9 @@ In March 2026 the SEC proposed a settlement under which Rainberry would
 pay $10 million, without admitting or denying the settled allegations,
 and the remaining claims against the TRON defendants would be dismissed
 with prejudice. The court entered final judgment on 9 March, ordering
-Rainberry to pay that penalty. The penalty was imposed on Rainberry,
-not on holders of TRX.[^sec][^judgment]
+Rainberry to pay that penalty and dismissing the remaining specified
+claims against Rainberry and all claims against Sun, the TRON Foundation
+and the BitTorrent Foundation with prejudice.[^sec][^judgment][^judgment-text]
 
 ## See also
 
@@ -94,9 +103,12 @@ not on holders of TRX.[^sec][^judgment]
 
 [^sr]: TRON developer documentation. *Super Representatives*. <https://developers.tron.network/docs/super-representatives>
 [^resources]: TRON developer documentation. *Resource Model*. <https://developers.tron.network/docs/resource-model>
-[^history]: TRON. *About TRON: milestones*. <https://tron.network/about>
+[^history]: TRON DAO Research (2026-10-06). *State of TRON Q3 2026: TRON Passes the $30 Trillion Mark*. <https://trondao.org/research/state-of-tron-q3-2026-tron-passes-the-30-trillion-mark>
 [^stake]: TRON developer documentation. *Stake 2.0 overview*. <https://developers.tron.network/docs/staking-on-tron-network>
 [^tether]: Tether (2019-03-04). *USDT Introduced to TRON Blockchain*. <https://tether.io/news/usdt-introduced-to-tron-blockchain/>
 [^circle]: Circle (2024-02-21). *Circle is Discontinuing Support for USDC on the TRON Blockchain*. <https://www.circle.com/blog/circle-is-discontinuing-support-for-usdc-on-the-tron-blockchain>
 [^sec]: SEC (2026-03-05). *Litigation Release No. 26496*. <https://www.sec.gov/enforcement-litigation/litigation-releases/lr-26496>
 [^judgment]: US District Court, Southern District of New York (2026-03-09). *SEC v. Sun et al.*, No. 1:23-cv-02433, document 98, final judgment. <https://law.justia.com/cases/federal/district-courts/new-york/nysdce/1:2023cv02433/596044/98/>
+
+[^launch]: TRON DAO (2018-05-31). *Letter to the Community: Odyssey 2.0*. <https://medium.com/tron-foundation/tron-sr-ranking-may-30-2018-3f207e7f0006>
+[^judgment-text]: US District Court, Southern District of New York (2026-03-09). *SEC v. Sun*, No. 1:23-cv-02433, final judgment, text reproduced by Midpage. <https://app.midpage.ai/document/securities-and-exchange-commission-v--96f6dfdc-03ed-4f22-934c-03ab4bfbb366>
