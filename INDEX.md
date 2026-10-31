@@ -38,6 +38,8 @@ All pages in Chainlore.
 
 ## Decentralised finance
 
+- [Liquidation](pages/liquidation.md): collateral thresholds, auctions,
+  forced position closures, and remaining shortfalls.
 - [Polymarket](pages/polymarket.md): prediction markets, collateral,
   resolution, and the separate US exchange.
 - [Automated market maker](pages/automated-market-maker.md): liquidity pools,
@@ -79,6 +81,10 @@ All pages in Chainlore.
 
 ## Infrastructure
 
+- [Perpetual futures](pages/perpetual-futures.md): funding, leverage,
+  reference prices, and loss allocation.
+- [Multisignature wallet](pages/multisignature-wallet.md): signing thresholds,
+  transaction coordination, and shared failure modes.
 - [Proof of work](pages/proof-of-work.md): mining, difficulty, and cumulative work.
 - [Proof of stake](pages/proof-of-stake.md): validators, finality, and staking risks.
 - [Maximal extractable value](pages/mev.md): transaction ordering, searchers,
