@@ -86,6 +86,7 @@ that a compensation programme was implemented.[^black-thursday]
 - [USDC](usdc.md)
 - [Aave](aave.md)
 - [Blockchain oracle](blockchain-oracle.md)
+- [Liquidation](liquidation.md)
 
 ## References
 

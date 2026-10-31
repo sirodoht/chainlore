@@ -305,6 +305,8 @@ Hyperliquid Labs leads core development.[^hyper101]
 
 - [Arbitrum](arbitrum.md)
 - [Ethereum](ethereum.md)
+- [Perpetual futures](perpetual-futures.md)
+- [Liquidation](liquidation.md)
 
 ## References
 

@@ -79,6 +79,7 @@ data, not only the proof system's name.[^rollups]
 - [Rollup](rollup.md)
 - [Ethereum](ethereum.md)
 - [Smart contract](smart-contract.md)
+- [Tornado Cash](tornado-cash.md)
 
 ## References
 

@@ -337,6 +337,7 @@ returned.[^koreatimes-2025]
 - [Tether](tether.md) and [USDC](usdc.md), fiat-backed stablecoins
 - [FTX](ftx.md), whose fall followed the 2022 contagion
 - [Bitcoin](bitcoin.md), the main reserve asset of the Luna Foundation Guard
+- [Three Arrows Capital](three-arrows-capital.md)
 
 ## References
 

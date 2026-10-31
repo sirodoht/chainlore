@@ -76,6 +76,7 @@ verification failure can create unbacked claims across networks.[^wormhole]
 - [Solana](solana.md)
 - [Arbitrum](arbitrum.md)
 - [Smart contract](smart-contract.md)
+- [Inter-Blockchain Communication](inter-blockchain-communication.md)
 
 ## References
 

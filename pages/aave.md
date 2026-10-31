@@ -333,6 +333,7 @@ technical service provider.[^governance-docs]
 - [Uniswap](uniswap.md)
 - [Lido](lido.md), issuer of the wstETH involved in the March 2026 oracle error
 - [USDC](usdc.md) and [Tether](tether.md)
+- [Liquidation](liquidation.md)
 
 ## References
 

@@ -81,6 +81,7 @@ risk analysis.[^stages]
 - [Optimism](optimism.md)
 - [Base](base.md)
 - [Blockchain bridge](blockchain-bridge.md)
+- [Zero-knowledge proof](zero-knowledge-proof.md)
 
 ## References
 

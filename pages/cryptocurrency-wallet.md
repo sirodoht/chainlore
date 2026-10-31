@@ -88,6 +88,9 @@ wallet presents.[^erc20]
 - [Bitcoin](bitcoin.md)
 - [Ethereum](ethereum.md)
 - [Smart contract](smart-contract.md)
+- [Multisignature wallet](multisignature-wallet.md)
+- [Safe](safe.md)
+- [Account abstraction](account-abstraction.md)
 
 ## References
 

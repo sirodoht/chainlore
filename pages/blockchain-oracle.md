@@ -74,6 +74,7 @@ check and choose suitable parameters.[^sequencer]
 - [Stablecoin](stablecoin.md)
 - [Rollup](rollup.md)
 - [Blockchain bridge](blockchain-bridge.md)
+- [Polymarket](polymarket.md)
 
 ## References
 

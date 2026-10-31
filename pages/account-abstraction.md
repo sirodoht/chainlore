@@ -95,6 +95,7 @@ policy or make an account safe.[^7702]
 - [Safe](safe.md)
 - [Multisignature wallet](multisignature-wallet.md)
 - [Ethereum](ethereum.md)
+- [Smart contract](smart-contract.md)
 
 ## References
 

@@ -84,6 +84,9 @@ that the supplied information accurately represents the outside world.[^oracles]
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [Uniswap](uniswap.md)
 - [Aave](aave.md)
+- [The DAO](the-dao.md)
+- [Safe](safe.md)
+- [Account abstraction](account-abstraction.md)
 
 ## References
 

@@ -335,6 +335,8 @@ raised a new issue".[^vote-delay]
 - [Optimism](optimism.md), whose OP Stack Unichain uses
 - [Base](base.md), one of the networks where v4 launched
 - [FTX](ftx.md), whose chief executive ran the SushiSwap migration
+- [Automated market maker](automated-market-maker.md)
+- [Maximal extractable value](mev.md)
 
 ## References
 

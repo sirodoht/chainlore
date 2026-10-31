@@ -81,6 +81,7 @@ as to liquidity and pricing.[^mev]
 - [Curve](curve.md)
 - [Blockchain oracle](blockchain-oracle.md)
 - [Maximal extractable value](mev.md)
+- [XRP Ledger](xrp-ledger.md)
 
 ## References
 

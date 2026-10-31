@@ -303,6 +303,7 @@ about $475 million in USDT linked to Iran's central bank.[^iran-freeze]
 - [Terra](terra.md)
 - [Bitcoin](bitcoin.md)
 - [Ethereum](ethereum.md)
+- [TRON](tron.md)
 
 ## References
 

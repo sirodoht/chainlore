@@ -86,6 +86,7 @@ profit and loss creates exposure to an exchange failure.[^binance-incident][^bin
 - [MakerDAO and Sky](makerdao-sky.md)
 - [Curve](curve.md)
 - [Hyperliquid](hyperliquid.md)
+- [Perpetual futures](perpetual-futures.md)
 
 ## References
 

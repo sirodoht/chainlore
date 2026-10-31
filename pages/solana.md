@@ -344,6 +344,7 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 - [FTX](ftx.md), an early backer whose collapse affected Solana
 - [USDC](usdc.md) and [Tether](tether.md), both issued natively on Solana
 - [Hyperliquid](hyperliquid.md)
+- [Proof of stake](proof-of-stake.md)
 
 ## References
 

@@ -173,6 +173,10 @@ adopt upgrades by running compatible software.[^eips][^fusaka]
 - [Non-fungible token](nft.md)
 - [Bitcoin](bitcoin.md)
 - [Arbitrum](arbitrum.md)
+- [Proof of stake](proof-of-stake.md)
+- [The DAO](the-dao.md)
+- [Vitalik Buterin](vitalik-buterin.md)
+- [Account abstraction](account-abstraction.md)
 
 ## References
 

@@ -82,6 +82,7 @@ all Monero transactions can be traced.[^research]
 - [Bitcoin](bitcoin.md)
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [Ethereum](ethereum.md)
+- [Tornado Cash](tornado-cash.md)
 
 ## References
 

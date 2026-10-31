@@ -97,6 +97,7 @@ containment and verification, rather than a final account of the incident.[^infr
 - [Solana](solana.md)
 - [Smart contract](smart-contract.md)
 - [Hyperliquid](hyperliquid.md)
+- [Account abstraction](account-abstraction.md)
 
 ## References
 

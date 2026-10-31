@@ -95,6 +95,7 @@ incident, distinct from a change to the onchain contracts.[^domain]
 - [Stablecoin](stablecoin.md)
 - [Lido](lido.md)
 - [Aave](aave.md)
+- [Automated market maker](automated-market-maker.md)
 
 ## References
 

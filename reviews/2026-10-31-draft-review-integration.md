@@ -27,3 +27,17 @@ pages); six existing category/publication tests passed. A catalogue audit
 confirmed each article appears exactly once, every category matches its index
 section, and entries are alphabetised within sections. Full submissions tests
 and migration consistency are also required by the final deployment script.
+
+## Related articles
+
+Added 39 See also links across 26 articles, avoiding links already present in
+their source articles. The nine articles previously without incoming article
+links now have relevant entry points: Bitcoin block size war, BNB Chain,
+Inter-Blockchain Communication, Polymarket, The DAO, Three Arrows Capital,
+Tornado Cash, TRON, and XRP Ledger. All 60 articles now have at least one
+incoming link from another article, excluding catalogue links.
+
+A before/after audit confirmed that this pass changed only See also sections:
+all article claims, references, front matter, and the complete Satoshi article
+remained unchanged. Related-link sections have no duplicate, self, or missing
+article targets. The static build and checker passed again after these changes.

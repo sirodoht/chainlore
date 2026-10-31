@@ -81,6 +81,7 @@ to be assessed by its actual data-sharing rules.[^settings]
 - [Ethereum](ethereum.md)
 - [Aave](aave.md)
 - [Uniswap](uniswap.md)
+- [Liquidation](liquidation.md)
 
 ## References
 

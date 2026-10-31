@@ -98,6 +98,9 @@ from Bybit EU GmbH's crypto-asset service authorisation.[^payments][^fma]
 - [Coinbase](coinbase.md)
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [MiCA](mica.md)
+- [Perpetual futures](perpetual-futures.md)
+- [Multisignature wallet](multisignature-wallet.md)
+- [Safe](safe.md)
 
 ## References
 

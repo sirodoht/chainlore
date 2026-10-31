@@ -376,6 +376,8 @@ issuance.[^faq]
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 
 - [Ethereum](ethereum.md)
+- [Proof of work](proof-of-work.md)
+- [Bitcoin block size war](bitcoin-block-size-war.md)
 
 ## References
 

@@ -91,6 +91,7 @@ needed for full protection in the affected combined setup.[^invoice-bug]
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [Smart contract](smart-contract.md)
 - [Rollup](rollup.md)
+- [Bitcoin block size war](bitcoin-block-size-war.md)
 
 ## References
 

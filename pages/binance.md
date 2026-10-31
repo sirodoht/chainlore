@@ -107,6 +107,7 @@ deposits and unaffected services were operating. As of this article's
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [Tether](tether.md)
 - [USDC](usdc.md)
+- [BNB Chain](bnb-chain.md)
 
 ## References
 

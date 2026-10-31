@@ -103,6 +103,11 @@ The fork was divisive. Ethereum's history records that some participants rejecte
 - **20 July 2016:** Announces completion of the DAO recovery fork.[^imp-4-18]
 - **September 2022:** Ethereum shifts to proof-of-stake.[^1]
 
+## See also
+
+- [Ethereum](ethereum.md)
+- [The DAO](the-dao.md)
+
 ## References
 
 [^1]: [History of Ethereum: founder, launch and ownership | ethereum.org](https://ethereum.org/ethereum-history-founder-and-ownership/)
