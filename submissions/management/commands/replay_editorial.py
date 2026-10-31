@@ -31,14 +31,14 @@ class Command(BaseCommand):
         run = AutomationRun.objects.create(submission=submission, state='checking', inputs={'replay': True})
         check = Verification.objects.create(run=run, source=source, source_hash=digest(source))
         try:
-            for _ in range(3 + ((len(inventory(source)[0])+settings.VERIFICATION_BATCH_SIZE-1)//settings.VERIFICATION_BATCH_SIZE)*settings.VERIFICATION_REPORT_ATTEMPTS):
+            for _ in range(3 + settings.VERIFICATION_SOURCE_ATTEMPTS + ((len(inventory(source)[0])+settings.VERIFICATION_BATCH_SIZE-1)//settings.VERIFICATION_BATCH_SIZE)*settings.VERIFICATION_REPORT_ATTEMPTS):
                 check = step(check)
                 if check.state != 'pending':
                     break
         except (ProviderError, InvalidArticle, BudgetExceeded) as exc:
             run.state = 'blocked'; run.last_error = str(exc); run.save()
             raise CommandError(str(exc)) from None
-        run.state = 'blocked' if check.state == 'passed' else 'insufficient'
+        run.state = 'insufficient' if check.state == 'failed' else 'blocked'
         run.last_error = 'shadow_verified_not_published' if check.state == 'passed' else ''
         run.save()
         usage = run.spend.aggregate(reserved=Sum('reserved_tokens'), input=Sum('input_tokens'), output=Sum('output_tokens'))

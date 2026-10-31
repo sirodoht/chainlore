@@ -168,6 +168,15 @@ an operational limit/configuration decision, never an editorial approval. Both r
 visible and preserve the existing article. API secrets and database files stay private.
 
 Interrupted or malformed verification output does not trigger rewriting. The checker
+checks that every reference has fetched content and a live freshness search has
+returned results before requesting a report. Missing searches run first; missing
+references are fetched in groups of four without refetching saved documents.
+Source recovery permits at most 12 calls and stops after three consecutive calls
+without progress. Tool failures retain the draft and become operational blocks,
+not factual rejections. Saved tool results survive restarts and are checked before
+another paid call.
+
+Once source collection is complete, the checker
 keeps the candidate and its independently fetched sources, then checks groups of at most four units with at most two report-only attempts per
 group, a 16,000-token output allowance and no tools. Each cited group receives its
 complete cited documents; uncited facts retain the full source set. Group approvals
@@ -188,6 +197,11 @@ same-day evidence and no later paid work. It creates a new pending check using s
 evidence, restores a lost draft from the writing audit if necessary, and preserves
 the earlier failed check. Contradictory reports retain their group attempt counts.
 It neither raises budgets nor bypasses source verification.
+For a historical automated `insufficient` outcome caused by missing tool evidence,
+add `--reopen-incomplete-sources`. This requires an unchanged candidate, same-day
+evidence, no later paid work, and no factual claim-validation errors. The old
+decision and failed check remain in the audit; the new check must independently
+complete all source and claim checks. Existing revision counts are preserved.
 
 ### Scheduled upkeep and audit
 

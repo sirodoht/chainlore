@@ -7,7 +7,7 @@ from django.utils import timezone
 from submissions.models import AutomationRun, Verification, AutomationEvent
 from submissions.publication import publication_lock
 from submissions.article_validation import extract_draft, InvalidArticle
-from submissions.verification import digest, contradictory_pass
+from submissions.verification import digest, contradictory_pass, source_gaps
 
 
 class Command(BaseCommand):
@@ -15,6 +15,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--submission', required=True)
+        parser.add_argument('--reopen-incomplete-sources', action='store_true',
+                            help='Reopen an automated insufficient-evidence outcome caused solely by missing tool evidence.')
 
     def handle(self, *args, **options):
         with publication_lock(blocking=False), transaction.atomic():
@@ -23,11 +25,25 @@ class Command(BaseCommand):
             except (AutomationRun.DoesNotExist, ValueError):
                 raise CommandError('Submission has no recoverable run.') from None
             check = run.verifications.order_by('-pk').first()
+            source_failure = False
+            if options['reopen_incomplete_sources'] and check:
+                gaps = source_gaps(check)
+                errors = set(check.report.get('errors', []))
+                source_failure = (check.state == 'failed' and check.report.get('assessment', {}).get('verdict') == 'insufficient'
+                    and bool(gaps['missing_urls'] or gaps['search_missing'])
+                    and bool(errors & {'no_live_freshness_search', 'unopened_references'})
+                    and errors <= {'no_live_freshness_search', 'unopened_references', 'source_or_freshness_check_missing',
+                                   'checker_did_not_pass', 'unresolved_checker_issues'}
+                    and all(u.get('verdict') in ('supported', 'nonfactual') for u in check.report.get('assessment', {}).get('units', [])))
+                if (not source_failure or run.state != 'insufficient' or run.submission.status != 'insufficient'
+                        or run.submission.resulting_url or run.submission.duplicate_of_id
+                        or not run.events.filter(kind='decision', data__state='insufficient', created_at__gte=check.completed_at).exists()):
+                    raise CommandError('Only an automated outcome caused by missing source evidence can be reopened.')
             contradictory = bool(check and contradictory_pass(check.report.get('assessment', {}), check.report.get('errors', [])))
             unused_revision = contradictory and run.state == 'revising' and run.editorial.get('stage') == 'research'
-            if (run.state != 'blocked' and not unused_revision) or run.submission.status not in ('new', 'reviewing'):
+            if not source_failure and ((run.state != 'blocked' and not unused_revision) or run.submission.status not in ('new', 'reviewing')):
                 raise CommandError('Only blocked or unused contradictory-report revisions on undecided runs can be recovered.')
-            if not check or check.state not in ('failed','incomplete') or (not contradictory and check.report.get('errors') not in (
+            if not check or check.state not in ('failed','incomplete') or (not source_failure and not contradictory and check.report.get('errors') not in (
                     ['invalid_check_report'], ['verification_output_incomplete'], ['verification_report_incomplete'])):
                 raise CommandError('The last check was not an interrupted report. Factual findings cannot be bypassed.')
             if digest(check.source) != check.source_hash or run.editorial.get('candidate') != check.source:
@@ -54,6 +70,8 @@ class Command(BaseCommand):
             else:
                 session.pop('batches', None)
             session.update(mode='report', report_responses=[], processed_report_responses=0, recovered_from=check.pk)
+            if source_failure:
+                session['mode'] = 'sources'
             recovered = Verification.objects.create(run=run,source=check.source,source_hash=check.source_hash,session=session)
             # The legacy path requested a rewrite solely because the report was
             # truncated. Undo that unused attempt, preserving its audit events.
@@ -64,5 +82,10 @@ class Command(BaseCommand):
             run.editorial.pop('feedback',None)
             run.state='checking';run.last_error='';run.next_attempt_at=None
             run.save()
+            if source_failure:
+                submission = run.submission
+                submission.status = 'reviewing'
+                submission.public_summary = 'Verification resumed after incomplete source gathering. The previous outcome remains in the activity history.'
+                submission.save()
             AutomationEvent.objects.create(run=run,kind='verification_recovered',data={'previous_check':check.pk,'check_id':recovered.pk,'source_hash':check.source_hash})
             self.stdout.write(f'Resumed verification {recovered.pk} from saved check {check.pk}. No publication approval granted.')
