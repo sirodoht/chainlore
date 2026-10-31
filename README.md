@@ -122,10 +122,12 @@ validation can use evidence from every part. Search/fetch allowances are reduced
 across continuations, not reset. Research cut short by the continuation cap still
 goes on to writing from the pages it fetched. Continuations keep both tools, as the API expects, so a spent
 tool keeps one use for any pending call; each continuation can exceed the budget by
-at most one use per tool. Each research HTTP request has a 300-second timeout;
-the worker's 35-minute deadline covers three such requests, the other model calls,
-build checks and notifications. An interrupted in-flight HTTP request can still
-lose work that the provider has not returned; completed responses are preserved.
+at most one use per tool. Research and writing each allow up to 128,000 output
+tokens, including thinking, at high effort, with a 600-second HTTP timeout.
+The worker's 65-minute deadline covers three research responses, two writing
+attempts, screening, build checks and notifications. An interrupted in-flight HTTP
+request can still lose work that the provider has not returned; completed
+responses are preserved.
 
 Missing credentials, HTTP 400/401/402/403/404 configuration/account errors and
 recognized spend-cap errors pause the entire queue in the persistent Automation

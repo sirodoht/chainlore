@@ -44,7 +44,8 @@ class ProviderTests(TestCase):
         self.assertEqual(payload['messages'][-1], {'role': 'assistant', 'content': self.pause['content']})
         self.assertEqual(payload['container'], 'container-1')
         self.assertEqual([tool['max_uses'] for tool in payload['tools']], [2, 2])
-        self.assertEqual(call.call_args_list[0].kwargs['timeout'], 300)
+        self.assertEqual(call.call_args_list[0].kwargs['timeout'], 600)
+        self.assertEqual(payload['max_tokens'], 128000)
         self.assertEqual(result['stop_reason'], 'end_turn')
         self.assertEqual(len(evidence_urls(result)), 3)
         self.assertEqual(len(ai.research_context(result)['opened_sources']), 3)
@@ -62,7 +63,7 @@ class ProviderTests(TestCase):
                 request = call.call_args.args[3]
             self.assertNotIn('thinking', request)
             self.assertEqual(request['output_config'], {'effort': 'high'})
-            self.assertEqual(request['max_tokens'], 16000)
+            self.assertEqual(request['max_tokens'], 128000)
 
     def test_paused_thinking_is_replayed_unchanged_but_never_audited(self):
         thinking = {'type': 'thinking', 'thinking': '', 'signature': 'opaque-signature'}
@@ -160,4 +161,12 @@ class ProviderTests(TestCase):
         with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen') as transport:
             transport.return_value.__enter__.return_value.read.return_value = json.dumps(self.end).encode()
             ai.research(self.run)
-        self.assertEqual(transport.call_args.kwargs['timeout'], 300)
+        self.assertEqual(transport.call_args.kwargs['timeout'], 600)
+
+    def test_writing_transport_allows_time_for_the_full_output_budget(self):
+        self.run.research = {'content': [fetched('https://docs.example.com/first')]}
+        with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen') as transport:
+            transport.return_value.__enter__.return_value.read.return_value = json.dumps(self.end).encode()
+            ai.write_article(self.run)
+        self.assertEqual(transport.call_args.kwargs['timeout'], 600)
+        self.assertEqual(json.loads(transport.call_args.args[0].data)['max_tokens'], 128000)
