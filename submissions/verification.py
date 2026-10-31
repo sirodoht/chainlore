@@ -160,6 +160,13 @@ def payload(check):
     }
 
 
+def structural_unit(unit):
+    text = unit.get('text', '')
+    return (unit.get('table_header', False) or text.startswith(('#', 'category:', 'ticker: None'))
+            or bool(re.fullmatch(r'[-*] \[[^\]]+\]\([a-z0-9-]+\.md\)', text))
+            or text.strip() in ('| | |','|---|---|','| Date | Event |'))
+
+
 def validate_report(check, report, responses, selected_units=None):
     units, urls = inventory(check.source)
     if selected_units is not None:
@@ -179,12 +186,10 @@ def validate_report(check, report, responses, selected_units=None):
     if not isinstance(results, list) or len(results) != len(units) or {r.get('id') for r in results if isinstance(r, dict)} != {u['id'] for u in units}:
         errors.append('incomplete_claim_coverage')
         results = []
-    texts = {u['id']: u['text'] for u in units}
-    headers = {u['id'] for u in units if u['table_header']}
+    by_id = {u['id']:u for u in units}
     for result in results:
         verdict = result.get('verdict')
-        text = texts.get(result.get('id'), '')
-        structural = result.get('id') in headers or text.startswith(('#', 'category:', 'ticker: None')) or bool(re.fullmatch(r'[-*] \[[^\]]+\]\([a-z0-9-]+\.md\)', text)) or text.strip() in ('| | |','|---|---|','| Date | Event |')
+        structural = structural_unit(by_id.get(result.get('id'), {}))
         if verdict == 'nonfactual' and structural:
             continue
         claims = result.get('claims')
@@ -232,7 +237,8 @@ def report_payload(check, units):
         "Do not repeat research or rewrite the article. Return a complete concise JSON report for this group, never a fragment. "
         "Only cite the supplied fetched documents; missing evidence must be reported honestly. Use short claim explanations. "
         "Quotes must be exact substrings of fetched_sources, including their original Markdown formatting. "
-        "Optional search metadata is context, not a publication requirement. Do not return a freshness-only issue. Verify factual and dated claims against the fetched sources.")
+        "Optional search metadata is context, not a publication requirement. Do not return a freshness-only issue. Verify factual and dated claims against the fetched sources. "
+        "Software enforces reference-opening checks against saved tool results. Classify the supplied units themselves; headings and navigation without factual assertions require no source quotes.")
     data = json.loads(request['messages'][0]['content'])
     data['units'] = units
     sources = opened_sources(evidence_responses(check))
@@ -240,10 +246,13 @@ def report_payload(check, units):
     labels = {label for unit in units for label in re.findall(r'\[\^([^\]]+)\]',unit['text'])}
     # Cited units receive their complete cited documents. For uncited factual
     # rows/metadata, retain the complete evidence set rather than guess support.
-    uncited_facts = any(not re.search(r'\[\^',u['text']) and not u['table_header'] and
-                        not u['text'].startswith(('#','category:','ticker: None')) for u in units)
+    uncited_facts = any(not re.search(r'\[\^',u['text']) and not structural_unit(u) for u in units)
     urls = {canonical(definitions[label]) for label in labels if label in definitions}
-    data['fetched_sources'] = sources if uncited_facts or not urls else {url:text for url,text in sources.items() if url in urls}
+    data['opened_reference_urls'] = list(sources)
+    if all(structural_unit(u) for u in units):
+        data['fetched_sources'] = {}
+    else:
+        data['fetched_sources'] = sources if uncited_facts or not urls else {url:text for url,text in sources.items() if url in urls}
     # Opaque search blobs are useful in the original tool conversation, but
     # cannot be read as evidence inside this new JSON user message. Keep them
     # in the audit, not in every repeated report prompt.

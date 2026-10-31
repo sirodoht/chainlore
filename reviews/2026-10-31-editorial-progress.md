@@ -28,3 +28,13 @@ revision counts and token usage remain in the audit. The existing 4M daily and
 3M per-submission budgets remain unchanged. A guarded recovery command resumes
 historically exhausted corrections from saved evidence and actionable findings;
 it never grants publication approval.
+
+The recovered production correction added footnotes to all five table rows and
+passed the previously failing group. Navigation-only groups were still carrying
+the full source bundle, wasting admission headroom. Report context now uses the
+same structural-unit classification as validation: navigation does not force
+unrelated documents into mixed groups, and wholly structural groups receive the
+opened-reference inventory without redundant source bodies. All original evidence
+and final source-opening checks remain intact. A separate regression keeps an
+explicit writer finding of insufficient evidence on the research path rather than
+misclassifying it as a formatting failure.

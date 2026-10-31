@@ -46,6 +46,18 @@ class SourceRecoveryTests(TestCase):
         self.assertEqual(clean['url'],search['url'])
         self.assertEqual(search['encrypted_content'],'opaque-provider-blob')
 
+    def test_navigation_does_not_force_unrelated_documents_into_report_prompts(self):
+        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report'}
+        navigation={'id':'nav','text':'- [Example](example.md)','table_header':False}
+        result=json.loads(report_payload(self.check,[navigation])['messages'][0]['content'])
+        self.assertEqual(result['fetched_sources'],{})
+        self.assertIn('https://example.com/history',result['opened_reference_urls'])
+        self.assertTrue(self.check.session['responses'])
+        # Factual title/uncited prose still receives the full opened evidence.
+        title=inventory(SOURCE)[0][0]
+        factual=json.loads(report_payload(self.check,[title,navigation])['messages'][0]['content'])
+        self.assertIn('https://example.com/history',factual['fetched_sources'])
+
     @patch('submissions.ai_providers.call')
     def test_truncated_source_pass_proceeds_without_a_freshness_search(self, call):
         opened = self.response([evidence()[0]['content'][1]], 'max_tokens')
