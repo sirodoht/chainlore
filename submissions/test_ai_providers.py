@@ -70,28 +70,23 @@ class ProviderTests(TestCase):
         with patch.object(ai, 'call', side_effect=[self.pause, second, second]) as call:
             result = ai.research(self.run)
         self.assertEqual(call.call_count, 3)
-        self.assertEqual(call.call_args.args[3]['tools'], [])
+        self.assertEqual([tool['max_uses'] for tool in call.call_args.args[3]['tools']], [1, 1])
         self.assertEqual(result['stop_reason'], 'pause_turn')
         self.run.refresh_from_db()
         with patch.object(ai, 'call') as call:
             ai.research(self.run)
         call.assert_not_called()
 
-    def test_unfinished_call_beyond_budget_stops_without_an_invalid_provider_request(self):
+    def test_spent_tools_stay_available_so_a_pending_call_can_finish(self):
         paused = copy.deepcopy(self.pause)
-        paused['usage']['server_tool_use']['web_fetch_requests'] = 6
-        with patch.object(ai, 'call', return_value=paused) as call:
-            result = ai.research(self.run)
-        call.assert_called_once()
-        self.assertEqual(result['continuation_stop'], 'tool_budget_exhausted')
-
-    def test_exhausted_search_is_removed_while_pending_fetch_continues(self):
-        paused = copy.deepcopy(self.pause)
-        paused['usage']['server_tool_use']['web_search_requests'] = 8
+        paused['usage']['server_tool_use'] = {'web_search_requests': 8, 'web_fetch_requests': 6}
         with patch.object(ai, 'call', side_effect=[paused, self.end]) as call:
-            ai.research(self.run)
-        tools = call.call_args.args[3]['tools']
-        self.assertEqual([(tool['name'], tool['max_uses']) for tool in tools], [('web_fetch', 2)])
+            result = ai.research(self.run)
+        first, continuation = [args.args[3]['tools'] for args in call.call_args_list]
+        self.assertEqual([(tool['name'], tool['max_uses']) for tool in continuation],
+                         [('web_search', 1), ('web_fetch', 1)])
+        self.assertEqual({**first[1], 'max_uses': 1}, continuation[1])
+        self.assertEqual(result['stop_reason'], 'end_turn')
 
     def test_completed_checkpoint_does_not_repeat_paid_call(self):
         with patch.object(ai, 'call', return_value=self.end):

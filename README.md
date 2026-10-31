@@ -110,9 +110,9 @@ continuing, so a later error or worker restart resumes from that checkpoint.
 The final research record merges all content blocks and usage; writing and source
 validation can use evidence from every part. Search/fetch allowances are reduced
 across continuations, not reset. Hitting the continuation cap goes to review with
-the evidence retained. Exhausted tools are removed (the API rejects zero allowances);
-an unfinished call beyond its budget is held for review without another paid call.
-Each research HTTP request has a 300-second timeout;
+the evidence retained. Continuations keep both tools, as the API expects, so a spent
+tool keeps one use for any pending call; each continuation can exceed the budget by
+at most one use per tool. Each research HTTP request has a 300-second timeout;
 the worker's 35-minute deadline covers three such requests, the other model calls,
 build checks and notifications. An interrupted in-flight HTTP request can still
 lose work that the provider has not returned; completed responses are preserved.

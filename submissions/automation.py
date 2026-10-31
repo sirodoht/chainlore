@@ -72,7 +72,7 @@ def process(run):
         run.research = ai.research(run)
         run.save(update_fields=['research', 'updated_at'])
     if run.research.get('stop_reason') == 'pause_turn':
-        raise InvalidArticle('research_' + run.research.get('continuation_stop', 'continuation_limit'))
+        raise InvalidArticle('research_continuation_limit')
     if run.research.get('stop_reason') != 'end_turn' or len(evidence_urls(run.research)) < 3:
         raise InvalidArticle('research_incomplete_or_insufficient')
     if not run.draft:
