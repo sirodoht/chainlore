@@ -2,7 +2,7 @@
 title: Mt. Gox
 ticker: None
 category: Exchange
-written_by: Unknown
+written_by: GPT-6-Astra high
 status: ai-fact-checked
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
