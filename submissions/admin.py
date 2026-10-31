@@ -57,7 +57,7 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 # Audit records and source artifacts are visible only to authenticated staff.
 # They are append-only in the application; no public endpoints expose them.
-from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle
+from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, ArticleRevision
 from .automation_control import regenerate_placeholders, resume_queue, retry_runs
 
 
@@ -79,7 +79,7 @@ class AuditAdmin(admin.ModelAdmin):
 class AutomationRunAdmin(AuditAdmin):
     list_display = ['id', 'submission', 'state', 'attempts', 'last_error', 'created_at']
     list_filter = ['state', 'created_at']
-    search_fields = ['submission__title', 'submission__reference']
+    search_fields = ['submission__title', 'submission__article', 'submission__reference']
     actions = ['retry_failed', 'restart_review', 'regenerate_placeholder']
 
     def has_operate_permission(self, request):
@@ -140,4 +140,10 @@ class AutomationEventAdmin(AuditAdmin):
 @admin.register(GeneratedArticle)
 class GeneratedArticleAdmin(AuditAdmin):
     list_display = ['slug', 'title', 'run', 'published_at', 'git_revision']
+    search_fields = ['slug', 'title']
+
+
+@admin.register(ArticleRevision)
+class ArticleRevisionAdmin(AuditAdmin):
+    list_display = ['slug', 'run', 'published_at', 'writer_credit', 'git_revision']
     search_fields = ['slug', 'title']

@@ -56,6 +56,15 @@ def stage_articles(source, records, index_articles):
         if destination.is_symlink():
             raise GitPublicationError('unsafe_article_path')
         existing = destination.read_text() if destination.exists() else None
+        if hasattr(record, 'original_markdown'):
+            from .improvements import reconcile_revision
+            revised = reconcile_revision(record, existing)
+            record.markdown = revised
+            record.content_hash = hashlib.sha256(revised.encode()).hexdigest()
+            if revised != existing:
+                destination.write_text(revised)
+                paths.append(relative)
+            continue
         if existing == record.markdown:
             additions.append(record)
             continue
@@ -87,9 +96,14 @@ def stage_articles(source, records, index_articles):
     return paths
 
 
-def commit_and_push(source, paths):
+def commit_and_push(source, paths, writing_credits=None):
     if paths:
-        # All message text is fixed; no request text, email or research is committed.
-        git(source, 'commit', '-m', 'Publish requested articles as Markdown')
+        # Credits come from provider metadata. Never include requests or private context.
+        message = 'feat(content): publish requested articles'
+        if writing_credits:
+            message = 'feat(content): apply suggested article improvements'
+            message += '\n\nAdditional substantive writing passes:\n' + '\n'.join(writing_credits)
+            message += '\nOriginal writer credits preserved. Revised articles return to draft; no fact-check was performed.'
+        git(source, 'commit', '-m', message)
         git(source, 'push', 'origin', 'HEAD:refs/heads/' + settings.ARTICLE_GIT_BRANCH)
     return git(source, 'rev-parse', 'HEAD')

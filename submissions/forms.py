@@ -25,7 +25,7 @@ class SubmissionForm(forms.Form):
     form_token = forms.CharField(widget=forms.HiddenInput)
 
     def __init__(self, *args, kind, **kwargs):
-        if kind not in ('request', 'correction'):
+        if kind not in ('request', 'correction', 'improvement'):
             raise ValueError('Unsupported submission type')
         super().__init__(*args, **kwargs)
         self.fields['article'].choices = [('', 'Select an article')] + [(slug, page['title']) for slug, page in articles().items()]
@@ -35,6 +35,11 @@ class SubmissionForm(forms.Form):
                 self.fields.pop(field)
             self.fields['details'].label = 'What should the article cover? (optional)'
             self.fields['details'].required = False
+        elif kind == 'improvement':
+            for field in ('title', 'claim', 'correction'):
+                self.fields.pop(field)
+            self.fields['details'].label = 'Suggested improvement'
+            self.fields['details'].help_text = 'For example: expand this article to roughly twice its length, or add a section about a specific event.'
         else:
             self.fields.pop('title')
             self.fields['details'].label = 'What is incorrect, and why?'

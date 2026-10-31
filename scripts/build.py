@@ -165,14 +165,16 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
     if route != '/all-articles/':
         tabs += '<a href="/all-articles/">All articles</a>'
     report_error_link = ''
+    improvement_link = ''
     if source.startswith('pages/'):
         report_error_link = '<a href="/submit/correction/?' + urlencode({'article': Path(source).stem}) + '">Report an error</a>'
+        improvement_link = '<a href="/submit/improvement/?' + urlencode({'article': Path(source).stem}) + '">Suggest an improvement</a>'
     source_url = '/p/' + Path(source).name if source.startswith('pages/') else '/sources/' + source
     source_link = f'<a href="{html.escape(source_url, quote=True)}">View Markdown source</a>' if route != '/' else ''
     output = TEMPLATE.substitute(title=html.escape(title + ' - Chainlore') if route != '/' else 'Chainlore - The AI native crypto encyclopedia',
         description=html.escape(description[:300], quote=True), path=route, content=content,
         source_link=source_link,
-        toc=toc, tabs=tabs, report_error_link=report_error_link,
+        toc=toc, tabs=tabs, report_error_link=report_error_link, improvement_link=improvement_link,
         sidebar_class='sidebar sidebar-home' if route == '/' else 'sidebar',
         css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
     destination = OUT / route.strip('/') / 'index.html'
@@ -203,15 +205,17 @@ def article(page):
     if meta:
         slug = page['source'].stem
         for heading in page['tree'].findall('h2'):
-            link = ET.SubElement(heading, 'a', {
-                'class': 'section-report',
-                'href': '/submit/correction/?' + urlencode({'article': slug, 'section': heading.get('id', '')}),
-                'aria-label': f'Report an error in {plain(heading)}',
-            })
-            link.text = 'Report an error'
+            heading_title = plain(heading)
+            for kind, label in (('correction', 'Report an error'), ('improvement', 'Suggest an improvement')):
+                link = ET.SubElement(heading, 'a', {
+                    'class': 'section-report',
+                    'href': '/submit/' + kind + '/?' + urlencode({'article': slug, 'section': heading.get('id', '')}),
+                    'aria-label': f'{label}: {heading_title}',
+                })
+                link.text = label
     content += '<article class="article-body">' + ''.join(serialize(node) for node in page['tree']) + '</article>'
     if meta:
-        content += f'<nav class="article-actions" aria-label="Requests and corrections"><a href="/submit/correction/?article={slug}">Report an error</a><a href="/submit/request/">Request an article</a></nav>'
+        content += f'<nav class="article-actions" aria-label="Article suggestions and corrections"><a href="/submit/correction/?article={slug}">Report an error</a><a href="/submit/improvement/?article={slug}">Suggest an improvement</a><a href="/submit/request/">Request an article</a></nav>'
     elif route == '/all-articles/':
         content += '<p><a href="/submit/request/">Request an article</a></p>'
     toc = '<nav class="contents" aria-label="Contents"><div class="contents-heading">Contents</div><ul>' + ''.join(f'<li><a href="#{html.escape(anchor)}">{html.escape(label)}</a></li>' for anchor, label in page['toc']) + '</ul></nav>' if page['toc'] else ''

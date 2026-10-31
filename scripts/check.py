@@ -9,7 +9,7 @@ from build import load, validate
 
 SOURCE = Path(os.environ.get('CHAINLORE_BUILD_ROOT', Path(__file__).resolve().parent.parent)).resolve()
 ROOT = SOURCE / 'dist'
-DYNAMIC_ROUTES = {'/submit/', '/submit/request/', '/submit/correction/'}
+DYNAMIC_ROUTES = {'/submit/', '/submit/request/', '/submit/correction/', '/submit/improvement/'}
 
 
 class Page(HTMLParser):

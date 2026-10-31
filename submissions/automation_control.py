@@ -117,6 +117,15 @@ def retry_runs(ids, actor_id, restart=False):
             if restart:
                 if hasattr(run, 'generated_article'):
                     continue
+                # Keep earlier improvement snapshots and patches in the audit before restarting.
+                if hasattr(run, 'article_revision'):
+                    revision = run.article_revision
+                    if revision.published_at or revision.git_revision:
+                        continue
+                    AutomationEvent.objects.create(run=run, kind='improvement_restart', data={
+                        'base_revision': revision.base_revision, 'original_markdown': revision.original_markdown,
+                        'draft': run.draft})
+                    revision.delete()
                 run.triage = {}
                 run.research_session = {}
                 run.research = {}

@@ -8,6 +8,7 @@ class Submission(models.Model):
         # Retained only for reviewing historical records; no public question form.
         QUESTION = 'question', 'Article question'
         REQUEST = 'request', 'Article request'
+        IMPROVEMENT = 'improvement', 'Article improvement'
         CORRECTION = 'correction', 'Error report'
 
     class Status(models.TextChoices):
@@ -82,7 +83,7 @@ class AutomationRun(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.pk}: {self.submission.title} ({self.state})'
+        return f'{self.pk}: {self.submission.title or self.submission.article} ({self.state})'
 
 
 class AutomationEvent(models.Model):
@@ -124,3 +125,22 @@ class AutomationControl(models.Model):
 
     def __str__(self):
         return 'Article request queue'
+
+
+class ArticleRevision(models.Model):
+    """An improvement checkpoint; published content remains authoritative in Git."""
+    run = models.OneToOneField(AutomationRun, primary_key=True, on_delete=models.PROTECT, related_name='article_revision')
+    slug = models.SlugField(max_length=100, db_index=True)
+    title = models.CharField(max_length=200)
+    original_markdown = models.TextField()
+    base_content_hash = models.CharField(max_length=64)
+    base_revision = models.CharField(max_length=40)
+    markdown = models.TextField(blank=True)
+    content_hash = models.CharField(max_length=64, blank=True)
+    writer_credit = models.CharField(max_length=250, blank=True)
+    git_revision = models.CharField(max_length=40, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    published_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title

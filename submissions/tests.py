@@ -30,15 +30,33 @@ class SubmissionsTests(TestCase):
     def data(self, **kwargs):
         return {'article': 'bitcoin', 'details': 'The stated date is incorrect.', 'claim': 'The stated date', 'sources': 'https://example.com/reference', 'form_token': new_token(), **kwargs}
 
-    def test_two_forms_and_prefill(self):
-        for kind in ('request', 'correction'):
+    def test_three_forms_and_prefill(self):
+        for kind in ('request', 'correction', 'improvement'):
             response = self.client.get(f'/submit/{kind}/?article=bitcoin&section=history')
             self.assertEqual(response.status_code, 200)
             if kind != 'request':
                 self.assertContains(response, '<option value="bitcoin" selected>Bitcoin</option>', html=True)
-            if kind == 'correction':
+            if kind != 'request':
                 self.assertEqual(response.context['form']['section'].value(), 'History')
         self.assertEqual(self.client.get('/submit/unknown/').status_code, 404)
+
+    def test_improvement_requires_article_and_suggestion_with_optional_sources(self):
+        response = self.client.post('/submit/improvement/', {
+            'article': 'bitcoin', 'details': 'Add a section on the DAO fork.',
+            'section': 'History', 'form_token': new_token()})
+        self.assertEqual(response.status_code, 302)
+        record = Submission.objects.get()
+        self.assertEqual(record.kind, 'improvement')
+        self.assertEqual(record.article_revision, 'a' * 40)
+        self.assertEqual(record.sources, '')
+        self.assertEqual(record.section, 'History')
+        self.assertEqual(record.claim, '')
+        self.assertNotContains(self.client.get(response.url), record.details)
+        response = self.client.post('/submit/improvement/', {'form_token': new_token()})
+        self.assertIn('article', response.context['form'].errors)
+        self.assertIn('details', response.context['form'].errors)
+        response = self.client.post('/submit/improvement/', self.data(article='missing'))
+        self.assertIn('article', response.context['form'].errors)
 
     def test_removed_question_route_rejects_get_and_post(self):
         self.assertEqual(self.client.get('/submit/question/').status_code, 404)
@@ -110,7 +128,7 @@ class SubmissionsTests(TestCase):
 
     @override_settings(ADMIN_NOTIFICATION_EMAIL='editor@example.com')
     def test_new_submissions_notify_admin_once_after_commit(self):
-        for kind in ('request', 'correction'):
+        for kind in ('request', 'correction', 'improvement'):
             with self.subTest(kind=kind):
                 data = self.data(title='New protocol', email='reader@example.com')
                 before = len(mail.outbox)
@@ -179,11 +197,13 @@ class SubmissionsTests(TestCase):
         self.assertEqual(response.status_code, 429)
         self.assertEqual(Submission.objects.count(), 10)
         self.assertEqual(response['Retry-After'], '3600')
+        self.assertEqual(self.client.post('/submit/improvement/', self.data()).status_code, 429)
         self.assertTrue(all('127.0.0.1' not in key for key in RateLimit.objects.values_list('key', flat=True)))
 
     def test_csrf_is_enforced_and_valid_form_works(self):
         client = Client(enforce_csrf_checks=True)
         self.assertEqual(client.post('/submit/correction/', self.data()).status_code, 403)
+        self.assertEqual(client.post('/submit/improvement/', self.data()).status_code, 403)
         response = client.get('/submit/correction/')
         token = response.context['form']['form_token'].value()
         response = client.post('/submit/correction/', self.data(form_token=token, csrfmiddlewaretoken=client.cookies['csrftoken'].value))

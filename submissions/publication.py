@@ -18,7 +18,7 @@ from django.db.models import Q
 from django.utils import timezone as django_timezone
 from .categories import CATEGORY_SECTIONS
 from .git_publication import clone_source, commit_and_push, stage_articles
-from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
+from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission, ArticleRevision
 
 
 def index_generated_articles(index, records):
@@ -79,17 +79,29 @@ def publish_site(base_release=None, import_legacy=False):
     if import_legacy:
         eligible |= Q(published_at__isnull=False)
     records = list(GeneratedArticle.objects.filter(eligible).order_by('slug'))
+    revisions = list(ArticleRevision.objects.filter(
+        published_at__isnull=True, run__state__in=['queued', 'running', 'retry'],
+        run__submission__status='reviewing').exclude(markdown='').select_related('run').order_by('created_at'))
+    # Serialize suggestions for the same article. A later one is picked up by its worker tick.
+    seen = {record.slug for record in records}
+    for record in revisions:
+        if record.slug not in seen:
+            records.append(record)
+            seen.add(record.slug)
     with tempfile.TemporaryDirectory(prefix='publication-', dir=settings.DATA_DIR) as directory:
         source = Path(directory) / 'source'
         clone_source(source)
         paths = stage_articles(source, records, index_generated_articles)
         build_source(source)
         # Validate before committing; a rejected/non-fast-forward push never goes live.
-        revision = commit_and_push(source, paths)
+        credits = [f'{record.slug}: {record.writer_credit}' for record in records
+                   if isinstance(record, ArticleRevision) and f'pages/{record.slug}.md' in paths]
+        revision = commit_and_push(source, paths, credits) if credits else commit_and_push(source, paths)
         published_hashes = {}
         for record in records:
             published_hashes[record.slug] = hashlib.sha256((source / 'pages' / (record.slug + '.md')).read_bytes()).hexdigest()
-            GeneratedArticle.objects.filter(pk=record.pk).update(git_revision=revision)
+            type(record).objects.filter(pk=record.pk).update(
+                git_revision=revision, markdown=record.markdown, content_hash=record.content_hash)
             AutomationEvent.objects.create(run_id=record.run_id, kind='git_publication', data={
                 'revision': revision, 'slug': record.slug,
                 'content_hash': published_hashes[record.slug]})
@@ -112,7 +124,7 @@ def publish_site(base_release=None, import_legacy=False):
             # Keeping an existing page live does not complete its regeneration.
             if record.published_at is not None:
                 continue
-            GeneratedArticle.objects.filter(pk=record.pk).update(published_at=django_timezone.now())
+            type(record).objects.filter(pk=record.pk).update(published_at=django_timezone.now())
             # A deploy can finish a publication interrupted after its source was saved.
             if AutomationRun.objects.filter(pk=record.run_id, state__in=['queued', 'running', 'retry']).update(state='published', last_error=''):
                 Submission.objects.filter(automation__pk=record.run_id, status='reviewing').update(

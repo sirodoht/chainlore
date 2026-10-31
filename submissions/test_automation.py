@@ -65,7 +65,7 @@ def written(draft=None):
             'content': [{'type': 'text', 'text': json.dumps(draft or DRAFT)}]}
 
 
-class AutomationTests(TestCase):
+class AutomationFixture(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -78,7 +78,7 @@ class AutomationTests(TestCase):
             shutil.copyfile(settings.BASE_DIR / file, cls.seed / file)
         git(cls.seed, 'init', '-b', 'main')
         git(cls.seed, 'add', '.')
-        git(cls.seed, 'commit', '-m', 'Initial test articles')
+        git(cls.seed, 'commit', '-m', 'test: seed articles')
 
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
@@ -103,6 +103,17 @@ class AutomationTests(TestCase):
             setattr(self, name, mock.start())
             self.addCleanup(mock.stop)
 
+    def edit_remote(self, edit):
+        with tempfile.TemporaryDirectory(dir=self.root) as directory:
+            checkout = Path(directory) / 'checkout'
+            git(self.root, 'clone', str(self.remote), str(checkout))
+            edit(checkout)
+            git(checkout, 'add', '--all')
+            git(checkout, 'commit', '-m', 'test: edit article')
+            git(checkout, 'push', 'origin', 'main')
+
+
+class AutomationTests(AutomationFixture):
     def test_publish_and_deploy_preserve_generated_article_and_exclude_private_data(self):
         self.assertEqual(run_worker(), 1)
         run = AutomationRun.objects.get()
@@ -139,15 +150,6 @@ class AutomationTests(TestCase):
         self.assertEqual(GeneratedArticle.objects.count(), 1)
         self.assertNotIn('email', run.inputs)
         self.assertTrue(run.events.filter(kind='notification', data__outcome='failed').exists())
-
-    def edit_remote(self, edit):
-        with tempfile.TemporaryDirectory(dir=self.root) as directory:
-            checkout = Path(directory) / 'checkout'
-            git(self.root, 'clone', str(self.remote), str(checkout))
-            edit(checkout)
-            git(checkout, 'add', '--all')
-            git(checkout, 'commit', '-m', 'Editorial change')
-            git(checkout, 'push', 'origin', 'main')
 
     def test_article_is_committed_before_publication_with_only_public_files(self):
         run_worker()

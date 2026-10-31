@@ -48,6 +48,7 @@ spam controls, private receipts, and admin access and review operations.
 
 - `/submit/request/`: required article title, with optional scope, sources, and email.
 - `/submit/correction/`: quoted claim, explanation, source links, and optional replacement text.
+- `/submit/improvement/`: article and suggested improvement, with optional section, sources, and email.
 - `/admin/`: authenticated review queue with filters, search, internal notes,
   duplicate links, and a URL for the resulting article change.
 
@@ -65,9 +66,9 @@ existing private `postmark-token` file. Duplicate form posts and discarded spam
 do not trigger admin emails. Delivery failures are logged with the submission
 reference, and the submission remains saved for review; there is no automatic retry.
 
-Article and section links prefill the forms. Each form has CSRF protection,
+Article and section links prefill both error-report and improvement forms. Each form has CSRF protection,
 a hidden spam field, and a signed token to prevent repeated posts from creating
-duplicate records. Limits are 10 submissions per connection per hour and
+duplicate records. Limits are 10 submissions across all three types per connection per hour and
 10 admin login attempts per connection per 15 minutes. Rate-limit keys use
 hashed addresses and expire at the end of their window; raw addresses are not
 stored in the submission database.
@@ -75,8 +76,8 @@ stored in the submission database.
 ### Automatic article requests
 
 The production `chainlore-worker.timer` runs every minute. It processes new article
-requests (including an existing backlog), one at a time, with a default limit of
-10 new runs per UTC day. Error reports remain in the manual queue.
+requests and improvement suggestions (including an existing backlog), one at a
+time, with a shared default limit of 10 new runs per UTC day. Error reports remain in the manual queue.
 
 1. Save an immutable snapshot of title, scope, and source hints. The email field
    and server secrets are never sent to either model.
@@ -211,6 +212,47 @@ CHAINLORE_AUTOMATION_ENABLED=1 uv run --locked python manage.py process_requests
 `manage.py publish_site --base-release dist` publishes the latest repository
 articles and commits any accepted pending drafts without calling a model. It uses
 the same lock as the worker. A failed build leaves the previous public site intact.
+
+### Automatic article improvements
+
+Every article has **Suggest an improvement** links in its sidebar, footer actions,
+and section headings. The form records the article and displayed Git revision;
+section links also prefill the section. Only the article and suggested improvement
+are required. Optional source URLs are validated but never fetched by the web
+endpoint. Improvements share CSRF, honeypot, deduplication, rate limits and private
+receipts with the other forms. Resolved suggestions use the existing email
+notification flow when an email was supplied.
+
+The worker snapshots the latest committed article when it starts, researches the
+suggestion, and asks for targeted additions or paragraph replacements. Suggestions
+such as expanding the length or adding an event section guide the research and
+writing; requested word counts are targets, subject to available evidence. New
+claims must cite sources from that research. A separate editorial screening checks
+that the edit addresses the suggestion and preserves useful coverage; this is not
+a fact-check. Invalid edits get one writing retry. Insufficient evidence, unsuitable
+edits and conflicts go to review without replacing the live page with a placeholder.
+
+The publisher applies exact paragraph/heading anchors to the latest Git source,
+preserving unrelated concurrent edits. Changed or missing anchors stop publication
+and hold the suggestion for review. New footnotes have a unique namespace, leaving
+existing citations intact; a replacement removes an old reference definition only
+if its last citation was in the replaced paragraph. The worker cannot delete whole sections or rewrite
+more than a third of the original prose through replacements. Full rewrites remain
+an editorial task. An interrupted push/publication resumes without applying the
+same changes twice. Each suggestion retains a separate Article revision in admin,
+including its original source, proposed result and Git commit.
+
+Substantive improvements return the article to `draft`, update `updated`, and
+remove current checker/reviewer fields; previous checks remain in Git history.
+`written_by` is preserved, and the actual additional writer model and effort are
+recorded in the conventional Git commit description. Only the changed article is
+staged for an improvement. Request text, email and research stay private.
+
+To recover a held improvement after a content conflict, use **Restart screening
+and research for held review runs** in the Automation runs admin. This archives
+the earlier proposal in its audit events and takes a fresh Git snapshot. Published
+or already-pushed revisions cannot be restarted this way. Transient Git/provider
+failures use the existing bounded retry and provider-pause controls.
 
 ## Deploy to Brick
 

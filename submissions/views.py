@@ -11,7 +11,7 @@ from .limits import allow
 from .models import Submission
 from .notify import notify_admin
 
-TITLES = {'request': 'Request an article', 'correction': 'Report an error'}
+TITLES = {'request': 'Request an article', 'correction': 'Report an error', 'improvement': 'Suggest an improvement'}
 
 
 def context(**kwargs):
@@ -22,7 +22,7 @@ def context(**kwargs):
 @require_GET
 @never_cache
 def index(request):
-    return render(request, 'submissions/index.html', context(title='Requests and corrections'))
+    return render(request, 'submissions/index.html', context(title='Article suggestions and corrections'))
 
 
 @require_http_methods(['GET', 'POST'])

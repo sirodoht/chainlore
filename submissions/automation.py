@@ -14,6 +14,7 @@ from .attribution import attribute_source, historical_writer_credit
 from .article_validation import InvalidArticle, citable_urls, extract_draft, stub_draft, validate_draft
 from .catalog import articles
 from .git_publication import GitPublicationError
+from .improvements import ImprovementConflict, process_improvement
 from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .automation_control import deliver_provider_alert, pause_for_provider
 from .publication import publication_lock, publish_site
@@ -75,6 +76,9 @@ def process(run):
         finish(run, 'review', 'submission_already_decided')
         return
     Submission.objects.filter(pk=submission.pk, status='new').update(status='reviewing', updated_at=timezone.now())
+    if submission.kind == 'improvement':
+        process_improvement(run)
+        return
     catalog = articles()
     # An unpublished record is the checked replacement awaiting publication.
     # A published record may be the old placeholder retained during regeneration.
@@ -181,10 +185,11 @@ def run_worker():
             if not run:
                 today = now.replace(hour=0, minute=0, second=0, microsecond=0)
                 if AutomationRun.objects.filter(created_at__gte=today).count() < settings.AUTOMATION_DAILY_LIMIT:
-                    submission = Submission.objects.filter(kind='request', status='new', automation__isnull=True).order_by('created_at').first()
+                    submission = Submission.objects.filter(kind__in=['request', 'improvement'], status='new', automation__isnull=True).order_by('created_at').first()
                     if submission:
                         run = AutomationRun.objects.create(submission=submission, inputs={
-                            'title': submission.title, 'details': submission.details, 'sources': submission.sources})
+                            'title': submission.title, 'details': submission.details, 'sources': submission.sources,
+                            'kind': submission.kind, 'article': submission.article, 'section': submission.section})
                         event(run, 'queued', model=settings.ANTHROPIC_MODEL)
             if run:
                 try:
@@ -208,6 +213,9 @@ def run_worker():
                         finish(run, 'failed', str(exc))
                 except InvalidArticle as exc:
                     event(run, 'validation', passed=False, reason=str(exc))
+                    finish(run, 'review', str(exc))
+                except ImprovementConflict as exc:
+                    event(run, 'improvement_conflict', code=str(exc))
                     finish(run, 'review', str(exc))
                 except GitPublicationError as exc:
                     # These codes are fixed by our Git wrapper; never include command output.
