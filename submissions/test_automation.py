@@ -3,6 +3,8 @@ from datetime import timedelta
 import json
 from pathlib import Path
 import smtplib
+import shutil
+from django.conf import settings
 import tempfile
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -14,6 +16,7 @@ from .article_validation import InvalidArticle, public_url, stub_draft, validate
 from .automation import deliver_notifications, run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .publication import index_generated_articles, publication_lock, publish_site
+from .git_publication import git
 from .automation_control import regenerate_placeholders, resume_queue, retry_runs
 from .models import AutomationControl
 
@@ -63,15 +66,31 @@ def written(draft=None):
 
 
 class AutomationTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.seed_directory = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(cls.seed_directory.cleanup)
+        cls.seed = Path(cls.seed_directory.name)
+        for folder in ('pages', 'site'):
+            shutil.copytree(settings.BASE_DIR / folder, cls.seed / folder)
+        for file in ('README.md', 'INDEX.md', 'ABOUT.md', 'VISION.md', 'POLICY.md', '.gitignore'):
+            shutil.copyfile(settings.BASE_DIR / file, cls.seed / file)
+        git(cls.seed, 'init', '-b', 'main')
+        git(cls.seed, 'add', '.')
+        git(cls.seed, 'commit', '-m', 'Initial test articles')
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
+        self.remote = self.root / 'remote.git'
+        git(self.root, 'clone', '--bare', str(self.seed), str(self.remote))
         self.site = self.root / 'site'
         self.site.mkdir()
         (self.site / 'article-catalog.json').write_text(json.dumps({'bitcoin': {'title': 'Bitcoin', 'sections': {}}}))
         (self.site / 'build-info.json').write_text(json.dumps({'revision': 'a' * 40, 'release': 'test'}))
-        override = override_settings(DATA_DIR=self.root, PUBLICATION_ROOT=self.root / 'published',
+        override = override_settings(ARTICLE_GIT_REMOTE=str(self.remote), ARTICLE_GIT_KEY='', ARTICLE_GIT_BRANCH='main', DATA_DIR=self.root, PUBLICATION_ROOT=self.root / 'published',
                                      SITE_ROOT=self.site, ARTICLE_CATALOG=self.site / 'article-catalog.json',
                                      AUTOMATION_ENABLED=True, AUTOMATION_DAILY_LIMIT=10, NOTIFICATIONS_ENABLED=False)
         override.enable()
@@ -109,7 +128,9 @@ class AutomationTests(TestCase):
         with publication_lock():
             publish_site(self.site)
         self.assertNotEqual(first, current.resolve())
-        self.assertEqual(json.loads((current / 'build-info.json').read_text())['revision'], 'b' * 40)
+        self.assertEqual(json.loads((current / 'build-info.json').read_text())['app_revision'], 'b' * 40)
+        self.assertEqual(json.loads((current / 'build-info.json').read_text())['revision'],
+                         git(self.remote, 'rev-parse', 'main'))
         self.assertTrue((current / 'p/test-protocol/index.html').is_file())
         self.assertIn('Written by test-writer-v1 (high effort)', (current / 'p/test-protocol/index.html').read_text())
         self.assertEqual((current / 'sources/INDEX.md').read_text().count('](pages/test-protocol.md)'), 1)
@@ -118,6 +139,115 @@ class AutomationTests(TestCase):
         self.assertEqual(GeneratedArticle.objects.count(), 1)
         self.assertNotIn('email', run.inputs)
         self.assertTrue(run.events.filter(kind='notification', data__outcome='failed').exists())
+
+    def edit_remote(self, edit):
+        with tempfile.TemporaryDirectory(dir=self.root) as directory:
+            checkout = Path(directory) / 'checkout'
+            git(self.root, 'clone', str(self.remote), str(checkout))
+            edit(checkout)
+            git(checkout, 'add', '--all')
+            git(checkout, 'commit', '-m', 'Editorial change')
+            git(checkout, 'push', 'origin', 'main')
+
+    def test_article_is_committed_before_publication_with_only_public_files(self):
+        run_worker()
+        record = GeneratedArticle.objects.get()
+        revision = git(self.remote, 'rev-parse', 'main')
+        self.assertEqual(record.git_revision, revision)
+        self.assertEqual(git(self.remote, 'show', 'main:pages/test-protocol.md') + '\n', record.markdown)
+        self.assertEqual(set(git(self.remote, 'diff-tree', '--no-commit-id', '--name-only', '-r', revision).splitlines()),
+                         {'pages/test-protocol.md', 'INDEX.md'})
+        self.assertNotIn(self.submission.email, git(self.remote, 'show', 'main'))
+        self.assertEqual(json.loads((self.root / 'published/current/build-info.json').read_text())['revision'], revision)
+
+    def test_non_fast_forward_push_keeps_site_and_retries_from_latest_main(self):
+        from .git_publication import commit_and_push
+        # Establish a public site before attempting the new article.
+        with publication_lock():
+            publish_site()
+        current = self.root / 'published/current'
+        previous = current.resolve()
+
+        def race(source, paths):
+            self.edit_remote(lambda checkout: (checkout / 'ABOUT.md').write_text(
+                (checkout / 'ABOUT.md').read_text() + '\nEditorial update.\n'))
+            return commit_and_push(source, paths)
+
+        with patch('submissions.publication.commit_and_push', side_effect=race):
+            run_worker()
+        self.assertEqual(current.resolve(), previous)
+        self.assertIsNone(GeneratedArticle.objects.get().published_at)
+        self.assertNotIn('pages/test-protocol.md', git(self.remote, 'ls-tree', '-r', '--name-only', 'main'))
+        AutomationRun.objects.update(next_attempt_at=timezone.now() - timedelta(seconds=1))
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.assertIn('Editorial update.', git(self.remote, 'show', 'main:ABOUT.md'))
+        self.write_article.assert_called_once()
+
+    def test_retry_after_push_does_not_make_duplicate_commit(self):
+        with patch('submissions.publication.shutil.copytree', side_effect=OSError('publication disk unavailable')):
+            run_worker()
+        revision = git(self.remote, 'rev-parse', 'main')
+        self.assertIsNone(GeneratedArticle.objects.get().published_at)
+        self.assertFalse((self.root / 'published/current').exists())
+        AutomationRun.objects.update(next_attempt_at=timezone.now() - timedelta(seconds=1))
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.assertEqual(git(self.remote, 'rev-parse', 'main'), revision)
+        self.write_article.assert_called_once()
+
+    def test_database_history_cannot_resurrect_deleted_repository_article(self):
+        run_worker()
+
+        def remove(checkout):
+            (checkout / 'pages/test-protocol.md').unlink()
+            index = checkout / 'INDEX.md'
+            index.write_text(index.read_text().replace('- [Test Protocol](pages/test-protocol.md)\n', ''))
+
+        self.edit_remote(remove)
+        with publication_lock():
+            publish_site()
+        self.assertFalse((self.root / 'published/current/p/test-protocol.md').exists())
+        self.assertTrue(GeneratedArticle.objects.exists())
+        self.assertNotIn('pages/test-protocol.md', git(self.remote, 'ls-tree', '-r', '--name-only', 'main'))
+
+    def test_regeneration_cannot_overwrite_editorial_changes(self):
+        run = self.publish_placeholder()
+        regenerate_placeholders([run.pk], actor_id=7)
+        self.edit_remote(lambda checkout: (checkout / 'pages/test-protocol.md').write_text(
+            (checkout / 'pages/test-protocol.md').read_text() + '\nEditor supplied context.\n'))
+        revision = git(self.remote, 'rev-parse', 'main')
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'retry')
+        self.assertEqual(git(self.remote, 'rev-parse', 'main'), revision)
+        self.assertIn('Editor supplied context.', git(self.remote, 'show', 'main:pages/test-protocol.md'))
+        self.assertIn('This is a placeholder', (self.root / 'published/current/p/test-protocol.md').read_text())
+
+    def test_legacy_import_is_explicit_and_preserves_existing_repo_articles(self):
+        with patch('submissions.automation.publish_site', side_effect=OSError('old publication')):
+            run_worker()
+        GeneratedArticle.objects.update(published_at=timezone.now())
+        AutomationRun.objects.update(state='published')
+        with publication_lock():
+            publish_site()
+        self.assertFalse((self.root / 'published/current/p/test-protocol.md').exists())
+        with publication_lock():
+            publish_site(import_legacy=True)
+        self.assertTrue((self.root / 'published/current/p/test-protocol.md').exists())
+        revision = git(self.remote, 'rev-parse', 'main')
+        GeneratedArticle.objects.update(markdown='Historical database text that must not replace Git')
+        with publication_lock():
+            publish_site(import_legacy=True)
+        self.assertEqual(git(self.remote, 'rev-parse', 'main'), revision)
+        self.assertIn('fictional protocol', (self.root / 'published/current/p/test-protocol.md').read_text())
+
+    def test_invalid_build_does_not_commit_or_publish_article(self):
+        revision = git(self.remote, 'rev-parse', 'main')
+        with patch('submissions.publication.build_source', side_effect=ValueError('site_check_failed')):
+            run_worker()
+        self.assertEqual(git(self.remote, 'rev-parse', 'main'), revision)
+        self.assertFalse((self.root / 'published/current').exists())
+        self.assertIsNone(GeneratedArticle.objects.get().published_at)
 
     def test_generated_exchange_joins_existing_exchange_lists(self):
         self.write_article.return_value = written({**DRAFT, 'title': 'Binance', 'slug': 'binance', 'category': 'Exchange'})
@@ -444,8 +574,7 @@ class AutomationTests(TestCase):
         run_worker()
         current = self.root / 'published/current'
         previous = current.resolve()
-        with patch('submissions.publication.subprocess.run') as build:
-            build.return_value.returncode = 1
+        with patch('submissions.publication.build_source', side_effect=ValueError('site_build_failed')):
             with publication_lock(), self.assertRaisesRegex(ValueError, 'site_build_failed'):
                 publish_site()
         self.assertEqual(current.resolve(), previous)

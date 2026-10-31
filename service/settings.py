@@ -104,3 +104,9 @@ AUTOMATION_DAILY_LIMIT = int(os.environ.get('CHAINLORE_AUTOMATION_DAILY_LIMIT', 
 ANTHROPIC_MODEL = 'claude-haiku-5-5'
 JEV_MODEL = 'jev-latest'
 PUBLICATION_ROOT = Path(os.environ.get('CHAINLORE_PUBLICATION_ROOT', DATA_DIR / 'published'))
+
+# Publication uses a fresh checkout of this branch; the DB holds private workflow state.
+ARTICLE_GIT_REMOTE = os.environ.get('CHAINLORE_ARTICLE_GIT_REMOTE', '')
+ARTICLE_GIT_BRANCH = os.environ.get('CHAINLORE_ARTICLE_GIT_BRANCH', 'main')
+ARTICLE_GIT_KEY = os.environ.get('CHAINLORE_ARTICLE_GIT_KEY', '')
+ARTICLE_GIT_KNOWN_HOSTS = os.environ.get('CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS', '')

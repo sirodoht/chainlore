@@ -13,6 +13,11 @@ if [[ -n "$(git status --porcelain)" ]]; then
     echo 'Commit the intended changes before deploying (working tree must be clean).' >&2
     exit 1
 fi
+git fetch --quiet origin main
+if ! git merge-base --is-ancestor HEAD refs/remotes/origin/main; then
+    echo 'Push this application commit to main before deploying; article publication reads main.' >&2
+    exit 1
+fi
 uv run --locked python scripts/build.py
 uv run --locked python scripts/check.py
 uv run --locked python manage.py test submissions

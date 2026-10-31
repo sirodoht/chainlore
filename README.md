@@ -98,8 +98,10 @@ requests (including an existing backlog), one at a time, with a default limit of
    contains no model text. Jev holds a draft only when it is confident the draft
    is spam, off-topic, injected, or exposes contact details. This does not confer
    an AI fact-checked status: generated articles are explicitly published as drafts.
-5. Rebuild the full site, run the static checker, and atomically switch its public
-   symlink. Email the requester about the resulting article or declined request.
+5. Clone the article branch, write the accepted Markdown into `pages/` and update
+   `INDEX.md`. Build and check the full site, commit those files, and push. Only
+   after a successful push, atomically switch the public site to that revision.
+   Email the requester about the resulting article or declined request.
 
 Missing or malformed screening results go to review. Transient provider errors retry from
 saved checkpoints, at most three attempts with backoff, so an outage can still
@@ -160,18 +162,45 @@ processing; `CHAINLORE_AUTOMATION_DAILY_LIMIT` changes the daily run cap. Local
 development defaults to disabled. Stop `chainlore-worker.timer` and the worker
 service together to pause production processing immediately.
 
-Generated Markdown is authoritative in SQLite, not automatically committed to
-Git. Every deployment combines the shipped Git sources with these database
-articles, updating the index, search, sitemap, and Markdown URLs. A page added
-deliberately to `pages/` with the same slug supersedes the generated version.
-Generated articles join the index and homepage subject lists using their category
-metadata (for example, Exchange maps to Exchanges). Existing curated entries and
-summaries stay in place. Infrastructure and Other topics sections appear only when
-needed; request provenance is not a public category.
-Back up the database to retain generated articles and their audit history.
-Public releases are under `published/releases/`, with an atomic `published/current`
-symlink; the existing `current` path points to that symlink. The worker can write
-only the private data and publication directories under systemd's sandbox.
+Published articles are authoritative in Git: every public article comes from
+`pages/*.md` on `main`. SQLite retains requests, research, draft checkpoints and
+audit history, including the publication commit. It is never overlaid onto the
+site at build time. A fresh clone can rebuild the complete encyclopedia.
+
+Each publication uses a temporary checkout of the latest remote branch. The worker
+stages only article paths and `INDEX.md`, validates the build, commits as
+`Chainlore Bot <bot@chainlore.xyz>`, and pushes without force. A rejected push leaves
+the public site unchanged; retries clone the latest branch and reuse the saved
+draft. A successful push followed by a publication failure is also resumable,
+without duplicate commits. Existing repository articles win slug collisions.
+Placeholder replacement requires the repository file to match the previous draft's
+hash, so editorial changes cannot be overwritten by regeneration. Removing a
+published article from Git removes it from the next build; database history cannot
+bring it back.
+
+`build-info.json` records the article source commit in `revision` and the deployed
+application commit in `app_revision`. Public releases are under
+`published/releases/`, with an atomic `published/current` symlink; the existing
+`current` path points to that symlink. The worker can write only the private data
+and publication directories under systemd's sandbox. Back up SQLite to retain
+requests and audit history; back up Git to retain articles.
+
+The worker and deployment command need Git plus repository write access. On Brick,
+the dedicated SSH key is `/var/www/chainlore/private/article-git-key` and the pinned
+GitHub host keys are `/var/www/chainlore/private/github-known-hosts`, owned by
+`deploy`, mode `600`. Neither belongs in Git, application releases, or public files.
+The service and activation script set `CHAINLORE_ARTICLE_GIT_REMOTE`,
+`CHAINLORE_ARTICLE_GIT_KEY`, and `CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS`.
+`CHAINLORE_ARTICLE_GIT_BRANCH` defaults to `main`. Local runs must explicitly set
+`CHAINLORE_ARTICLE_GIT_REMOTE` to a disposable test repository or the intended
+publication repository; there is no implicit production target.
+
+For migration from database publication, stop the worker and back up SQLite, then
+run `manage.py publish_site --import-legacy` with Git configured. This commits any
+previously published database articles missing from Git, preserving existing repo
+versions and all writer credits. Inspect collisions before migration; the database
+retains the original generated versions. Routine publication never imports old
+published records.
 
 For local processing after setting private credentials:
 
@@ -179,18 +208,21 @@ For local processing after setting private credentials:
 CHAINLORE_AUTOMATION_ENABLED=1 uv run --locked python manage.py process_requests
 ```
 
-`manage.py publish_site --base-release dist` rebuilds the publication from Git
-sources and database articles without calling a model. It uses the same lock as
-the worker. A failed build leaves the previous public site intact.
+`manage.py publish_site --base-release dist` publishes the latest repository
+articles and commits any accepted pending drafts without calling a model. It uses
+the same lock as the worker. A failed build leaves the previous public site intact.
 
 ## Deploy to Brick
 
 Requires SSH access to `root@01z.io`, plus local uv, rsync, and curl.
-Brick needs `/home/deploy/.local/bin/uv` and Python 3.11 or newer.
+Brick needs `/home/deploy/.local/bin/uv`, Python 3.11 or newer, Git, and the
+article deploy key described above. Push the intended application commit to `main`
+before deploying; publication reads article sources from the remote branch.
 
 ```sh
 git add <changed-files>
 git commit -m "Describe the update"
+git push
 ./deploy.sh
 ```
 

@@ -12,6 +12,9 @@ uv=/home/deploy/.local/bin/uv
 test -x "$uv"
 test -s "$root/releases/$release/index.html"
 test -s "$app/manage.py"
+test -s "$root/private/article-git-key"
+test -s "$root/private/github-known-hosts"
+command -v git >/dev/null
 # Main Caddy imports belong to the Brick repository and are applied by its CI.
 grep -Fxq 'import /etc/caddy/chainlore.caddy' /etc/caddy/Caddyfile
 if ss -lnt '( sport = :5011 )' | tail -n +2 | grep -q .; then
@@ -68,6 +71,9 @@ cd "$app"
 as_deploy() {
     runuser -u deploy -- env CHAINLORE_PRODUCTION=1 CHAINLORE_DATA_DIR="$root/private" \
         CHAINLORE_PUBLICATION_ROOT="$root/published" \
+        CHAINLORE_ARTICLE_GIT_REMOTE=git@github.com:sirodoht/chainlore.git \
+        CHAINLORE_ARTICLE_GIT_KEY="$root/private/article-git-key" \
+        CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS="$root/private/github-known-hosts" \
         CHAINLORE_SITE_ROOT="$root/releases/$release" "$@"
 }
 as_deploy "$uv" sync --locked --no-dev --python /usr/bin/python3

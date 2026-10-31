@@ -139,5 +139,5 @@ class AutomationEventAdmin(AuditAdmin):
 
 @admin.register(GeneratedArticle)
 class GeneratedArticleAdmin(AuditAdmin):
-    list_display = ['slug', 'title', 'run', 'published_at', 'content_hash']
+    list_display = ['slug', 'title', 'run', 'published_at', 'git_revision']
     search_fields = ['slug', 'title']

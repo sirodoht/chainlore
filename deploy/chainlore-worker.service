@@ -12,6 +12,9 @@ Environment=CHAINLORE_PRODUCTION=1
 Environment=CHAINLORE_DATA_DIR=/var/www/chainlore/private
 Environment=CHAINLORE_SITE_ROOT=/var/www/chainlore/current
 Environment=CHAINLORE_PUBLICATION_ROOT=/var/www/chainlore/published
+Environment=CHAINLORE_ARTICLE_GIT_REMOTE=git@github.com:sirodoht/chainlore.git
+Environment=CHAINLORE_ARTICLE_GIT_KEY=/var/www/chainlore/private/article-git-key
+Environment=CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS=/var/www/chainlore/private/github-known-hosts
 Environment=CHAINLORE_AUTOMATION_ENABLED=1
 Environment=CHAINLORE_AUTOMATION_DAILY_LIMIT=10
 ExecStart=/var/www/chainlore/app-current/.venv/bin/python manage.py process_requests

@@ -1,7 +1,8 @@
-"""Rebuild Git sources plus durable database articles, then atomically switch the site."""
+"""Commit accepted drafts, then publish a validated snapshot of the Git branch."""
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -16,6 +17,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone as django_timezone
 from .categories import CATEGORY_SECTIONS
+from .git_publication import clone_source, commit_and_push, stage_articles
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 
 
@@ -51,9 +53,18 @@ def publication_lock(blocking=True):
             fcntl.flock(lock, fcntl.LOCK_UN)
 
 
-def publish_site(base_release=None):
+def build_source(source):
+    env = {**os.environ, 'CHAINLORE_BUILD_ROOT': str(source)}
+    for script in ('build.py', 'check.py'):
+        result = subprocess.run([sys.executable, str(settings.BASE_DIR / 'scripts' / script)], env=env,
+                                capture_output=True, timeout=120)
+        if result.returncode:
+            # Output could contain untrusted article text. Never copy it into logs.
+            raise ValueError('site_' + script.removesuffix('.py') + '_failed')
+
+
+def publish_site(base_release=None, import_legacy=False):
     """Caller holds publication_lock. No model-controlled commands or filesystem paths."""
-    base = settings.BASE_DIR
     output = settings.PUBLICATION_ROOT
     releases = output / 'releases'
     releases.mkdir(parents=True, exist_ok=True, mode=0o755)
@@ -63,37 +74,29 @@ def publish_site(base_release=None):
     info = json.loads(source_info.read_text()) if source_info.exists() else {'revision': 'development', 'release': 'development'}
     name = 'generated-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:12]
     target = releases / name
-    records = list(GeneratedArticle.objects.filter(
-        Q(published_at__isnull=False) |
-        Q(run__state__in=['queued', 'running', 'retry'], run__submission__status='reviewing')
-    ).order_by('slug'))
+    eligible = Q(published_at__isnull=True, run__state__in=['queued', 'running', 'retry'],
+                 run__submission__status='reviewing')
+    if import_legacy:
+        eligible |= Q(published_at__isnull=False)
+    records = list(GeneratedArticle.objects.filter(eligible).order_by('slug'))
     with tempfile.TemporaryDirectory(prefix='publication-', dir=settings.DATA_DIR) as directory:
-        source = Path(directory)
-        for folder in ('pages', 'site'):
-            shutil.copytree(base / folder, source / folder)
-        for file in ('README.md', 'INDEX.md', 'ABOUT.md', 'VISION.md', 'POLICY.md'):
-            shutil.copyfile(base / file, source / file)
-        additions = []
+        source = Path(directory) / 'source'
+        clone_source(source)
+        paths = stage_articles(source, records, index_generated_articles)
+        build_source(source)
+        # Validate before committing; a rejected/non-fast-forward push never goes live.
+        revision = commit_and_push(source, paths)
+        published_hashes = {}
         for record in records:
-            if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', record.slug):
-                raise ValueError('invalid_stored_slug')
-            destination = source / 'pages' / (record.slug + '.md')
-            # An article deliberately added to Git takes precedence over its generated original.
-            if not destination.exists():
-                destination.write_text(record.markdown)
-                additions.append(record)
-        if additions:
-            index = source / 'INDEX.md'
-            index.write_text(index_generated_articles(index.read_text(), additions))
-        env = {**os.environ, 'CHAINLORE_BUILD_ROOT': str(source)}
-        for script in ('build.py', 'check.py'):
-            result = subprocess.run([sys.executable, str(base / 'scripts' / script)], env=env,
-                                    capture_output=True, timeout=120)
-            if result.returncode:
-                # Output could contain untrusted article text. Never copy it into logs.
-                raise ValueError('site_' + script.removesuffix('.py') + '_failed')
+            published_hashes[record.slug] = hashlib.sha256((source / 'pages' / (record.slug + '.md')).read_bytes()).hexdigest()
+            GeneratedArticle.objects.filter(pk=record.pk).update(git_revision=revision)
+            AutomationEvent.objects.create(run_id=record.run_id, kind='git_publication', data={
+                'revision': revision, 'slug': record.slug,
+                'content_hash': published_hashes[record.slug]})
+        info['app_revision'] = info.get('app_revision', info['revision'])
+        info['revision'] = revision
         info['publication'] = name
-        info['generated_articles'] = {record.slug: record.content_hash for record in records}
+        info.pop('generated_articles', None)
         (source / 'dist' / 'build-info.json').write_text(json.dumps(info) + '\n')
         shutil.copytree(source / 'dist', target)
     # Only rendered public files are copied; private sources, prompts and DB stay outside.
@@ -115,6 +118,6 @@ def publish_site(base_release=None):
                 Submission.objects.filter(automation__pk=record.run_id, status='reviewing').update(
                     status='resolved', resulting_url=f'https://chainlore.xyz/p/{record.slug}/', updated_at=django_timezone.now())
                 AutomationEvent.objects.create(run_id=record.run_id, kind='publication', data={
-                    'release': name, 'content_hash': record.content_hash, 'slug': record.slug,
-                    'decision': 'validated_draft_published'})
+                    'release': name, 'content_hash': published_hashes[record.slug], 'slug': record.slug,
+                    'revision': revision, 'decision': 'committed_article_published'})
     return name

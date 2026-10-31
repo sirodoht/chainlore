@@ -13,6 +13,7 @@ from . import notify
 from .attribution import attribute_source, historical_writer_credit
 from .article_validation import InvalidArticle, citable_urls, extract_draft, stub_draft, validate_draft
 from .catalog import articles
+from .git_publication import GitPublicationError
 from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .automation_control import deliver_provider_alert, pause_for_provider
 from .publication import publication_lock, publish_site
@@ -129,10 +130,11 @@ def process(run):
         finish(run, 'review', 'submission_changed_during_generation')
         return
     with transaction.atomic():
+        base_hash = prepared.content_hash if prepared else ''
         if prepared:
             prepared.delete()
         GeneratedArticle.objects.create(slug=run.draft['slug'], run=run, title=run.draft['title'],
-                                        markdown=source, content_hash=digest)
+                                        markdown=source, content_hash=digest, base_content_hash=base_hash)
     publish_site()
 
 
@@ -207,6 +209,13 @@ def run_worker():
                 except InvalidArticle as exc:
                     event(run, 'validation', passed=False, reason=str(exc))
                     finish(run, 'review', str(exc))
+                except GitPublicationError as exc:
+                    # These codes are fixed by our Git wrapper; never include command output.
+                    event(run, 'git_error', code=str(exc))
+                    run.last_error = str(exc)
+                    run.state = 'retry' if run.attempts < 3 else 'failed'
+                    run.next_attempt_at = now + timedelta(minutes=5 * run.attempts)
+                    run.save()
                 except Exception as exc:
                     # Never log provider/request text or secrets from exception messages.
                     event(run, 'worker_error', error_type=type(exc).__name__)

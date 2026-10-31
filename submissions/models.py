@@ -101,6 +101,8 @@ class GeneratedArticle(models.Model):
     title = models.CharField(max_length=200)
     markdown = models.TextField()
     content_hash = models.CharField(max_length=64)
+    base_content_hash = models.CharField(max_length=64, blank=True)
+    git_revision = models.CharField(max_length=40, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     published_at = models.DateTimeField(null=True, blank=True)
 
