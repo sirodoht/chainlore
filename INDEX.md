@@ -35,6 +35,8 @@ All pages in Chainlore.
 
 ## Decentralised finance
 
+- [Automated market maker](pages/automated-market-maker.md): liquidity pools,
+  pricing curves, and liquidity-provider risks.
 - [Curve](pages/curve.md): exchange pools, crvUSD, lending, and vote-escrow governance.
 - [Ethena](pages/ethena.md): USDe, its backing and hedging, sUSDe, and ENA.
 - [MakerDAO and Sky](pages/makerdao-sky.md): the protocol behind Dai and
@@ -71,6 +73,10 @@ All pages in Chainlore.
 
 ## Infrastructure
 
+- [Proof of work](pages/proof-of-work.md): mining, difficulty, and cumulative work.
+- [Proof of stake](pages/proof-of-stake.md): validators, finality, and staking risks.
+- [Maximal extractable value](pages/mev.md): transaction ordering, searchers,
+  block builders, and private submission.
 - [Chainlink](pages/chainlink.md): oracle networks, data feeds, and LINK.
 - [MetaMask](pages/metamask.md): a wallet connecting browser and mobile
   applications to blockchain accounts.
