@@ -38,6 +38,8 @@ All pages in Chainlore.
 
 ## Decentralised finance
 
+- [Polymarket](pages/polymarket.md): prediction markets, collateral,
+  resolution, and the separate US exchange.
 - [Automated market maker](pages/automated-market-maker.md): liquidity pools,
   pricing curves, and liquidity-provider risks.
 - [Curve](pages/curve.md): exchange pools, crvUSD, lending, and vote-escrow governance.
@@ -52,6 +54,7 @@ All pages in Chainlore.
 
 ## Exchanges
 
+- [Bybit](pages/bybit.md): derivatives, custody, the 2025 theft, and regional entities.
 - [Binance](pages/binance.md): the exchange, related entities, regulation, and security incidents.
 - [Mt. Gox](pages/mt-gox.md): the 2014 collapse and subsequent creditor repayments.
 - [Coinbase](pages/coinbase.md): exchange, custody provider, and developer
@@ -98,6 +101,10 @@ All pages in Chainlore.
 
 - [Non-fungible token](pages/nft.md): token identity, metadata, rights, and royalties.
 - [Memecoin](pages/memecoin.md): internet culture, speculative trading, and regulatory debate.
+
+## History
+
+- [The DAO](pages/the-dao.md): the 2016 investment project, exploit, and Ethereum fork.
 
 ## People
 

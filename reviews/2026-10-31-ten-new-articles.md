@@ -32,3 +32,15 @@ under POLICY.md.
   Does not describe retired Beacon Chain services as currently active.
 - XRP Ledger: protocol documentation for XRP, trusted validator lists,
   fees, exchange, and amendment activation. Distinguishes Ripple from XRPL.
+
+## Batch 3
+
+- Polymarket: current platform documentation, including pUSD and the two
+  resolution sources; CFTC enforcement history and the separate QCX US
+  exchange's register entry.
+- The DAO: the SEC investigation report and contemporaneous Ethereum
+  Foundation exploit and fork announcements. Distinguishes recovery
+  totals from stolen funds and the proposed soft fork from the final fork.
+- Bybit: company and product documentation, FBI attribution, BlockSec's
+  original technical analysis, and the Austrian regulator's authorisation
+  notice. Company claims are attributed; no current size ranking is made.
