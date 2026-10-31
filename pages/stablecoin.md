@@ -491,6 +491,9 @@ said it had acted consistently with its duties.[^block-wlf][^ab-wlf]
 
 ## See also
 
+- [Ethena](ethena.md)
+- [Curve](curve.md)
+
 - [MakerDAO and Sky](makerdao-sky.md)
 
 - [Tether](tether.md), issuer of USDT

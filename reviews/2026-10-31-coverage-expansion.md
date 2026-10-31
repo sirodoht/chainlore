@@ -44,3 +44,11 @@ records. The Coinbase dismissal is not described as a merits ruling;
 MetaMask's support-ticket incident is distinguished from a wallet compromise;
 and the Maker compensation poll is not described as an executed payment.
 Added navigation from Base, USDC, Hyperliquid, wallets, and stablecoins.
+
+## Protocol batch
+
+Added Chainlink, Curve, and Ethena, with reciprocal links from the oracle,
+exchange, staking, and stablecoin coverage. Used protocol specifications,
+operator documentation, and governance records. Curve's compensation
+proposal is not treated as proof of completed payments. Ethena's current
+strategy descriptions and discretionary rewards are attributed to Ethena.

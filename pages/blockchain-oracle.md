@@ -64,6 +64,8 @@ check and choose suitable parameters.[^sequencer]
 
 ## See also
 
+- [Chainlink](chainlink.md)
+
 - [Aave](aave.md)
 - [Stablecoin](stablecoin.md)
 - [Rollup](rollup.md)

@@ -328,6 +328,8 @@ raised a new issue".[^vote-delay]
 
 ## See also
 
+- [Curve](curve.md)
+
 - [Ethereum](ethereum.md)
 - [Arbitrum](arbitrum.md), whose technology Robinhood Chain uses
 - [Optimism](optimism.md), whose OP Stack Unichain uses

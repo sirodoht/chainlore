@@ -326,6 +326,8 @@ favour, just above the 50 million quorum, and concluded on 30 June
 
 ## See also
 
+- [Curve](curve.md)
+
 - [Ethereum](ethereum.md)
 - [Aave](aave.md), where stETH is used as collateral
 - [Terra](terra.md), an early Lido deployment

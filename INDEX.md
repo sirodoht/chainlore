@@ -33,6 +33,8 @@ All pages in Chainlore.
 
 ## Decentralised finance
 
+- [Curve](pages/curve.md): exchange pools, crvUSD, lending, and vote-escrow governance.
+- [Ethena](pages/ethena.md): USDe, its backing and hedging, sUSDe, and ENA.
 - [MakerDAO and Sky](pages/makerdao-sky.md): the protocol behind Dai and
   USDS, its collateral system, and its governance transition.
 - [Uniswap](pages/uniswap.md): a decentralised exchange protocol built on
@@ -65,6 +67,7 @@ All pages in Chainlore.
 
 ## Infrastructure
 
+- [Chainlink](pages/chainlink.md): oracle networks, data feeds, and LINK.
 - [MetaMask](pages/metamask.md): a wallet connecting browser and mobile
   applications to blockchain accounts.
 - [Cryptocurrency wallet](pages/cryptocurrency-wallet.md): keys, accounts,
