@@ -72,8 +72,14 @@ def validate_patch(record, patch, research):
                 (anchor == '## References' and position == 'before'), 'improvement_anchor_not_unique')
         require(not re.search(r'^\[\^|^## References\s*$', text, re.M), 'references_inside_improvement')
         if position == 'replace':
-            require(not anchor.startswith(('#', '|', '- ', '* ')), 'unsupported_improvement_replacement')
-            replaced += len(anchor)
+            if anchor.startswith('|'):
+                # Citation-only table replacements can repair checker findings
+                # without changing facts, rows, columns, or headings.
+                strip_citations = lambda value: re.sub(r'\[\^[^\]]+\]', '', value).strip()
+                require(strip_citations(anchor) == strip_citations(text), 'unsupported_improvement_replacement')
+            else:
+                require(not anchor.startswith(('#', '- ', '* ')), 'unsupported_improvement_replacement')
+                replaced += len(anchor)
         snippets.append(text.strip())
     # This is a substantive editing pass, not a complete rewrite of the original author.
     require(replaced <= len(prose) // 3, 'improvement_rewrites_too_much')

@@ -75,14 +75,14 @@ class VerificationRecoveryTests(TestCase):
         self.assertEqual(self.check.state,'passed')
 
     @patch('submissions.ai_providers.call')
-    def test_saved_evidence_cannot_receive_a_new_check_date(self,call):
+    def test_saved_evidence_can_finish_on_a_later_day_with_a_new_report(self,call):
         original=payload(self.check);data=json.loads(original['messages'][0]['content']);data['today']='2000-01-01'
         original['messages'][0]['content']=json.dumps(data)
         self.check.session={'payload':original,'responses':evidence(),'mode':'report'};self.check.save()
+        call.return_value=self.finished()
         step(self.check)
-        call.assert_not_called()
-        self.assertEqual(self.check.state,'incomplete')
-        self.assertEqual(self.check.report['errors'],['verification_evidence_stale'])
+        self.assertEqual(self.check.state,'passed')
+        self.assertEqual(json.loads(call.call_args.args[3]['messages'][0]['content'])['today'],timezone.localdate().isoformat())
 
     @patch('submissions.management.commands.resume_verification.publication_lock')
     def test_recovery_retains_failed_audit_and_restores_same_candidate(self,lock):
@@ -116,7 +116,7 @@ class VerificationRecoveryTests(TestCase):
     def test_contradictory_pass_retries_report_with_feedback_without_rewriting(self,call):
         self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report'}
         self.check.save()
-        invalid=report();invalid['freshness_checked']=False
+        invalid=report();invalid['source_rules_met']=False
         invalid['units'][0]['claims'][0]['quote']='A quote absent from the source'
         call.return_value={'stop_reason':'end_turn','model':'checker-v1','content':[{'type':'text','text':json.dumps(invalid)}]}
         editorial.process(self.run)
@@ -128,7 +128,7 @@ class VerificationRecoveryTests(TestCase):
         step(self.check)
         self.assertEqual(self.check.state,'passed')
         data=json.loads(call.call_args.args[3]['messages'][0]['content'])
-        self.assertIn('source_or_freshness_check_missing',data['previous_report_validation_errors'])
+        self.assertIn('source_rules_check_missing',data['previous_report_validation_errors'])
         self.assertEqual(data['previous_report'],invalid)
 
     @patch('submissions.management.commands.resume_verification.publication_lock')

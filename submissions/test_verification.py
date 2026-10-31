@@ -74,8 +74,8 @@ class VerificationTests(TestCase):
             unit.update(verdict='nonfactual',claims=[])
         self.assertTrue(validate_report(self.check,result,evidence())[0])
 
-    def test_hash_freshness_and_source_rules_are_enforced(self):
-        for key,value in [('source_hash','0'*64),('as_of','2000-01-01'),('source_rules_met',False),('freshness_checked',False),('issues',['Fix the date before publishing'])]:
+    def test_hash_check_date_and_source_rules_are_enforced(self):
+        for key,value in [('source_hash','0'*64),('as_of','2000-01-01'),('source_rules_met',False),('issues',['Fix the date before publishing'])]:
             result=report();result[key]=value
             self.assertTrue(validate_report(self.check,result,evidence())[0])
 
@@ -105,7 +105,7 @@ class VerificationTests(TestCase):
         self.assertEqual(self.check.approved_hash,'')
         step(self.check)
         self.assertEqual(len(call.call_args.args[3]['messages']),2)
-        self.assertEqual(len(call.call_args.args[3]['tools']),2)
+        self.assertEqual(len(call.call_args.args[3]['tools']),1)
         step(self.check)
         self.assertEqual(self.check.state,'pending')
         self.assertEqual(self.check.session['mode'],'sources')

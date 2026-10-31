@@ -9,7 +9,7 @@ from .article_validation import InvalidArticle, citable_urls, extract_draft, val
 from .attribution import attribute_source
 from .improvements import snapshot_article, validate_patch, apply_patch
 from .models import AutomationEvent, ArticleRevision, GeneratedArticle, Submission, Verification
-from .verification import digest, step as check_step
+from .verification import digest, step as check_step, opened_sources, evidence_responses
 
 ACTIVE = ['queued', 'running', 'retry', 'researching', 'checking', 'revising', 'publishing']
 
@@ -80,25 +80,79 @@ def insufficient(run, reason):
 
 def revise(run, reason):
     count = run.editorial.get('revisions', 0)
-    if count >= settings.EDITORIAL_MAX_REVISIONS:
-        insufficient(run, 'The evidence or checks did not establish a publishable change after the available research and revision attempts. The existing article has been preserved.')
+    check = run.verifications.filter(pk=run.editorial.get('check_id'), state='failed').first() if isinstance(reason, dict) else None
+    assessment = reason.get('assessment', {}) if isinstance(reason, dict) else {}
+    supported = sum(u.get('verdict') in ('supported', 'nonfactual') for u in assessment.get('units', []))
+    if check:
+        supported += sum(len(b['ids']) for b in check.session.get('batches', []) if 'report' in b)
+    score = {'supported':supported, 'issues':len(assessment.get('issues', [])),
+             'candidate':digest(run.editorial.get('candidate', ''))}
+    previous = run.editorial.get('revision_progress')
+    advancing = previous is None or (bool(assessment) and score['candidate'] != previous['candidate'] and
+        (score['supported'] > previous['supported'] or
+         (score['supported'] >= previous['supported'] and score['issues'] < previous['issues'])))
+    stalled = 0 if advancing else run.editorial.get('stalled_revisions', 0)+1
+    run.editorial.update(revision_progress=score, stalled_revisions=stalled)
+    if stalled >= settings.EDITORIAL_MAX_STALLED_REVISIONS:
+        insufficient(run, 'Repeated correction passes did not improve the verified coverage or resolve the remaining findings. The existing article has been preserved.')
         return
     run.inputs['verification_feedback'] = reason
-    run.research = {}
-    run.research_session = {}
-    run.draft = {}
+    # Checker findings already identify concrete edits and fetched evidence.
+    # Reuse those documents instead of discarding work and researching again.
+    targeted = False
+    if check:
+        sources = opened_sources(evidence_responses(check))
+        research = {'content':[{'type':'web_fetch_tool_result', 'content':{'type':'web_fetch_result','url':url,
+            'content':{'source':{'type':'text','data':text}}}} for url,text in sources.items()]}
+        if sources:
+            try:
+                ai.research_context(research)
+            except ai.ProviderError:
+                targeted = bool(run.research)
+            else:
+                run.research = research
+                targeted = True
+    if not targeted:
+        run.research = {}
+        run.research_session = {}
     run.output_review = {}
     run.state = 'revising'
-    run.editorial.update(stage='research', revisions=count+1, feedback=reason)
+    run.editorial.pop('writer_response', None)
+    run.editorial.pop('writer_problem', None)
+    run.editorial.update(stage='write' if targeted else 'research', revisions=count+1, feedback=reason, writer_retries=0)
     run.save()
-    event(run, 'revision_requested', attempt=count+1)
+    event(run, 'revision_requested', attempt=count+1, targeted=targeted, stalled_revisions=stalled)
+
+
+def writer_response(run, kind, problem):
+    saved = run.editorial.get('writer_response')
+    if saved and not saved.get('processed'):
+        return saved['response']
+    response = ai.write_article(run, problem) if kind == 'request' else ai.write_improvement(run, run.article_revision, problem)
+    run.editorial['writer_response'] = {'response':response, 'processed':False}
+    run.save(update_fields=['editorial','updated_at'])
+    return response
+
+
+def retry_writing(run, reason):
+    attempts = run.editorial.get('writer_retries', 0)+1
+    if run.editorial.get('writer_response'):
+        run.editorial['writer_response']['processed'] = True
+    run.editorial.update(writer_retries=attempts, writer_problem=reason)
+    run.last_error = 'writing_output_incomplete'
+    run.state = 'blocked' if attempts >= settings.EDITORIAL_WRITING_ATTEMPTS else 'revising'
+    run.next_attempt_at = None
+    run.save()
+    event(run, 'writing_incomplete' if run.state == 'blocked' else 'writing_retry', attempt=attempts, reason=reason)
 
 
 def write_candidate(run):
     kind = run.submission.kind
     problem = run.editorial.get('feedback')
+    if run.editorial.get('writer_problem'):
+        problem = {'checker_feedback':problem, 'output_problem':run.editorial['writer_problem']}
     if kind == 'request':
-        response = ai.write_article(run, problem)
+        response = writer_response(run, kind, problem)
         draft = extract_draft(response)
         source, _ = validate_draft(draft, run.research)
         source, _ = attribute_source(source, response.get('_written_by', 'Unknown'))
@@ -106,7 +160,7 @@ def write_candidate(run):
         run.editorial['writer_credit'] = response.get('_written_by', 'Unknown')
     else:
         record = run.article_revision
-        response = ai.write_improvement(run, record, problem)
+        response = writer_response(run, kind, problem)
         draft = extract_draft(response)
         if draft.get('insufficient_evidence'):
             # A checker can validate the existing article independently; a no-edit
@@ -119,7 +173,11 @@ def write_candidate(run):
             run.editorial['no_change'] = False
         run.draft = draft
         run.editorial['writer_credit'] = response.get('_written_by', 'Unknown')
-    run.save(update_fields=['draft', 'editorial', 'updated_at'])
+    run.editorial['writer_response']['processed'] = True
+    run.editorial.pop('writer_problem', None)
+    run.editorial['writer_retries'] = 0
+    run.last_error = ''
+    run.save(update_fields=['draft', 'editorial', 'last_error', 'updated_at'])
     if run.editorial.get('no_change'):
         begin_check(run, source)
     else:
@@ -200,7 +258,10 @@ def process(run):
             save(run, 'write')
         return
     if stage == 'write':
-        write_candidate(run)
+        try:
+            write_candidate(run)
+        except InvalidArticle as exc:
+            retry_writing(run, str(exc))
         return
     if stage == 'screen':
         result = ai.review_output(run) if run.submission.kind == 'request' else ai.review_improvement(run, run.article_revision)

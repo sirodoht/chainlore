@@ -116,13 +116,15 @@ Legacy held jobs are re-investigated automatically; they are never bulk-approved
 2. Research primary sources and reputable reporting. Existing articles and reported
    corrections are context, not evidence. Emails are excluded from provider inputs.
 3. Write a draft or targeted patch, preserving original writer attribution.
-4. A separate checker context independently opens every reference and searches for
-   significant developments. It returns an ID-complete inventory of paragraphs and
+4. A separate checker context independently opens every reference. A broad recency
+   search is not required. It returns an ID-complete inventory of paragraphs and
    table rows, individual claims, fetched evidence excerpts, and support decisions.
 5. Validate coverage, fetched URLs, excerpts, date and source hash. Persist the actual
    checker model/effort, report and source fingerprints. Tool failures cannot pass.
-6. Retry unsupported work through at most two research/revision passes. Exhaustion
-   ends as Insufficient evidence and preserves the current article.
+6. Make targeted corrections using saved checker evidence and findings. Continue
+   while verified coverage improves or issues are resolved. Two consecutive passes
+   without progress end as Insufficient evidence; formatting failures instead retry
+   writing without discarding research or factual feedback.
 7. Publish only the exact approved source, against its expected Git base. A concurrent
    edit restarts research against a fresh snapshot. Commit/push precede atomic publication.
 8. Record a public explanation and article/commit links, then deliver outcome notifications.
@@ -168,9 +170,9 @@ an operational limit/configuration decision, never an editorial approval. Both r
 visible and preserve the existing article. API secrets and database files stay private.
 
 Interrupted or malformed verification output does not trigger rewriting. The checker
-checks that every reference has fetched content and a live freshness search has
-returned results before requesting a report. Missing searches run first; missing
+checks that every reference has fetched content before requesting a report. Missing
 references are fetched in groups of four without refetching saved documents.
+There is no mandatory freshness search or midnight expiry of saved evidence.
 Source recovery permits at most 12 calls and stops after three consecutive calls
 without progress. Tool failures retain the draft and become operational blocks,
 not factual rejections. Saved tool results survive restarts and are checked before
@@ -183,9 +185,9 @@ complete cited documents; uncited facts retain the full source set. Group approv
 are combined only when every unit is covered, then the full report is validated again. Complete
 reports with factual findings still request revision. Incomplete reports end in an
 explicit operational block; they never confer publication approval. Saved reports
-are assessed after a restart before another paid call. Evidence from a different
-UTC day requires a fresh source check.
-Contradictory passes (no reported issues, but unchecked freshness or a nonmatching
+are assessed after a restart before another paid call. The report records its completion date; saved source evidence
+does not expire solely because the UTC date changed.
+Contradictory passes (no reported issues, but unmet source rules or a nonmatching
 evidence quote) use the same bounded report retry with validation feedback. They
 never approve publication or consume an article rewrite attempt.
 
@@ -193,12 +195,12 @@ To recover a historical run held by this bug, use
 `manage.py resume_verification --submission UUID` under the normal worker environment.
 It requires an undecided run that is blocked or has an unused revision caused by a
 contradictory pass, an unchanged candidate, an interrupted or contradictory report,
-same-day evidence and no later paid work. It creates a new pending check using saved
+saved source evidence and no later paid work. It creates a new pending check using saved
 evidence, restores a lost draft from the writing audit if necessary, and preserves
 the earlier failed check. Contradictory reports retain their group attempt counts.
 It neither raises budgets nor bypasses source verification.
 For a historical automated `insufficient` outcome caused by missing tool evidence,
-add `--reopen-incomplete-sources`. This requires an unchanged candidate, same-day
+add `--reopen-incomplete-sources`. This requires an unchanged candidate, saved
 evidence, no later paid work, and no factual claim-validation errors. The old
 decision and failed check remain in the audit; the new check must independently
 complete all source and claim checks. Existing revision counts are preserved.
@@ -207,6 +209,18 @@ After an operational increase of the report output allowance,
 groups. It requires a strictly higher allowance and retains old responses and all
 charged usage. Opaque encrypted search blobs stay in the audit; report prompts
 carry readable search metadata and fetched source text.
+
+A historically exhausted correction with actionable checker findings can resume
+with `manage.py resume_editorial_correction --submission UUID`. It preserves the
+old outcome, source hash, findings, cumulative patch and usage; it resumes writing
+from saved evidence and grants no publication approval. Writers may add citations
+to table blocks while preserving every other table character and factual value.
+
+Writing allows 32,000 output tokens per call and up to three format retries using
+saved research and factual feedback. These operational retries do not count as
+article revisions. A saved unprocessed writer response is validated before any
+new paid call. Corrective passes continue while verified coverage improves or
+findings are resolved; two consecutive passes without progress end the attempt.
 
 ### Scheduled upkeep and audit
 

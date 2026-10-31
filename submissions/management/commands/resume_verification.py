@@ -1,10 +1,8 @@
 """Recover interrupted checks without deleting history or bypassing publication checks."""
 import copy
-import json
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.db import transaction
-from django.utils import timezone
 from submissions.models import AutomationRun, Verification, AutomationEvent
 from submissions.publication import publication_lock
 from submissions.article_validation import extract_draft, InvalidArticle
@@ -51,8 +49,6 @@ class Command(BaseCommand):
                 raise CommandError('The last check was not an interrupted report. Factual findings cannot be bypassed.')
             if digest(check.source) != check.source_hash or run.editorial.get('candidate') != check.source:
                 raise CommandError('Saved candidate changed; a fresh source check is required.')
-            if json.loads(check.session['payload']['messages'][0]['content'])['today'] != timezone.localdate().isoformat():
-                raise CommandError('Saved evidence is from a different day; run a fresh source check.')
             if run.spend.filter(created_at__gt=check.completed_at).exists():
                 raise CommandError('Later paid work exists; do not replace it with an older check.')
             if not run.draft:

@@ -47,17 +47,14 @@ class SourceRecoveryTests(TestCase):
         self.assertEqual(search['encrypted_content'],'opaque-provider-blob')
 
     @patch('submissions.ai_providers.call')
-    def test_truncated_source_pass_finishes_search_before_any_report(self, call):
+    def test_truncated_source_pass_proceeds_without_a_freshness_search(self, call):
         opened = self.response([evidence()[0]['content'][1]], 'max_tokens')
-        search = self.response([evidence()[0]['content'][0]])
-        call.side_effect = [opened, search, self.ready_report()]
+        result=report();result['freshness_checked']=False
+        call.side_effect = [opened, self.response([{'type':'text','text':json.dumps(result)}])]
         editorial.process(self.run)
         self.check.refresh_from_db()
-        self.assertEqual(self.check.session['mode'], 'sources')
-        self.run.refresh_from_db(); editorial.process(self.run)
-        self.check.refresh_from_db(); self.run.refresh_from_db()
-        self.assertEqual(call.call_args.args[2], 'fact_check_sources')
-        self.assertEqual([t['name'] for t in call.call_args.args[3]['tools']], ['web_search'])
+        self.assertEqual(self.check.session['mode'], 'report')
+        self.run.refresh_from_db()
         self.assertEqual(self.run.editorial['revisions'], 0)
         self.assertEqual(self.run.draft, {'saved':True})
         self.assertEqual(self.check.state, 'pending')
@@ -83,8 +80,8 @@ class SourceRecoveryTests(TestCase):
 
     @patch('submissions.ai_providers.call')
     def test_repeated_tool_failures_block_without_rejecting_or_rewriting(self, call):
-        self.missing_search()
-        call.return_value=self.response([{'type':'web_search_tool_result','content':{'type':'web_search_tool_result_error','error_code':'unavailable'}}])
+        self.check.session={'payload':payload(self.check),'responses':[],'mode':'sources'};self.check.save()
+        call.return_value=self.response([{'type':'web_fetch_tool_result','content':{'type':'web_fetch_tool_result_error','error_code':'unavailable'}}])
         for _ in range(3):
             self.run.refresh_from_db(); editorial.process(self.run)
         self.run.refresh_from_db(); self.check.refresh_from_db(); self.run.submission.refresh_from_db()

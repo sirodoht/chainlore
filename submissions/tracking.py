@@ -85,6 +85,7 @@ def present(submission, catalog):
             'invalid_check_report': 'The checker did not return a usable report after the allowed attempts. The draft and retrieved evidence are retained.',
             'verification_evidence_stale': 'Saved verification evidence needs a fresh source check before processing can continue.',
             'verification_sources_incomplete': 'The checker could not finish collecting source evidence within the allowed attempts. The draft and retrieved sources are retained; this is not a factual rejection.',
+            'writing_output_incomplete': 'The writer could not return a valid complete edit after the allowed attempts. The research, previous draft and factual feedback are retained.',
             'shadow_verified_not_published': 'Verification passed in a non-publishing test run.'}
         outcome = reasons.get(run.last_error, 'Processing is blocked by a provider or publication failure; saved work is retained.')
         outcome += (' A retry is scheduled for ' + run.next_attempt_at.strftime('%-d %B %Y, %H:%M UTC') + '.' if run.next_attempt_at else ' No automatic retry is currently scheduled.')
@@ -115,6 +116,9 @@ EVENT_LABELS = {
     'verification_sources_retry': 'Completing missing verification sources',
     'verification_sources_complete': 'Verification sources collected',
     'verification_sources_incomplete': 'Verification source collection interrupted',
+    'writing_retry': 'Retrying the edit from saved research and feedback',
+    'writing_incomplete': 'Writing interrupted; research and feedback retained',
+    'correction_resumed': 'Targeted correction resumed from saved findings',
     'verification_recovered': 'Verification resumed from saved evidence',
 }
 

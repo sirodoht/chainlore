@@ -100,8 +100,9 @@ are true.
    supports the claim it is attached to. Every footnote marker has a
    definition, and every definition is used. `scripts/check.py` must pass.
 5. Source rules. The [source rules](#sources) above are met.
-6. Up to date. The check looked for major events up to the check
-   date. Matters still in progress are written "as of" that date.
+6. Dated claims. State the applicable period for claims that depend on time.
+   Verify those claims against their cited sources. A broad news or recency
+   search is not a publication requirement, and its absence is not a rejection.
 7. Record. The front matter records the check:
 
         status: ai-fact-checked
@@ -114,16 +115,19 @@ are true.
 
 - The writer and checker use separate calls and independent research contexts.
   They may use the same configured model family; agreement alone is not evidence.
-- The checker opens every reference, searches for significant developments through
-  the check date, and accounts for every paragraph, heading and table row. Its
+- The checker opens every reference and accounts for every paragraph, heading
+  and table row. A separate freshness search is not required. Its
   structured claim/evidence report remains in the private audit with fetched-source
   fingerprints and actual provider model/effort attribution.
 - Software checks coverage, source retrieval, evidence excerpts and dates. These
   controls constrain the checker; semantic support is still an AI assessment.
 - A passing check is bound to the exact source hash. The publisher cannot substitute
   changed text or overwrite a different Git base under that approval.
-- At most two corrective research/revision passes follow the initial attempt.
-  Unsupported work ends as Insufficient evidence, preserving the current article.
+- Corrective passes retain saved evidence, cumulative edits, and checker findings.
+  They continue while verified coverage improves or findings are resolved. Two
+  consecutive passes without that progress end as Insufficient evidence, preserving
+  the current article. Format failures retry writing without consuming an article
+  revision or replacing factual feedback; operational and token limits still apply.
 - Error reports investigate both the published claim and the suggested correction.
   A source-supported existing claim may be retained with an explicit outcome.
 - Public outcomes explain publication, duplication, decline or insufficient evidence.
@@ -133,8 +137,9 @@ are true.
 
 ## Operations and maintenance
 
-Scheduled jobs check sources, freshness, significant developments and catalogue
-consistency through the same verification gate. Reader submissions take priority;
+Scheduled jobs may investigate source changes, significant developments and
+catalogue consistency. They use the same claim-verification gate; there is no
+mandatory freshness-search gate. Reader submissions take priority;
 maintenance has its own daily limit. Failed checks do not silently remove articles.
 
 Transient failures retry with backoff. Provider outages and budgets appear as
