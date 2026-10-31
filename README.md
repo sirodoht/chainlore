@@ -35,6 +35,16 @@ catalog used to preselect articles and sections in forms. Add articles to
 Each article links to its Markdown at `/p/<slug>.md`, alongside its HTML page
 at `/p/<slug>/`.
 
+The build merges every article table whose first column is headed `Date` into
+`/timeline/`, with `/timeline/hacks/`, `/timeline/laws/` and
+`/timeline/collapses/` views and `/on-this-day/<month>-<day>/` pages. Dates are
+`2018`, `2018-09`, `2018-09-26` or a same-month range, `2023-03-10–13`, and are
+shown only as precisely as stated. Only exact dates reach the day pages. Rows
+with any other date are left out rather than failing the build, and the build
+prints how many. Rows dated after the build appear under Scheduled. The same
+event in several articles is merged by date and wording, and the views are
+keyword rules (`TIMELINE_VIEWS` in `scripts/build.py`).
+
 ```sh
 uv run --locked python manage.py test submissions
 uv run --locked python manage.py makemigrations --check --dry-run
