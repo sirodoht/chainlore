@@ -3,7 +3,9 @@ title: Satoshi Nakamoto
 ticker: None
 category: Person
 written_by: Unknown
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -31,7 +33,7 @@ Preparations preceded the public announcement. In an email dated 22 August
 2008, preserved in correspondence supplied by Wei Dai, Nakamoto asked Dai
 for the publication year of his b-money proposal so it could be cited
 properly. Nakamoto said Adam Back had pointed out similarities and directed
-them to Dai's work. The message included a draft under the title
+them to Dai's work. The message linked to a draft under the title
 *Electronic Cash Without a Trusted Third Party*. This exchange documents
 contact with earlier digital-cash researchers before the mailing-list
 publication, without establishing how much of the design came from any
@@ -92,25 +94,19 @@ that the genesis transaction's 50-bitcoin output cannot be spent, a
 special property of the initial block.[^genesis]
 
 The original mailing-list archive dates the v0.1 release announcement to
-8 January 2009 at 14:27 EST. The message supplied a download link, described
-the release as Windows-only at that stage, and said open-source C++ code
-was included. This is the timestamp of that particular announcement;
-accounts using other archives or release events may give different dates.[^release]
+8 January 2009 at 14:27 EST. It supplied a Windows download with
+open-source C++ code.[^release]
 
 Nakamoto warned that the software was experimental and that a restart
 could become necessary. The announcement invited users to keep nodes
 available for incoming connections and explained how to generate coins
-on an ordinary PC. It described the initial mining difficulty as
-deliberately low, with competition expected to raise it through automatic
-adjustments. Participation initially meant helping operate and test a
-small network.[^release]
+on an ordinary PC. Initial mining difficulty was deliberately low, with
+competition expected to raise it through automatic adjustments.[^release]
 
 The same announcement described a maximum issuance of 21 million coins,
 with the amount issued falling by half roughly every four years. It
 also anticipated transaction fees eventually replacing newly generated
-coins as the main payment to network operators. These were features
-of the proposed monetary schedule, not promises about a future market
-price.[^release]
+coins as the main payment to network operators.[^release]
 
 Hal Finney's 2013 retrospective supplies a participant's account of those
 first days. His interest drew on earlier digital-cash work, including
@@ -135,8 +131,8 @@ for comparison. In December, Nakamoto praised the new Drupal-based
 bitcoin.org site. The exchanges document work on the project's website
 and discussion infrastructure alongside software development.[^malmi]
 
-The same archive preserves a July 2010 message about removing a promise
-of anonymity from the homepage. Nakamoto warned that transaction history
+The same archive preserves a July 2010 message about removing qualified
+anonymity claims from the homepage. Nakamoto warned that transaction history
 could reveal information and that using Bitcoin anonymously required
 precautions. Separately, a July release message described version 0.3's
 command-line JSON-RPC support and credited Laszlo for the Mac OS X
@@ -146,7 +142,7 @@ beyond its original Windows release.[^malmi]
 
 An urgent incident interrupted that development in August 2010. On
 15 August, Nakamoto announced version 0.3.10 as an overflow patch for
-block 74,638. The announcement urged users to upgrade. An edited follow-up
+block 74,638. The announcement urged users to upgrade. The edited post
 reported that the correct chain had overtaken the bad chain and said
 upgraded clients would reorganise automatically; deleting local block
 files was no longer necessary. The record distinguishes the software
@@ -213,6 +209,12 @@ immediate imprisonment. These proceedings enforced restrictions following
 the rejected identity claim; they did not establish who actually created
 Bitcoin.[^contempt]
 
+On 7 March 2025, the court imposed a three-year general civil restraint
+order on Wright. Its reasons, published on 12 May, explained that the
+order required permission before bringing claims or applications within
+its scope. This added a procedural restriction to the earlier orders;
+it was not a new determination of Nakamoto's identity.[^restraint]
+
 In April 2026, a *New York Times* investigation argued that Adam Back
 could be Nakamoto. Reporting by The Block described the case as relying
 on similarities in writing and earlier electronic-cash ideas; it also
@@ -221,6 +223,12 @@ not a demonstrated link between a legal identity and control of the
 original project's cryptographic keys. As of 31 October 2026, this
 article treats the identification as contested, rather than replacing
 the pseudonym with Back's name.[^identity]
+
+The documentary *Finding Satoshi*, released on 22 April 2026, proposed a
+different hypothesis: Finney and Len Sassaman had created Bitcoin together.
+The Block reported the filmmakers' case, while *WIRED* described continuing
+skepticism and reported that both men's widows denied their husbands were
+Nakamoto. This competing identification also remains unconfirmed.[^documentary][^skepticism]
 
 The distinction between documented activity under the pseudonym and
 claims about a particular person is central to reading this history.
@@ -250,7 +258,7 @@ spendable wealth.[^holdings]
 
 | Date | Event |
 |---|---|
-| 2008-08-22 | Email to Wei Dai requests a citation for b-money and shares a draft[^dai] |
+| 2008-08-22 | Email to Wei Dai requests a citation for b-money and links to a draft[^dai] |
 | 2008-10-31 | Whitepaper announced on the cryptography mailing list[^announcement] |
 | 2009-01-03 | Timestamp recorded in Bitcoin's genesis block[^genesis] |
 | 2009-01-08 | v0.1 release announcement timestamped in the original archive[^release] |
@@ -261,7 +269,9 @@ spendable wealth.[^holdings]
 | 2024-03-14 | High Court announces rejection of Wright's identity claim[^judgment] |
 | 2024-05-20 | Detailed judgment published[^judgment] |
 | 2024-12-20 | Court order records Wright's suspended prison sentence for contempt[^contempt] |
+| 2025-03-07 | Court imposes a three-year general civil restraint order on Wright[^restraint] |
 | 2026-04-08 | Reporting describes the Times' Back hypothesis and his denial[^identity] |
+| 2026-04-22 | Finding Satoshi proposes a Finney–Sassaman collaboration[^documentary] |
 
 ## See also
 
@@ -287,3 +297,6 @@ spendable wealth.[^holdings]
 [^wikileaks]: Nakamoto, S. (5 December 2010). *Re: Wikileaks contact info?*, post 148. <https://bitcointalk.org/index.php?topic=1735.msg26999#msg26999>
 [^contempt]: High Court of England and Wales (20 December 2024). *Crypto Open Patent Alliance v Wright*, order following contempt proceedings. <https://www.judiciary.uk/judgments/crypto-open-patent-alliance-v-wright-order/>
 [^holdings]: Lerner, S. D. (17 April 2013). *The Well Deserved Fortune of Satoshi Nakamoto*. Researcher's original analysis and stated uncertainty. <https://bitslog.com/2013/04/17/the-well-deserved-fortune-of-satoshi-nakamoto/>
+[^restraint]: High Court of England and Wales (12 May 2025). *Crypto Open Patent Alliance v Wright*, [2025] EWHC 1139 (Ch), particularly paragraphs 1 and 5. Approved judgment, mirrored PDF. <https://websitedc.s3.amazonaws.com/documents/Crypto_Open_Patent_Alliance_v._Wright_UK_May_12_2025.pdf>
+[^documentary]: Hunt, J. (22 April 2026). *New Satoshi documentary makes the case Hal Finney and Len Sassaman were Bitcoin's co-creators*. The Block. <https://www.theblock.co/news/ecosystems/2026-04-22-finding-satoshi-documentary-makes-case-hal-finney-len-sassaman-bitcoins-co-creators-398423>
+[^skepticism]: Levy, S. (1 May 2026). *You Found Satoshi? Let's See the Receipts*. WIRED. <https://www.wired.com/story/you-found-satoshi-lets-see-the-receipts/>
