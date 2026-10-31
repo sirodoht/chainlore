@@ -188,7 +188,7 @@ def homepage(pages):
             index_html += '<p>' + ' · '.join(f'<a href="{html.escape(link.get("href"))}">{html.escape(plain(link))}</a>' for link in links) + '</p>'
     # A fresh random pick of other articles on each build.
     picks = random.sample([slug for slug in pages if slug != 'hyperliquid'], 5)
-    rows = ''.join(f'<div class="article-row"><h3><a href="/p/{slug}/">{pages[slug]["title"]}</a></h3><p>{html.escape(summaries.get(slug, pages[slug]["description"][:150]))}</p></div>' for slug in picks)
+    rows = ''.join(f'<div class="article-row"><h3><a href="/p/{slug}/">{pages[slug]["title"]}</a></h3><p>{html.escape(summaries.get(slug) or pages[slug]["description"][:150])}</p></div>' for slug in picks)
     counts = Counter(p['meta']['status'] for p in pages.values())
     statuses = ', '.join(f'{label} ({counts[key]})' for key, (label, _) in STATUSES.items() if counts[key])
     references = sum(len(re.findall(r'^\[\^[^\]]+\]:', p['source'].read_text(), re.M)) for p in pages.values())
