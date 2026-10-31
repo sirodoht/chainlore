@@ -47,6 +47,17 @@ class EditorialProgressTests(TestCase):
         self.run.refresh_from_db()
         self.assertEqual(self.run.editorial['stage'],'screen')
 
+    @patch('submissions.ai_providers.write_article')
+    def test_explicit_missing_evidence_returns_to_research_not_format_retry(self, writer):
+        self.run.submission.kind='request';self.run.submission.save()
+        writer.return_value=written_patch({'insufficient_evidence':True})
+        editorial.process(self.run)
+        self.run.refresh_from_db()
+        self.assertEqual(self.run.editorial['stage'],'research')
+        self.assertEqual(self.run.research,{})
+        self.assertEqual(self.run.editorial['writer_retries'],0)
+        self.assertEqual(self.run.state,'revising')
+
     @patch('submissions.ai_providers.write_improvement')
     def test_repeated_format_failures_remain_operational_not_factual_rejections(self, writer):
         writer.return_value={'stop_reason':'max_tokens','content':[]}

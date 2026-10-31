@@ -261,7 +261,10 @@ def process(run):
         try:
             write_candidate(run)
         except InvalidArticle as exc:
-            retry_writing(run, str(exc))
+            if str(exc) == 'insufficient_evidence':
+                revise(run, 'The writer could not support the requested article from the saved evidence; investigate missing sources.')
+            else:
+                retry_writing(run, str(exc))
         return
     if stage == 'screen':
         result = ai.review_output(run) if run.submission.kind == 'request' else ai.review_improvement(run, run.article_revision)
