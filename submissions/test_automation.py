@@ -298,6 +298,33 @@ class AutomationTests(TestCase):
         self.assertEqual(self.research.call_count, 2)
         self.assertNotIn('This is a placeholder', page.read_text())
 
+    def test_regeneration_retries_output_review_before_replacing_placeholder(self):
+        run = self.publish_placeholder()
+        regenerate_placeholders([run.pk], actor_id=7)
+        self.review_output.side_effect = ai.ProviderError('jev_network_error', retryable=True)
+        run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'retry')
+        self.assertEqual(run.draft['markdown'], DRAFT['markdown'])
+        self.assertIn('This is a placeholder', GeneratedArticle.objects.get().markdown)
+        # A rebuild while the provider is unavailable must preserve the retry too.
+        with publication_lock():
+            publish_site()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'retry')
+        self.review_output.reset_mock()
+        self.review_output.side_effect = None
+        research_calls, writing_calls = self.research.call_count, self.write_article.call_count
+        AutomationRun.objects.update(next_attempt_at=timezone.now() - timedelta(seconds=1))
+        run_worker()
+        self.review_output.assert_called_once()
+        self.assertEqual(self.research.call_count, research_calls)
+        self.assertEqual(self.write_article.call_count, writing_calls)
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'published')
+        self.assertNotIn('This is a placeholder', GeneratedArticle.objects.get().markdown)
+        self.assertNotIn('This is a placeholder', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+
     def test_rebuild_finishes_checked_replacement_after_publication_failure(self):
         run = self.publish_placeholder()
         regenerate_placeholders([run.pk], actor_id=7)

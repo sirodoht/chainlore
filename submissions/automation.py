@@ -72,12 +72,13 @@ def process(run):
         return
     Submission.objects.filter(pk=submission.pk, status='new').update(status='reviewing', updated_at=timezone.now())
     catalog = articles()
-    # If a process died after preparing/publishing the article, resume without more API calls.
+    # An unpublished record is the checked replacement awaiting publication.
+    # A published record may be the old placeholder retained during regeneration.
     prepared = GeneratedArticle.objects.filter(run=run).first()
-    if prepared and run.draft:
+    if prepared and prepared.published_at is None and run.draft:
         publish_site()
         return
-    # An article with no saved draft is a placeholder being regenerated, not a duplicate.
+    # The retained placeholder must not count as a duplicate of its replacement.
     if prepared:
         catalog = {slug: item for slug, item in catalog.items() if slug != prepared.slug}
     match = existing_match(run.inputs['title'], catalog)
