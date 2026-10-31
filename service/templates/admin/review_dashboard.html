@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'submissions/review.css' %}">{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Home</a> &rsaquo; Article review</div>{% endblock %}
+
+{% block content %}
+<div class="review-dashboard">
+  <p class="review-intro">The current published catalogue, checked for review needs on {{ today|date:"j F Y" }} (UTC).
+    <a href="/policy/">Editorial policy</a> · <a href="{{ reports_url }}">Open error reports</a></p>
+  {% if catalog_unavailable %}
+    <p class="errornote">The published article catalogue is unavailable. Review counts could not be loaded. Try again after publication completes.</p>
+  {% else %}
+  <nav class="review-summary" aria-label="Review overview">
+    <a href="?filter=all"><strong>{{ counts.all }}</strong><span>Articles</span></a>
+    <a href="?filter=attention"><strong>{{ counts.attention }}</strong><span>Need attention</span></a>
+    <a href="?filter=draft"><strong>{{ counts.draft }}</strong><span>Drafts</span></a>
+    <a href="?filter=overdue"><strong>{{ counts.overdue }}</strong><span>Due for recheck</span></a>
+    <a href="{{ reports_url }}"><strong>{{ open_reports }}</strong><span>Open error reports</span></a>
+    <a href="?filter=reviewed"><strong>{{ counts.reviewed }}</strong><span>Human reviewed</span></a>
+  </nav>
+  <p><a href="?filter=human">{{ counts.human }} AI fact-checked article{{ counts.human|pluralize }} awaiting human review</a>.
+    Error reports are reader submissions, not confirmed errors. Duplicate reports are counted once.</p>
+  {% if unmatched_reports %}<p class="errornote">{{ unmatched_reports }} open error report{{ unmatched_reports|pluralize }} refer to articles outside this catalogue. <a href="{{ reports_url }}">Review the error queue</a>.</p>{% endif %}
+  <form method="get" class="review-filters" role="search">
+    <div class="review-search"><label for="review-query">Find an article</label><input id="review-query" name="q" type="search" maxlength="200" value="{{ query }}" placeholder="Title, subject or slug"></div>
+    <div><label for="review-filter">Show</label><select id="review-filter" name="filter">{% for value, label in filters.items %}<option value="{{ value }}"{% if selected == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div><label for="review-sort">Sort by</label><select id="review-sort" name="sort">{% for value, label in sorts.items %}<option value="{{ value }}"{% if sort == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <button type="submit" class="button">Apply</button><a href="{% url 'review-dashboard' %}">Reset</a>
+  </form>
+  <div class="review-table-wrap" role="region" aria-label="Article review table" tabindex="0">
+    <table class="review-table">
+      <caption>{{ rows|length }} of {{ counts.all }} articles. Priority puts open reports first, then drafts or missing review metadata, then overdue checks.</caption>
+      <thead><tr><th scope="col">Article</th><th scope="col">Status and attention</th><th scope="col">Last full fact-check</th><th scope="col">Recheck after</th><th scope="col">Last substantive edit</th><th scope="col">Error reports</th></tr></thead>
+      <tbody>{% for row in rows %}
+        <tr>
+          <th scope="row"><a href="/p/{{ row.slug }}/">{{ row.title }}</a><span class="review-detail">{{ row.category }}</span><a class="review-source" href="/p/{{ row.slug }}.md">Markdown source</a></th>
+          <td><span class="review-status">{{ row.status_label }}</span>{% if row.reasons %}<ul class="review-reasons">{% for reason in row.reasons %}<li>{{ reason }}</li>{% endfor %}</ul>{% endif %}{% if row.reviewed %}<span class="review-detail">Reviewed {{ row.reviewed|date:"j M Y" }} by {{ row.reviewed_by }}</span>{% endif %}</td>
+          <td>{% if row.checked %}<time datetime="{{ row.checked|date:'Y-m-d' }}">{{ row.checked|date:"j M Y" }}</time><span class="review-detail">{{ row.checked_by }}</span>{% else %}No current check{% endif %}</td>
+          <td>{% if row.due %}<time datetime="{{ row.due|date:'Y-m-d' }}">{{ row.due|date:"j M Y" }}</time>{% if row.overdue %}<span class="review-detail">Due for recheck</span>{% endif %}{% else %}—{% endif %}</td>
+          <td>{% if row.updated %}<time datetime="{{ row.updated|date:'Y-m-d' }}">{{ row.updated|date:"j M Y" }}</time>{% else %}—{% endif %}</td>
+          <td>{% if row.reports %}<a href="{{ row.reports_url }}">{{ row.reports }} open</a>{% else %}None{% endif %}</td>
+        </tr>
+      {% empty %}<tr><td colspan="6">No articles match these filters. <a href="{% url 'review-dashboard' %}">Show all articles</a>.</td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  <p class="review-explanation">Checks more than six calendar months old are due for another pass. Age and reader reports do not change an article's published status. A major event can require an earlier review. Targeted corrections do not reset the full-check date.</p>
+  {% endif %}
+</div>
+{% endblock %}

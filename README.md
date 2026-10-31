@@ -61,6 +61,13 @@ spam controls, private receipts, and admin access and review operations.
 - `/submit/improvement/`: article and suggested improvement, with optional section, sources, and email.
 - `/admin/`: authenticated review queue with filters, search, internal notes,
   duplicate links, and a URL for the resulting article change.
+- `/admin/review/`: article review dashboard for staff with submission view or
+  change permission. It reads status, attribution, and dates from the current
+  published catalogue and joins unresolved, non-duplicate error-report counts.
+  Search and filter drafts, overdue checks, open reports, or articles awaiting
+  human review. Checks become overdue after six calendar months; this does not
+  automatically change article statuses. Targeted corrections retain the date
+  of the last full fact-check. The admin header links to the dashboard.
 
 Email is optional and never published. It is available only in the authenticated
 editorial queue for sending status notifications. New submissions notify the configured

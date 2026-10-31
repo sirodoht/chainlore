@@ -464,7 +464,11 @@ def main():
         article(render(ROOT / name))
     timeline_routes, events, skipped = timeline(pages)
     homepage(pages, len(events))
-    (OUT / 'article-catalog.json').write_text(json.dumps({slug: {'title': p['title'], 'sections': dict(p['toc'])} for slug, p in pages.items()}, ensure_ascii=False))
+    (OUT / 'article-catalog.json').write_text(json.dumps({slug: {
+        'title': p['title'], 'sections': dict(p['toc']),
+        **{field: p['meta'].get(field, '') for field in (
+            'category', 'status', 'updated', 'written_by', 'checked', 'checked_by', 'reviewed', 'reviewed_by')},
+    } for slug, p in pages.items()}, ensure_ascii=False))
     write_page('/search/', 'Search', '<header class="article-header"><h1>Search Chainlore</h1></header><p id="search-status" role="status">Loading search…</p><noscript><p>Search requires JavaScript. You can browse every article in the index.</p></noscript><ul id="search-results" class="search-results"></ul><p><a href="/all-articles/">Browse all articles →</a></p>', description='Search the Chainlore encyclopedia.', active='Search')
     write_page('/404/', 'Page not found', '<h1>Page not found</h1><p>This page is not in the encyclopedia yet.</p><p><a href="/">Return to the main page</a> or <a href="/all-articles/">browse all articles</a>.</p>', active='Page not found')
     (OUT / 'search-index.json').write_text(json.dumps([{'title': p['title'], 'ticker': p['meta']['ticker'], 'url': f'/p/{slug}/', 'description': p['description'], 'text': p['text']} for slug, p in pages.items()], ensure_ascii=False))

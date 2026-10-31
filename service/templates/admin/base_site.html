@@ -1,0 +1,8 @@
+{% extends "admin/base_site.html" %}
+
+{% block nav-global %}
+  {{ block.super }}
+  {% if perms.submissions.view_submission or perms.submissions.change_submission %}
+    <a href="{% url 'review-dashboard' %}">Article review</a>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+.review-dashboard { max-width: 1500px; }
+.review-intro { margin-bottom: 22px; color: var(--body-quiet-color); }
+.review-summary { display: grid; grid-template-columns: repeat(6, minmax(110px, 1fr)); gap: 12px; margin: 22px 0; }
+.review-summary a { display: flex; flex-direction: column; gap: 7px; padding: 18px; border: 1px solid var(--hairline-color); border-radius: 5px; background: var(--darkened-bg); }
+.review-summary strong { font-size: 28px; line-height: 1.1; font-weight: 600; }
+.review-summary span { color: var(--body-quiet-color); }
+.review-filters { display: flex; align-items: end; flex-wrap: wrap; gap: 14px; padding: 20px 0; }
+.review-filters label { display: block; margin-bottom: 7px; font-weight: 600; }
+.review-filters input, .review-filters select { min-height: 36px; box-sizing: border-box; }
+.review-search { flex: 1; min-width: 200px; max-width: 400px; }
+.review-search input { width: 100%; }
+.review-filters button { min-height: 36px; cursor: pointer; }
+.review-filters > a { padding-bottom: 9px; }
+.review-table-wrap { overflow-x: auto; border: 1px solid var(--hairline-color); border-radius: 5px; }
+.review-table { width: 100%; }
+.review-table caption { text-align: left; padding: 14px; background: var(--darkened-bg); color: var(--body-quiet-color); line-height: 1.5; }
+.review-table th, .review-table td { padding: 14px; vertical-align: top; }
+.review-table thead th { white-space: nowrap; }
+.review-table tbody th { min-width: 160px; }
+.review-table tbody td { min-width: 130px; }
+.review-detail { display: block; color: var(--body-quiet-color); font-size: 12px; font-weight: normal; margin-top: 5px; }
+.review-source { display: inline-block; font-size: 12px; font-weight: normal; margin-top: 8px; }
+.review-status { font-weight: 600; }
+.review-reasons { padding-left: 16px; margin: 8px 0 0; }
+.review-reasons li { padding-bottom: 3px; font-size: 12px; }
+.review-explanation { margin-top: 18px; color: var(--body-quiet-color); max-width: 900px; line-height: 1.6; }
+@media (max-width: 1100px) { .review-summary { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .review-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; } .review-summary a { padding: 14px; } .review-search { max-width: none; } }
