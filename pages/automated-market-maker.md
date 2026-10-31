@@ -3,7 +3,9 @@ title: Automated market maker
 ticker: None
 category: Decentralised finance
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -53,13 +55,19 @@ support more trading depth than if spread across all prices. Outside it,
 the position becomes entirely one of its two assets and stops earning
 trading fees until the price re-enters the interval.[^v3]
 
+Uniswap v4 adds hooks: external contracts that can customise behaviour
+around swaps, liquidity changes, and fees. Its documentation describes
+a shared pool-management contract and flash accounting that defers token
+transfers until the end of a transaction. AMM implementations therefore
+differ in more than their basic pricing curves.[^v4]
+
 ## Returns and risks
 
 An LP's inventory changes as others trade. The resulting position can be
 worth less than simply holding the original tokens, a difference commonly
 called impermanent loss. Closing the position can realise that difference;
 the word “impermanent” is not a promise that the loss will disappear.
-Trading fees may offset losses, but do not guarantee that they will.[^loss]
+Trading fees may offset losses, but do not guarantee that they will.[^loss][^returns]
 
 For traders, transaction ordering is another risk. A sandwich strategy
 places transactions before and after a victim's swap, exploiting the
@@ -81,3 +89,6 @@ as to liquidity and pricing.[^mev]
 [^stableswap]: Egorov, M. (2019). *StableSwap — efficient mechanism for Stablecoin liquidity*. <https://curve.fi/files/stableswap-paper.pdf>
 [^loss]: Uniswap Labs. *What is Impermanent Loss?* <https://support.uniswap.org/hc/en-us/articles/20904453751693-What-is-Impermanent-Loss>
 [^mev]: ethereum.org. *Maximal extractable value (MEV)*. <https://ethereum.org/en/developers/docs/mev/>
+
+[^returns]: Uniswap Labs (2025-09-22). *Understanding Liquidity Provision in DeFi*. <https://blog.uniswap.org/how-liquidity-provision-in-defi-works>
+[^v4]: Uniswap developer documentation. *Uniswap Protocols Overview*. <https://developers.uniswap.org/docs/protocols/overview>

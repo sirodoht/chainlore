@@ -3,7 +3,9 @@ title: Perpetual futures
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked: 2026-10-31
+checked_by: GPT-6-Astra high
 updated: 2026-10-31
 ---
 
@@ -55,9 +57,9 @@ rate is also distinct from a venue's fee for executing a trade.[^funding][^contr
 ## Reference prices
 
 The last traded price, oracle price, and mark price serve different
-purposes. Hyperliquid uses an external-price oracle in its funding
-calculation and a separate composite mark for margin and unrealised
-profit or loss. Its documentation describes the use of external venues
+purposes. Hyperliquid’s robust-price documentation describes an external
+price oracle for funding and a separate composite mark for margin and
+unrealised profit or loss. This design uses external venues
 and local market information to reduce sensitivity to isolated
 trades.[^prices]
 
