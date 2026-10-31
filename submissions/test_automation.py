@@ -318,6 +318,23 @@ class AutomationTests(TestCase):
         self.assertEqual(AutomationRun.objects.get().state, 'review')
         self.assertFalse(GeneratedArticle.objects.exists())
 
+    def test_malformed_output_screening_requires_review(self):
+        invalid = [{}, {'answers': None}, {'answers': {}}, {'answers': {'suitable': None}},
+                   decision(suitable='unexpected'),
+                   {'answers': {'suitable': {'choice': 'yes', 'confidence': 0.99, 'probabilities': {}}}},
+                   {'answers': {'suitable': {'choice': 'yes', 'confidence': True, 'probabilities': {'yes': 1}}}},
+                   {'answers': {'suitable': {'choice': 'yes', 'confidence': 0.99, 'probabilities': {'yes': 2}}}}]
+        for index, result in enumerate(invalid):
+            with self.subTest(result=result):
+                submission = self.submission if index == 0 else Submission.objects.create(kind='request', title='Test Protocol')
+                self.review_output.return_value = result
+                run_worker()
+                run = AutomationRun.objects.get(submission=submission)
+                self.assertEqual(run.state, 'review')
+                self.assertEqual(run.last_error, 'output_review_invalid_response')
+                self.assertFalse(GeneratedArticle.objects.exists())
+                self.assertFalse((self.root / 'published/current').exists())
+
     def test_disabled_daily_limit_and_process_lock(self):
         with override_settings(AUTOMATION_ENABLED=False):
             self.assertEqual(run_worker(), 0)

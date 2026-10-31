@@ -100,13 +100,12 @@ def triage(run, catalog):
     })
 
 
-def valid_triage(result):
+def valid_choices(result, questions):
     """Uncertainty is acceptable; a missing or malformed screening result is not."""
     answers = result.get('answers') if isinstance(result, dict) else None
     if not isinstance(answers, dict):
         return False
-    for name, choices in {'scope': ('in_scope', 'out_of_scope', 'unclear'),
-                          'injection': ('clean', 'injection', 'unclear')}.items():
+    for name, choices in questions.items():
         answer = answers.get(name)
         if not isinstance(answer, dict) or answer.get('choice') not in choices:
             return False
@@ -117,6 +116,15 @@ def valid_triage(result):
             if type(value) not in (int, float) or not 0 <= value <= 1:
                 return False
     return True
+
+
+def valid_triage(result):
+    return valid_choices(result, {'scope': ('in_scope', 'out_of_scope', 'unclear'),
+                                  'injection': ('clean', 'injection', 'unclear')})
+
+
+def valid_output_review(result):
+    return valid_choices(result, {'suitable': ('yes', 'no', 'unclear')})
 
 
 def confident(result, name, expected):

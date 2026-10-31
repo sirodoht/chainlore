@@ -111,6 +111,9 @@ def process(run):
     if not run.output_review:
         run.output_review = ai.review_output(run)
         run.save(update_fields=['output_review', 'updated_at'])
+    if not ai.valid_output_review(run.output_review):
+        finish(run, 'review', 'output_review_invalid_response')
+        return
     if ai.confident(run.output_review, 'suitable', 'no'):
         finish(run, 'review', 'output_rejected_as_spam_off_topic_or_injection')
         return
