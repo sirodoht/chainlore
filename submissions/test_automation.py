@@ -43,6 +43,14 @@ The research report describes the protocol's technical design and its limitation
 '''}
 
 
+STUB = {**DRAFT, 'markdown': '''Test Protocol is a fictional protocol described by a single weak source, which states that it records transactions on a small network. No other details about its history, governance or token could be established from the evidence that was retrieved for this draft.[^1]
+
+## References
+
+[^1]: [Design](https://docs.example.com/design)
+'''}
+
+
 def decision(**values):
     return {'model': 'jev-test', 'answers': {key: {'choice': value, 'confidence': 0.99, 'probabilities': {value: 0.999}}
                                           for key, value in values.items()}}
@@ -245,6 +253,34 @@ class AutomationTests(TestCase):
         self.triage.assert_called_once()
         self.assertTrue(run.events.filter(kind='queue_resumed', data__actor_id=123).exists())
 
+    def test_single_weak_source_still_publishes_a_labelled_stub(self):
+        self.research.return_value = {'stop_reason': 'end_turn', 'content': RESEARCH['content'][:2]}
+        self.write_article.return_value = written(STUB)
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        html = (self.root / 'published/current/p/test-protocol/index.html').read_text()
+        self.assertIn('This article is a draft', html)
+
+    def test_research_cut_short_still_publishes_from_fetched_sources(self):
+        for stop_reason in ['pause_turn', 'max_tokens']:
+            with self.subTest(stop_reason=stop_reason):
+                self.research.return_value = {**RESEARCH, 'stop_reason': stop_reason}
+                run_worker()
+                self.assertEqual(AutomationRun.objects.latest('pk').state, 'published')
+                GeneratedArticle.objects.all().delete()
+                Submission.objects.create(kind='request', title='Test Protocol')
+
+    def test_refused_or_sourceless_research_is_held(self):
+        for research in [{**RESEARCH, 'stop_reason': 'refusal'},
+                         {'stop_reason': 'end_turn', 'content': RESEARCH['content'][:1]}]:
+            self.research.return_value = research
+            run_worker()
+            run = AutomationRun.objects.latest('pk')
+            self.assertEqual(run.state, 'review')
+            self.assertEqual(run.last_error, 'research_refused_or_no_readable_sources')
+            Submission.objects.create(kind='request', title='Test Protocol')
+        self.write_article.assert_not_called()
+
     def test_repeated_account_failure_fails_the_run_and_releases_the_queue(self):
         second = Submission.objects.create(kind='request', title='Another request')
         self.research.side_effect = [ai.ProviderError('anthropic_http_400', account_problem=True),
@@ -343,6 +379,12 @@ class ValidationTests(TestCase):
             with self.subTest(replacement=list(replacement)):
                 with self.assertRaises(InvalidArticle):
                     validate_draft({**DRAFT, **replacement}, RESEARCH)
+
+    def test_one_opened_source_is_enough_but_none_is_not(self):
+        validate_draft(STUB, RESEARCH)
+        uncited = STUB['markdown'].replace('[^1]', '')
+        with self.assertRaises(InvalidArticle):
+            validate_draft({**STUB, 'markdown': uncited}, RESEARCH)
 
     def test_only_opened_pages_count_as_evidence(self):
         evidence = copy.deepcopy(RESEARCH)

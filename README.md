@@ -88,7 +88,8 @@ requests (including an existing backlog), one at a time, with a default limit of
    bounded JSON/Markdown draft in a separate call without tools. No model gets
    shell access, filesystem tools, email tools, or publishing credentials.
 4. Check the slug, metadata, inert Markdown, citations, and source provenance.
-   Require at least three successfully retrieved sources across two domains.
+   Require at least one successfully retrieved source; research aims for three
+   across two domains, but a short or weakly sourced draft beats no page.
    Jev screens the completed draft for suitability. This does not confer an
    AI fact-checked status: generated articles are explicitly published as drafts.
 5. Rebuild the full site, run the static checker, and atomically switch its public
@@ -109,8 +110,8 @@ in a capped loop (three responses total). It saves each completed response befor
 continuing, so a later error or worker restart resumes from that checkpoint.
 The final research record merges all content blocks and usage; writing and source
 validation can use evidence from every part. Search/fetch allowances are reduced
-across continuations, not reset. Hitting the continuation cap goes to review with
-the evidence retained. Continuations keep both tools, as the API expects, so a spent
+across continuations, not reset. Research cut short by the continuation cap still
+goes on to writing from the pages it fetched. Continuations keep both tools, as the API expects, so a spent
 tool keeps one use for any pending call; each continuation can exceed the budget by
 at most one use per tool. Each research HTTP request has a 300-second timeout;
 the worker's 35-minute deadline covers three such requests, the other model calls,

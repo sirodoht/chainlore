@@ -67,16 +67,15 @@ def validate_draft(draft, research):
     require(bool(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', slug)) and slug == slugify(title) and len(slug) <= 100, 'invalid_slug')
     require(bool(re.fullmatch(r'[A-Za-z0-9 .-]{1,30}', draft['ticker'])), 'invalid_ticker')
     require(draft['category'] in ('Layer 1', 'Layer 2', 'DeFi', 'Stablecoin', 'Exchange', 'Infrastructure', 'Other'), 'invalid_category')
-    require(800 <= len(body) <= 45000, 'invalid_article_length')
+    require(300 <= len(body) <= 45000, 'invalid_article_length')
     require(not any(c in body for c in ('<', '>', '\x00')) and '```' not in body and '![' not in body, 'unsafe_markdown')
     require(not re.search(r'^# |^---\s*$', body, re.M), 'unexpected_front_matter_or_h1')
     require(not re.search(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', body), 'contact_information')
     definitions = re.findall(r'^\[\^(\d+)\]:\s+\[([^\]\n]+)\]\((https://[^\s)]+)\)\s*$', body, re.M)
     markers = re.findall(r'\[\^(\d+)\](?!:)', body)
     ids = [item[0] for item in definitions]
-    require(len(ids) >= 3 and len(ids) == len(set(ids)) and set(ids) == set(markers), 'invalid_footnotes')
+    require(len(ids) >= 1 and len(ids) == len(set(ids)) and set(ids) == set(markers), 'invalid_footnotes')
     urls = {item[2] for item in definitions}
-    require(len(urls) >= 3 and len({urlsplit(url).hostname for url in urls}) >= 2, 'insufficient_sources')
     require(urls <= evidence_urls(research), 'source_not_in_research')
     require('## References' in body, 'missing_references')
     # Paragraphs with prose must cite evidence; tables and headings are exempt.

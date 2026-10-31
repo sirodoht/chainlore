@@ -71,10 +71,9 @@ def process(run):
     if not run.research:
         run.research = ai.research(run)
         run.save(update_fields=['research', 'updated_at'])
-    if run.research.get('stop_reason') == 'pause_turn':
-        raise InvalidArticle('research_continuation_limit')
-    if run.research.get('stop_reason') != 'end_turn' or len(evidence_urls(run.research)) < 3:
-        raise InvalidArticle('research_incomplete_or_insufficient')
+    # A labelled draft from thin evidence beats no page, even if research stopped early.
+    if run.research.get('stop_reason') == 'refusal' or not evidence_urls(run.research):
+        raise InvalidArticle('research_refused_or_no_readable_sources')
     if not run.draft:
         run.draft = extract_draft(ai.write_article(run))
         run.save(update_fields=['draft', 'updated_at'])
