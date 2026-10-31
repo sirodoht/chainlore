@@ -72,11 +72,47 @@ def long_date(value):
     return date.fromisoformat(value).strftime('%-d %B %Y')
 
 
+def citation_letter(index):
+    """Label repeat citations a, b, ... z, aa, ab, as Wikipedia does."""
+    label = ''
+    index += 1
+    while index:
+        index, remainder = divmod(index - 1, 26)
+        label = chr(97 + remainder) + label
+    return label
+
+
+def wikipedia_backlinks(tree):
+    """Lead each reference with ^ for one citation, or ^ a b c linking to each of several."""
+    for paragraph in tree.iterfind('.//li/p'):
+        links = [link for link in paragraph if link.get('class') == 'footnote-backref']
+        if not links:
+            continue
+        for link in links:
+            paragraph.remove(link)
+        backlinks = ET.Element('span', {'class': 'backlinks'})
+        if len(links) == 1:
+            links[0].text = '^'
+            links[0].tail = None
+            backlinks.append(links[0])
+        else:
+            backlinks.text = '^ '
+            for index, link in enumerate(links):
+                link.text = None
+                link.tail = ' '
+                ET.SubElement(link, 'sup').text = citation_letter(index)
+                backlinks.append(link)
+        backlinks.tail = ' ' + (paragraph.text or '')
+        paragraph.text = None
+        paragraph.insert(0, backlinks)
+
+
 def render(path):
     meta, text = load(path)
     md = markdown.Markdown(extensions=['tables', 'footnotes', 'toc', 'fenced_code'],
                            extension_configs={'toc': {'permalink': False}}, output_format='xhtml')
     tree = ET.fromstring('<div>' + md.convert(text) + '</div>')
+    wikipedia_backlinks(tree)
     for link in tree.iter('a'):
         url = urlsplit(link.get('href', ''))
         if not url.scheme and not url.netloc and url.path.endswith('.md'):

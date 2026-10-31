@@ -156,7 +156,11 @@ class AutomationTests(TestCase):
         self.assertEqual(AutomationRun.objects.get().state, 'published')
         self.write_article.assert_called_once()
         self.assertNotIn('This is a placeholder', GeneratedArticle.objects.get().markdown)
-        self.assertIn('fnref2:1', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+        html = (self.root / 'published/current/p/test-protocol/index.html').read_text()
+        self.assertIn('fnref2:1', html)
+        self.assertNotIn('↩', html)
+        self.assertRegex(html, r'id="fn:1">\s*<p><span class="backlinks">\^ <a [^>]*href="#fnref:1"[^>]*><sup>a</sup></a> <a [^>]*href="#fnref2:1"[^>]*><sup>b</sup></a>')
+        self.assertRegex(html, r'id="fn:2">\s*<p><span class="backlinks"><a [^>]*href="#fnref:2"[^>]*>\^</a></span> <a href="https://docs.example.com/history"')
 
     def test_rejected_draft_is_retried_with_the_reason(self):
         bad = {**DRAFT, 'markdown': DRAFT['markdown'] + '<script>alert(1)</script>'}
