@@ -25,6 +25,8 @@ All pages in Chainlore.
 
 ## Stablecoins
 
+- [Stablecoin](pages/stablecoin.md): crypto assets designed to hold a
+  fixed value, with a list of stablecoins and their failures.
 - [Tether](pages/tether.md): USDT, a US dollar stablecoin issued by
   Tether Limited.
 - [USDC](pages/usdc.md): a US dollar stablecoin issued by Circle.
