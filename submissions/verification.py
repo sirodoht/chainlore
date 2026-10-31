@@ -170,7 +170,9 @@ def report_payload(check, units):
         "This request covers ONLY the supplied units, not every other paragraph in the context article. Return exactly those unit IDs. "
         "Software separately checks the other groups and requires complete coverage before publication. "
         "Do not repeat research or rewrite the article. Return a complete concise JSON report for this group, never a fragment. "
-        "Only cite the supplied fetched documents; missing evidence must be reported honestly. Use short claim explanations.")
+        "Only cite the supplied fetched documents; missing evidence must be reported honestly. Use short claim explanations. "
+        "Quotes must be exact substrings of fetched_sources, including their original Markdown formatting. "
+        "Assess freshness using the saved dated search results; never return pass when freshness remains unchecked.")
     data = json.loads(request['messages'][0]['content'])
     data['units'] = units
     sources = opened_sources(check.session['responses'])
@@ -183,8 +185,19 @@ def report_payload(check, units):
     urls = {canonical(definitions[label]) for label in labels if label in definitions}
     data['fetched_sources'] = sources if uncited_facts or not urls else {url:text for url,text in sources.items() if url in urls}
     data['freshness_search_results'] = [b for r in check.session['responses'] for b in r.get('content', []) if b.get('type') == 'web_search_tool_result']
+    batch = current_batch(check)
+    if batch and batch.get('validation_errors'):
+        data['previous_report_validation_errors'] = batch['validation_errors']
+        data['previous_report'] = batch.get('rejected_report', {})
     request['messages'] = [{'role':'user', 'content':json.dumps(data)}]
     return request
+
+
+def contradictory_pass(report, errors):
+    """A claimed pass with invalid evidence is not a factual revision finding."""
+    return (report.get('verdict') == 'pass' and report.get('issues') == [] and bool(errors)
+            and all(error == 'source_or_freshness_check_missing' or error.startswith('unsubstantiated_claim_')
+                    for error in errors))
 
 
 def incomplete(check, reason):
@@ -260,6 +273,10 @@ def step(check):
     # A structurally incomplete report is an operational failure, not evidence
     # that the candidate needs a rewrite. Actual findings still request revision.
     if 'incomplete_claim_coverage' in errors or 'candidate_hash_mismatch' in errors or 'check_date_mismatch' in errors:
+        return incomplete(check, 'verification_report_incomplete')
+    if contradictory_pass(report, errors):
+        if batch is not None:
+            batch.update(validation_errors=errors, rejected_report=report)
         return incomplete(check, 'verification_report_incomplete')
     if reporting and not errors:
         batch['report'] = report

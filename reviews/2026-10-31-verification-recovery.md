@@ -38,3 +38,17 @@ validation errors and one completed group. The overall check correctly remained
 pending. The probe asserted that both candidate and fetched sources exactly matched
 material already sent to the same checker in the authorized recovery; no contact
 fields or submission text were included. Production state was not changed by it.
+# Contradictory report follow-up
+
+The first production group finished with `end_turn`, but returned `pass` and no
+issues while reporting freshness unchecked and an evidence quote that failed
+exact-source validation. The prior handler treated those report inconsistencies
+as grounds to rewrite the article. Such contradictory passes now receive bounded
+report-only correction with the validator errors; genuine unsupported/disputed
+findings retain the normal revision path. No validation gate is relaxed.
+
+Guarded recovery accepts an unused contradictory-report revision only when no
+later paid work exists, and preserves the group's already-used attempt. Regression
+coverage checks feedback, no rewrite/approval on the invalid response, and refusal
+to replace later paid work. The production candidate remains unpublished until
+all groups and the complete assembled report pass.

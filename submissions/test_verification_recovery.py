@@ -112,6 +112,45 @@ class VerificationRecoveryTests(TestCase):
             call_command('resume_verification',submission=str(self.run.submission_id),stdout=StringIO())
         self.assertEqual(self.run.verifications.count(),1)
 
+    @patch('submissions.ai_providers.call')
+    def test_contradictory_pass_retries_report_with_feedback_without_rewriting(self,call):
+        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report'}
+        self.check.save()
+        invalid=report();invalid['freshness_checked']=False
+        invalid['units'][0]['claims'][0]['quote']='A quote absent from the source'
+        call.return_value={'stop_reason':'end_turn','model':'checker-v1','content':[{'type':'text','text':json.dumps(invalid)}]}
+        editorial.process(self.run)
+        self.run.refresh_from_db();self.check.refresh_from_db()
+        self.assertEqual(self.run.state,'checking')
+        self.assertEqual(self.run.editorial['revisions'],0)
+        self.assertEqual(self.check.approved_hash,'')
+        call.return_value=self.finished()
+        step(self.check)
+        self.assertEqual(self.check.state,'passed')
+        data=json.loads(call.call_args.args[3]['messages'][0]['content'])
+        self.assertIn('source_or_freshness_check_missing',data['previous_report_validation_errors'])
+        self.assertEqual(data['previous_report'],invalid)
+
+    @patch('submissions.management.commands.resume_verification.publication_lock')
+    def test_contradictory_recovery_preserves_attempts_and_rejects_later_paid_work(self,lock):
+        self.run.state='revising';self.run.editorial.update(stage='research',revisions=1);self.run.save()
+        invalid=report();invalid['freshness_checked']=False
+        self.check.state='failed';self.check.completed_at=timezone.now()
+        self.check.report={'assessment':invalid,'errors':['source_or_freshness_check_missing']}
+        batch={'ids':[u['id'] for u in invalid['units']], 'responses':[self.finished()], 'processed_responses':1}
+        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report','batches':[batch]};self.check.save()
+        spend=reserve(self.run,'anthropic','research',{'max_tokens':10})
+        with self.assertRaisesMessage(CommandError,'Later paid work exists'):
+            call_command('resume_verification',submission=str(self.run.submission_id),stdout=StringIO())
+        spend.delete()
+        call_command('resume_verification',submission=str(self.run.submission_id),stdout=StringIO())
+        self.run.refresh_from_db()
+        resumed=Verification.objects.get(pk=self.run.editorial['check_id'])
+        self.assertEqual(len(resumed.session['batches'][0]['responses']),1)
+        self.assertEqual(resumed.session['batches'][0]['processed_responses'],1)
+        self.assertEqual(resumed.approved_hash,'')
+        self.assertEqual(self.run.editorial['revisions'],0)
+
 
 @override_settings(EDITORIAL_DAILY_TOKEN_LIMIT=1000,EDITORIAL_RUN_TOKEN_LIMIT=1000)
 class BudgetSettlementTests(TestCase):

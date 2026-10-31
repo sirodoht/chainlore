@@ -7,7 +7,7 @@ from django.utils import timezone
 from submissions.models import AutomationRun, Verification, AutomationEvent
 from submissions.publication import publication_lock
 from submissions.article_validation import extract_draft, InvalidArticle
-from submissions.verification import digest
+from submissions.verification import digest, contradictory_pass
 
 
 class Command(BaseCommand):
@@ -22,11 +22,13 @@ class Command(BaseCommand):
                 run = AutomationRun.objects.select_related('submission').get(submission_id=options['submission'])
             except (AutomationRun.DoesNotExist, ValueError):
                 raise CommandError('Submission has no recoverable run.') from None
-            if run.state != 'blocked' or run.submission.status not in ('new', 'reviewing'):
-                raise CommandError('Only blocked, undecided runs can be recovered.')
             check = run.verifications.order_by('-pk').first()
-            if not check or check.state not in ('failed','incomplete') or check.report.get('errors') not in (
-                    ['invalid_check_report'], ['verification_output_incomplete'], ['verification_report_incomplete']):
+            contradictory = bool(check and contradictory_pass(check.report.get('assessment', {}), check.report.get('errors', [])))
+            unused_revision = contradictory and run.state == 'revising' and run.editorial.get('stage') == 'research'
+            if (run.state != 'blocked' and not unused_revision) or run.submission.status not in ('new', 'reviewing'):
+                raise CommandError('Only blocked or unused contradictory-report revisions on undecided runs can be recovered.')
+            if not check or check.state not in ('failed','incomplete') or (not contradictory and check.report.get('errors') not in (
+                    ['invalid_check_report'], ['verification_output_incomplete'], ['verification_report_incomplete'])):
                 raise CommandError('The last check was not an interrupted report. Factual findings cannot be bypassed.')
             if digest(check.source) != check.source_hash or run.editorial.get('candidate') != check.source:
                 raise CommandError('Saved candidate changed; a fresh source check is required.')
@@ -44,7 +46,13 @@ class Command(BaseCommand):
                 except InvalidArticle:
                     raise CommandError('Saved writing response cannot be recovered.') from None
             session = copy.deepcopy(check.session)
-            session.pop('batches', None)
+            if contradictory:
+                batch = next((b for b in session.get('batches', []) if 'report' not in b), None)
+                if batch is None:
+                    raise CommandError('Contradictory report has no recoverable group checkpoint.')
+                batch.update(validation_errors=check.report['errors'], rejected_report=check.report['assessment'])
+            else:
+                session.pop('batches', None)
             session.update(mode='report', report_responses=[], processed_report_responses=0, recovered_from=check.pk)
             recovered = Verification.objects.create(run=run,source=check.source,source_hash=check.source_hash,session=session)
             # The legacy path requested a rewrite solely because the report was

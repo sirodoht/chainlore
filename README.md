@@ -176,13 +176,18 @@ reports with factual findings still request revision. Incomplete reports end in 
 explicit operational block; they never confer publication approval. Saved reports
 are assessed after a restart before another paid call. Evidence from a different
 UTC day requires a fresh source check.
+Contradictory passes (no reported issues, but unchecked freshness or a nonmatching
+evidence quote) use the same bounded report retry with validation feedback. They
+never approve publication or consume an article rewrite attempt.
 
 To recover a historical run held by this bug, use
 `manage.py resume_verification --submission UUID` under the normal worker environment.
-It requires a blocked, undecided run, an unchanged candidate, an interrupted report,
+It requires an undecided run that is blocked or has an unused revision caused by a
+contradictory pass, an unchanged candidate, an interrupted or contradictory report,
 same-day evidence and no later paid work. It creates a new pending check using saved
 evidence, restores a lost draft from the writing audit if necessary, and preserves
-the earlier failed check. It neither raises budgets nor bypasses source verification.
+the earlier failed check. Contradictory reports retain their group attempt counts.
+It neither raises budgets nor bypasses source verification.
 
 ### Scheduled upkeep and audit
 
