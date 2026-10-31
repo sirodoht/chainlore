@@ -177,6 +177,16 @@ def research(run):
             for tool in payload['tools']:
                 count = usage.get(tool['name'] + '_requests', 0)
                 tool['max_uses'] = max(0, tool['max_uses'] - count)
+            # Anthropic requires positive max_uses. Remove exhausted tools;
+            # completed tool history remains in the conversation unchanged.
+            payload['tools'] = [tool for tool in payload['tools'] if tool['max_uses'] > 0]
+            available = {tool['name'] for tool in payload['tools']}
+            completed = {block.get('tool_use_id') for block in merged['content']
+                         if block.get('type', '').endswith('_tool_result')}
+            if any(block.get('type') == 'server_tool_use' and block.get('id') not in completed
+                   and block.get('name') not in available for block in merged['content']):
+                merged['continuation_stop'] = 'tool_budget_exhausted'
+                return merged
             container = responses[-1].get('container')
             if container and container.get('id'):
                 payload['container'] = container['id']

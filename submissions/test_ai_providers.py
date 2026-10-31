@@ -34,6 +34,7 @@ class ProviderTests(TestCase):
         self.end = {'id': 'part-2', 'model': 'claude-haiku-5-5', 'stop_reason': 'end_turn',
                     'content': [fetched('https://docs.example.com/second'), fetched('https://news.example.org/third'), {'type': 'text', 'text': 'Completed research.'}],
                     'usage': {'input_tokens': 150, 'output_tokens': 30, 'server_tool_use': {'web_search_requests': 2, 'web_fetch_requests': 2}}}
+        self.end['content'][0]['tool_use_id'] = 'pending'
 
     def test_pause_continues_exact_assistant_content_and_merges_all_evidence(self):
         with patch.object(ai, 'call', side_effect=[self.pause, self.end]) as call:
@@ -69,12 +70,28 @@ class ProviderTests(TestCase):
         with patch.object(ai, 'call', side_effect=[self.pause, second, second]) as call:
             result = ai.research(self.run)
         self.assertEqual(call.call_count, 3)
-        self.assertEqual([tool['max_uses'] for tool in call.call_args.args[3]['tools']], [0, 0])
+        self.assertEqual(call.call_args.args[3]['tools'], [])
         self.assertEqual(result['stop_reason'], 'pause_turn')
         self.run.refresh_from_db()
         with patch.object(ai, 'call') as call:
             ai.research(self.run)
         call.assert_not_called()
+
+    def test_unfinished_call_beyond_budget_stops_without_an_invalid_provider_request(self):
+        paused = copy.deepcopy(self.pause)
+        paused['usage']['server_tool_use']['web_fetch_requests'] = 6
+        with patch.object(ai, 'call', return_value=paused) as call:
+            result = ai.research(self.run)
+        call.assert_called_once()
+        self.assertEqual(result['continuation_stop'], 'tool_budget_exhausted')
+
+    def test_exhausted_search_is_removed_while_pending_fetch_continues(self):
+        paused = copy.deepcopy(self.pause)
+        paused['usage']['server_tool_use']['web_search_requests'] = 8
+        with patch.object(ai, 'call', side_effect=[paused, self.end]) as call:
+            ai.research(self.run)
+        tools = call.call_args.args[3]['tools']
+        self.assertEqual([(tool['name'], tool['max_uses']) for tool in tools], [('web_fetch', 2)])
 
     def test_completed_checkpoint_does_not_repeat_paid_call(self):
         with patch.object(ai, 'call', return_value=self.end):
