@@ -140,11 +140,45 @@ class AutomationTests(TestCase):
         self.research.assert_not_called()
         self.write_article.assert_not_called()
 
-    def test_uncertainty_or_bad_response_never_approves(self):
+    def test_missing_screening_result_requires_review(self):
         self.triage.return_value = {'answers': {}}
         run_worker()
         self.assertEqual(AutomationRun.objects.get().state, 'review')
+        self.assertEqual(AutomationRun.objects.get().last_error, 'triage_invalid_response')
         self.research.assert_not_called()
+
+    def test_satoshi_screening_scores_proceed_to_a_published_people_article(self):
+        self.submission.title = 'satoshi nakamoto'
+        self.submission.save()
+        self.triage.return_value = {'answers': {
+            'scope': {'choice': 'out_of_scope', 'confidence': 0.26,
+                      'probabilities': {'in_scope': 0.38, 'out_of_scope': 0.51, 'unclear': 0.11}},
+            'injection': {'choice': 'clean', 'confidence': 1.0, 'probabilities': {'clean': 1.0}},
+            'duplicate': {'choice': 'new', 'confidence': 0.7, 'probabilities': {'new': 0.8}},
+        }}
+        self.write_article.return_value = written({**DRAFT, 'title': 'Satoshi Nakamoto',
+                                                  'slug': 'satoshi-nakamoto', 'category': 'Person'})
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.research.assert_called_once()
+        current = self.root / 'published/current'
+        self.assertTrue((current / 'p/satoshi-nakamoto/index.html').is_file())
+        index = (current / 'sources/INDEX.md').read_text()
+        self.assertIn('](pages/satoshi-nakamoto.md)', index.split('## People')[1].split('## ')[0])
+
+    def test_uncertain_scope_and_injection_allow_research(self):
+        self.triage.return_value = {'answers': {
+            name: {'choice': 'unclear', 'confidence': 0.2, 'probabilities': {'unclear': 0.4}}
+            for name in ('scope', 'injection')
+        }}
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.research.assert_called_once()
+
+    def test_model_duplicate_prediction_does_not_block_a_distinct_subject(self):
+        self.triage.return_value = decision(scope='in_scope', injection='clean', duplicate='duplicate')
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
 
     def test_duplicate_resolves_without_spending(self):
         self.submission.title = 'BITCOIN'
@@ -500,6 +534,7 @@ class IndexCategoryTests(SimpleTestCase):
             'Stablecoin': 'Stablecoins', 'DeFi': 'Decentralised finance',
             'Exchange': 'Exchanges', 'Regulation': 'Legislation',
             'Infrastructure': 'Infrastructure', 'Other': 'Other topics',
+            'Person': 'People', 'Organisation': 'Organisations', 'Event': 'Events', 'Concept': 'Concepts',
         }
         records = [self.record(f'article-{i}', category) for i, category in enumerate(categories)]
         index = index_generated_articles('# Index\n', records)
@@ -526,6 +561,17 @@ class IndexCategoryTests(SimpleTestCase):
 
 
 class ValidationTests(TestCase):
+    def test_malformed_screening_results_are_not_treated_as_uncertainty(self):
+        for replacement in [None, {}, {'choice': 'unknown'},
+                            {'choice': 'clean', 'confidence': True, 'probabilities': {'clean': 1}},
+                            {'choice': 'clean', 'confidence': 1, 'probabilities': {'clean': float('nan')}},
+                            {'choice': 'clean', 'confidence': 1, 'probabilities': {'clean': 2}},
+                            {'choice': 'clean', 'confidence': 1, 'probabilities': []}]:
+            with self.subTest(replacement=replacement):
+                result = decision(scope='in_scope', injection='clean')
+                result['answers']['injection'] = replacement
+                self.assertFalse(ai.valid_triage(result))
+
     def test_regulation_category_is_supported(self):
         source, _ = validate_draft({**DRAFT, 'category': 'Regulation'}, RESEARCH)
         self.assertIn('category: Regulation\n', source)

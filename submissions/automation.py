@@ -65,7 +65,7 @@ def process(run):
     run.attempts += 1
     run.state = 'running'
     run.save()
-    event(run, 'attempt_started', attempt=run.attempts, policy_version=1)
+    event(run, 'attempt_started', attempt=run.attempts, policy_version=2)
     submission = Submission.objects.get(pk=run.submission_id)
     if submission.status not in ('new', 'reviewing'):
         finish(run, 'review', 'submission_already_decided')
@@ -87,13 +87,15 @@ def process(run):
     if not run.triage:
         run.triage = ai.triage(run, {slug: data['title'] for slug, data in catalog.items()})
         run.save(update_fields=['triage', 'updated_at'])
+    if not ai.valid_triage(run.triage):
+        finish(run, 'review', 'triage_invalid_response')
+        return
     if ai.confident(run.triage, 'scope', 'out_of_scope') or ai.confident(run.triage, 'injection', 'injection'):
         finish(run, 'declined', 'out_of_scope_or_injection')
         return
-    if not all(ai.confident(run.triage, name, value) for name, value in
-               [('scope', 'in_scope'), ('injection', 'clean'), ('duplicate', 'new')]):
-        finish(run, 'review', 'triage_uncertain_or_duplicate_alias')
-        return
+    # Research plausible requests, including uncertain classifications. Duplicate
+    # detection uses actual title/slug matches before and after canonicalisation.
+    event(run, 'triage_passed', policy_version=2, decision='research_unless_clearly_rejected')
     if not run.research:
         run.research = ai.research(run)
         run.save(update_fields=['research', 'updated_at'])

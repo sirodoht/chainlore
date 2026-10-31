@@ -1,6 +1,9 @@
 # Editorial scope
 
-Chainlore covers cryptocurrencies, blockchains, and related protocols.
+Chainlore covers cryptocurrency and its surrounding technology, history,
+economics, and culture. This includes currencies, blockchains, protocols,
+exchanges, wallets, infrastructure, people, organisations, laws, events,
+incidents, and concepts.
 
 ## Coverage
 
@@ -8,6 +11,13 @@ Articles describe a subject's history, technical design, supply,
 governance, and documented incidents. Fact tables include dates,
 specifications, chain IDs, and contracts where relevant. Timelines record
 events in chronological order.
+
+Article requests are treated generously: a plausible connection to crypto is
+enough to begin research. An uncertain classification or overlap with another
+article does not prevent publication. Accepted requests receive a draft, which
+can be improved later, or a clearly labelled placeholder when research cannot
+produce an article. Only clear spam, unrelated requests, or malicious instructions
+are rejected during screening.
 
 ## Sources
 

@@ -80,9 +80,13 @@ requests (including an existing backlog), one at a time, with a default limit of
 
 1. Save an immutable snapshot of title, scope, and source hints. The email field
    and server secrets are never sent to either model.
-2. Resolve exact existing titles locally. Ask Jev (`jev-latest`) independent
-   questions about scope, injection, and duplicate subjects. Generation requires
-   confidence at least 0.8 and selected-option probability at least 0.9 on all three.
+2. Resolve exact existing titles locally. Ask Jev (`jev-latest`) about broad
+   crypto relevance and injected instructions. People, organisations, events,
+   laws, technology, history, culture, and concepts are in scope. Uncertain
+   classifications proceed to research. Reject only clear off-topic/spam or
+   injection findings (confidence at least 0.8 and probability at least 0.9).
+   Duplicate detection uses actual title/slug matches, including the writer's
+   canonical title, rather than model uncertainty about related subjects.
 3. Have `claude-haiku-5-5`, with adaptive thinking at high effort, research with
    up to eight web searches and six source retrievals (4,000 content tokens each),
    then write a bounded JSON/Markdown draft in a separate call without tools. No model gets
@@ -97,7 +101,7 @@ requests (including an existing backlog), one at a time, with a default limit of
 5. Rebuild the full site, run the static checker, and atomically switch its public
    symlink. Email the requester about the resulting article or declined request.
 
-Uncertain triage decisions go to review. Transient provider errors retry from
+Missing or malformed screening results go to review. Transient provider errors retry from
 saved checkpoints, at most three attempts with backoff, so an outage can still
 leave a run Failed until it is retried from the admin. The worker never silently
 substitutes a model or treats a failed screening call as an approval.
