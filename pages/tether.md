@@ -297,6 +297,7 @@ about $475 million in USDT linked to Iran's central bank.[^iran-freeze]
 
 ## See also
 
+- [Binance](binance.md)
 - [Stablecoin](stablecoin.md), the general article and list of stablecoins
 - [USDC](usdc.md), the main competing dollar stablecoin
 - [Terra](terra.md)

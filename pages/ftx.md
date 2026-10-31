@@ -338,6 +338,7 @@ than the same holdings at market prices.[^coindesk-march-2025]
 
 ## See also
 
+- [Binance](binance.md)
 - [Mt. Gox](mt-gox.md)
 - [Terra](terra.md), whose collapse Zhao cited when announcing Binance's FTT sale
 

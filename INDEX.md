@@ -47,6 +47,7 @@ All pages in Chainlore.
 
 ## Exchanges
 
+- [Binance](pages/binance.md): the exchange, related entities, regulation, and security incidents.
 - [Mt. Gox](pages/mt-gox.md): the 2014 collapse and subsequent creditor repayments.
 - [Coinbase](pages/coinbase.md): exchange, custody provider, and developer
   of Base, with a commercial role in USDC.
@@ -88,3 +89,7 @@ All pages in Chainlore.
 
 - [Non-fungible token](pages/nft.md): token identity, metadata, rights, and royalties.
 - [Memecoin](pages/memecoin.md): internet culture, speculative trading, and regulatory debate.
+
+## People
+
+- [Satoshi Nakamoto](pages/satoshi-nakamoto.md): Bitcoin's pseudonymous creator and the documentary record.

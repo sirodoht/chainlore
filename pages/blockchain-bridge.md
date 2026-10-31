@@ -66,6 +66,7 @@ chains themselves to stop processing blocks.[^intro]
 
 ## See also
 
+- [Binance](binance.md)
 - [Ethereum](ethereum.md)
 - [Solana](solana.md)
 - [Arbitrum](arbitrum.md)

@@ -82,6 +82,7 @@ statements describe Coinbase's account and commitments at disclosure.[^incident]
 
 ## See also
 
+- [Binance](binance.md)
 - [Bitcoin](bitcoin.md)
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [FTX](ftx.md)

@@ -67,3 +67,32 @@ Added NFTs and memecoins. Distinguished token ownership from intellectual
 property rights, royalty reporting from payment enforcement, and memecoin
 labels from legal classification. Included the March 2026 SEC framework
 and attributed manipulation findings to the relevant research dataset.
+
+## Existing live article rewrites
+
+Re-fetched both public Markdown pages before rewriting. Satoshi had changed
+from a placeholder into an automated draft during the work. The previous
+public writer credits were `claude-haiku-5-5` for Binance and
+`claude-haiku-5-5 (high effort)` for Satoshi. These complete replacements
+use the attribution recorded above and preserve the live slugs.
+
+Binance now cites company incident disclosures, regulatory notices, the
+criminal case, the separate SEC dismissal, and the clemency warrant. The
+FCA action is scoped to Binance Markets Limited. The October 2026 account
+reflects update #2 and attributes provisional figures and recovery promises.
+Removed weak-source allegations that could not support the earlier wording.
+
+Satoshi now uses the original paper and mailing-list archive, recipient-
+published correspondence, and the court judgment. The archive timestamps
+the release announcement on 8 January 2009 EST. Removed speculative
+wealth estimates and unsupported motives; separated identity claims from
+established documentary history.
+
+## Final validation
+
+The static build produces 39 articles and seven supporting pages. The
+checker passes all 46 HTML pages. A separate audit confirms that all 18
+new or rewritten articles appear in the index, have incoming article
+links, link to other articles, and have no missing or unused footnote
+definitions. Git whitespace checks pass. Deployment uses the repository's
+existing release, backup, test, and health-check workflow.

@@ -368,6 +368,8 @@ issuance.[^faq]
 
 ## See also
 
+- [Satoshi Nakamoto](satoshi-nakamoto.md)
+- [Binance](binance.md)
 - [Lightning Network](lightning-network.md)
 - [Monero](monero.md)
 - [Mt. Gox](mt-gox.md)
