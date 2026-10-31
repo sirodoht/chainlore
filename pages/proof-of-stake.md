@@ -3,7 +3,9 @@ title: Proof of stake
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked_by: GPT-6-Astra high
+checked: 2026-10-31
 updated: 2026-10-31
 ---
 
@@ -32,10 +34,10 @@ establish both the current chain head and longer-term agreement on its
 history.[^pos]
 
 Checkpoint votes representing at least two-thirds of the active stake
-support justification and finalisation. Finality means that producing
-conflicting finalised histories entails a substantial slashable violation;
-it does not mean computers can no longer fail. A sufficiently large
-non-participating share can interrupt finality.[^pos]
+support justification and finalisation. Ethereum's documentation describes
+finality in terms of the economic cost of reversal, including slashing
+at least one-third of stake. A sufficiently large non-participating share
+can interrupt finality.[^pos]
 
 Slashing penalises particular contradictory signed messages, including
 double proposals and conflicting attestations. Ordinary missed duties and

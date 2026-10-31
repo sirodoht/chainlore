@@ -3,7 +3,9 @@ title: Safe
 ticker: SAFE
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked_by: GPT-6-Astra high
+checked: 2026-10-31
 updated: 2026-10-31
 ---
 
@@ -59,17 +61,25 @@ recovery mechanisms.[^guards]
 According to Safe's account of its development, the project grew out
 of a wallet built for Gnosis, introduced the Gnosis Safe smart account
 in 2018, and formed a separate ecosystem and SafeDAO in 2022. SAFE is
-the ecosystem's governance token. As of October 2026, the Foundation
+the ecosystem's governance token. As of 31 October 2026, the Foundation
 also describes SAFE staking as securing its Safenet transaction-security
 network.[^history][^token]
 
+On 15 October 2026, Safe Foundation announced Safenet Aegis, which it
+describes as a production release that combines independent transaction
+checks with onchain validator attestations and fees. Its stated scope
+excludes economic attacks; the announcement does not promise protection
+against every type of loss.[^aegis]
+
 ## Transaction-verification risk
 
-The February 2025 theft from Bybit involved a malicious upgrade to a
-Safe wallet. BlockSec's transaction analysis describes several signers
-being deceived into authorising the operation. The incident illustrates
-that collecting valid signatures does not ensure that signers correctly
-understand the action they approve.[^bybit]
+According to investigator Sygnia, the 21 February 2025 theft from Bybit
+used modified JavaScript served by Safe{Wallet}'s web infrastructure to
+manipulate a transaction during signing. The resulting delegate call
+replaced the wallet's implementation with malicious code. Sygnia found
+the injected resources in browser caches on all three signers' hosts.
+This illustrates why valid signatures alone cannot establish that signers
+understood the operation they approved.[^bybit]
 
 ## See also
 
@@ -85,4 +95,5 @@ understand the action they approve.[^bybit]
 [^modules]: Safe documentation. *Safe Modules*. <https://docs.safe.global/advanced/smart-account-modules>
 [^guards]: Safe documentation. *Safe Guards*. <https://docs.safe.global/advanced/smart-account-guards>
 [^token]: Safe Foundation. *Safe Token*. Accessed 2026-10-31. <https://safefoundation.org/token>
-[^bybit]: BlockSec (2025-02-25). *Bybit $1.5B Hack: In-Depth Analysis of the Malicious Safe Wallet Upgrade Attack*. <https://blocksec.com/blog/bybit-1-5-b-hack-in-depth-analysis-of-the-malicious-safe-wallet-upgrade-attack>
+[^bybit]: Sygnia. *Sygnia’s Investigation into the Bybit Hack: What We Know So Far*. <https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/>
+[^aegis]: Safe Foundation (2026-10-15). *Introducing Safenet Aegis: Enforceable transaction security for Safes*. <https://safefoundation.org/blog/safenet-aegis-live>

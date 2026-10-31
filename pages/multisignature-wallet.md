@@ -3,7 +3,9 @@ title: Multisignature wallet
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked_by: GPT-6-Astra high
+checked: 2026-10-31
 updated: 2026-10-31
 ---
 
@@ -11,9 +13,9 @@ updated: 2026-10-31
 
 A multisignature wallet requires a specified number of authorised
 signatures to approve spending or another action. A two-of-three policy,
-for example, accepts any two of three designated signers. The policy can
-support shared custody, organisational approval, or recovery without
-making one key sufficient to move the funds.[^bip11]
+for example, accepts any two of three designated signers. Such a policy can
+support shared custody, organisational approval, or recovery. With a
+threshold greater than one, a single key cannot authorise spending.[^bip11]
 
 | | |
 |---|---|
@@ -63,10 +65,11 @@ for an account with enabled extensions.[^modules]
 ## Failure modes
 
 Multiple approvals protect against some individual-key failures, but
-cannot establish that the approved action is desirable. BlockSec's
-analysis of the February 2025 Bybit incident describes multiple signers
-being deceived into approving a malicious wallet upgrade. Valid
-signatures were part of the attack path.[^bybit]
+cannot establish that the approved action is desirable. Investigator
+Sygnia's account of the February 2025 Bybit incident describes injected
+JavaScript manipulating a transaction during signing, leading to a
+malicious replacement of the wallet's implementation. Its investigators
+found the injected resources on all three signers' hosts.[^bybit]
 
 The incident illustrates the distinction between independent keys and
 independent checks. Signers who all rely on the same misleading interface
@@ -89,4 +92,4 @@ contract or script requires.[^bybit]
 [^psbt]: Chow, A. (2017). *BIP 174: Partially Signed Bitcoin Transaction Format*. <https://bips.dev/174/>
 [^safe]: Safe documentation. *Smart Account Concepts*. <https://docs.safe.global/advanced/smart-account-concepts>
 [^modules]: Safe documentation. *Safe Modules*. <https://docs.safe.global/advanced/smart-account-modules>
-[^bybit]: BlockSec (2025-02-25). *Bybit $1.5B Hack: In-Depth Analysis of the Malicious Safe Wallet Upgrade Attack*. <https://blocksec.com/blog/bybit-1-5-b-hack-in-depth-analysis-of-the-malicious-safe-wallet-upgrade-attack>
+[^bybit]: Sygnia. *Sygnia’s Investigation into the Bybit Hack: What We Know So Far*. <https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/>

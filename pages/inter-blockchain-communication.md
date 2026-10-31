@@ -3,7 +3,9 @@ title: Inter-Blockchain Communication
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked_by: GPT-6-Astra high
+checked: 2026-10-31
 updated: 2026-10-31
 ---
 
@@ -70,6 +72,12 @@ Cosmos networks. It uses an Ethereum client on the Hub and proofs of
 Cosmos Hub consensus verification on Ethereum. The product and the
 underlying messaging standard are distinct.[^eureka]
 
+As of 31 October 2026, the project's published history reports expansion
+to further EVM environments during 2026, together with Interchain
+Fungible Tokens (IFT) and General Message Passing (GMP). These extend
+asset-transfer options and contract calls across networks; ICS-20 remains
+the specific token-transfer standard described above.[^history][^ics20]
+
 ## Security assumptions
 
 Proof verification shifts trust away from relayer honesty toward the
@@ -92,3 +100,4 @@ code.[^clients][^eureka]
 [^clients]: Interchain Developer Academy. *Transport, Authentication, and Ordering Layer — Clients*. <https://ida.interchain.io/academy/3-ibc/4-clients>
 [^ics20]: Interchain Standards. *ICS-20: Fungible Token Transfer*. <https://github.com/cosmos/ibc/tree/main/spec/app/ics-020-fungible-token-transfer>
 [^eureka]: Cosmos. *IBC Eureka Technical Walkthrough*. <https://cosmos.network/blog/ibc-eureka-technical-walkthrough>
+[^history]: IBC. *About the Inter-Blockchain Communication Protocol*. Accessed 2026-10-31. <https://ibcprotocol.dev/about>

@@ -3,7 +3,9 @@ title: Proof of work
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked_by: GPT-6-Astra high
+checked: 2026-10-31
 updated: 2026-10-31
 ---
 
@@ -33,9 +35,7 @@ without repeating the search.[^chain][^whitepaper]
 
 Bitcoin adjusts difficulty every 2,016 blocks, aiming at roughly two weeks
 for that many blocks. This controls the expected pace as total computing
-power changes; it does not schedule each block at an exact time. Other
-proof-of-work protocols can use different hashing and adjustment
-rules.[^chain]
+power changes; it does not schedule each block at an exact time.[^chain]
 
 ## Mining and validation
 
@@ -48,8 +48,8 @@ Miners receive the block subsidy and eligible transaction fees. A mining
 pool combines participants' work and distributes proceeds under its payout
 rules. Participants submit easier proofs called shares, allowing the pool
 to estimate their contributions even when they have not found a network
-block. Pool shares are accounting evidence, not additional blocks in
-Bitcoin's ledger.[^whitepaper][^mining]
+block. Most shares do not meet Bitcoin's network target; those that do can
+provide a valid block if the other block rules are satisfied.[^whitepaper][^mining]
 
 ## Security and limits
 

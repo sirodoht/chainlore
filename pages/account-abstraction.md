@@ -3,7 +3,9 @@ title: Account abstraction
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: draft
+status: ai-fact-checked
+checked_by: GPT-6-Astra high
+checked: 2026-10-31
 updated: 2026-10-31
 ---
 
@@ -68,6 +70,15 @@ ERC-4337 and EIP-7702 are distinct mechanisms: the former describes
 operation processing through contracts and bundlers, while the latter
 changes the protocol to permit account-code delegation.[^pectra][^4337][^7702]
 
+## Further protocol work
+
+As of 31 October 2026, EIP-8141 remains a draft proposal for frame
+transactions: contract calls that separately handle validation, gas-payment
+approval, and execution. Ethereum's roadmap schedules frame transactions
+for Hegotá in 2027, while warning that the upgrade scope is not final.
+This is planned work, rather than an already activated replacement for
+ERC-4337 or EIP-7702.[^8141][^upgrades]
+
 ## Security considerations
 
 Programmable authority also makes the chosen code security-critical.
@@ -91,3 +102,5 @@ policy or make an account safe.[^7702]
 [^7702]: Buterin, V., Wilson, S., Dietrichs, A., and lightclient. *EIP-7702: Set Code for EOAs*. <https://eips.ethereum.org/EIPS/eip-7702>
 [^roadmap]: Ethereum documentation. *Account abstraction*. <https://ethereum.org/roadmap/account-abstraction/>
 [^pectra]: Ethereum documentation. *Pectra*. <https://ethereum.org/roadmap/pectra/>
+[^8141]: Buterin, V., et al. *EIP-8141: Frame Transaction*. Draft, accessed 2026-10-31. <https://eips.ethereum.org/EIPS/eip-8141>
+[^upgrades]: Ethereum documentation. *Ethereum roadmap*. Accessed 2026-10-31. <https://ethereum.org/roadmap/>
