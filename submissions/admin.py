@@ -58,7 +58,7 @@ class SubmissionAdmin(admin.ModelAdmin):
 # Audit records and source artifacts are visible only to authenticated staff.
 # They are append-only in the application; no public endpoints expose them.
 from .models import AutomationControl, AutomationEvent, AutomationRun, GeneratedArticle
-from .automation_control import resume_queue, retry_runs
+from .automation_control import regenerate_placeholders, resume_queue, retry_runs
 
 
 class AuditAdmin(admin.ModelAdmin):
@@ -80,14 +80,15 @@ class AutomationRunAdmin(AuditAdmin):
     list_display = ['id', 'submission', 'state', 'attempts', 'last_error', 'created_at']
     list_filter = ['state', 'created_at']
     search_fields = ['submission__title', 'submission__reference']
-    actions = ['retry_failed', 'restart_review']
+    actions = ['retry_failed', 'restart_review', 'regenerate_placeholder']
 
     def has_operate_permission(self, request):
         return request.user.has_perm('submissions.change_automationrun')
 
-    def recover(self, request, queryset, restart=False):
+    def recover(self, request, queryset, restart=False, operation=None):
+        ids = list(queryset.values_list('pk', flat=True))
         try:
-            count = retry_runs(list(queryset.values_list('pk', flat=True)), request.user.pk, restart=restart)
+            count = operation(ids, request.user.pk) if operation else retry_runs(ids, request.user.pk, restart=restart)
         except BlockingIOError:
             self.message_user(request, 'The worker is busy. Try again after its current run finishes.', messages.WARNING)
         except ValueError as exc:
@@ -102,6 +103,10 @@ class AutomationRunAdmin(AuditAdmin):
     @admin.action(description='Restart screening and research for held review runs', permissions=['operate'])
     def restart_review(self, request, queryset):
         self.recover(request, queryset, restart=True)
+
+    @admin.action(description='Regenerate placeholder pages with fresh research', permissions=['operate'])
+    def regenerate_placeholder(self, request, queryset):
+        self.recover(request, queryset, operation=regenerate_placeholders)
 
 
 @admin.register(AutomationControl)

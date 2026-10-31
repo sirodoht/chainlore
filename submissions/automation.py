@@ -4,6 +4,7 @@ import json
 import logging
 import smtplib
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
@@ -73,9 +74,12 @@ def process(run):
     catalog = articles()
     # If a process died after preparing/publishing the article, resume without more API calls.
     prepared = GeneratedArticle.objects.filter(run=run).first()
-    if prepared:
+    if prepared and run.draft:
         publish_site()
         return
+    # An article with no saved draft is a placeholder being regenerated, not a duplicate.
+    if prepared:
+        catalog = {slug: item for slug, item in catalog.items() if slug != prepared.slug}
     match = existing_match(run.inputs['title'], catalog)
     if match:
         finish(run, 'duplicate', 'existing_title_or_slug', f'https://chainlore.xyz/p/{match}/')
@@ -113,8 +117,11 @@ def process(run):
     if submission.status != 'reviewing':
         finish(run, 'review', 'submission_changed_during_generation')
         return
-    GeneratedArticle.objects.create(slug=run.draft['slug'], run=run, title=run.draft['title'],
-                                    markdown=source, content_hash=digest)
+    with transaction.atomic():
+        if prepared:
+            prepared.delete()
+        GeneratedArticle.objects.create(slug=run.draft['slug'], run=run, title=run.draft['title'],
+                                        markdown=source, content_hash=digest)
     publish_site()
 
 

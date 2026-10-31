@@ -5,7 +5,8 @@ import smtplib
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from .models import AutomationControl, AutomationEvent, AutomationRun
+from .article_validation import PLACEHOLDER
+from .models import AutomationControl, AutomationEvent, AutomationRun, Submission
 from .notify import notify_provider_problem
 from .publication import publication_lock
 
@@ -72,6 +73,35 @@ def resume_queue(actor_id):
         control.paused = False
         control.alert_retry_at = None
         control.save(update_fields=['paused', 'alert_retry_at', 'updated_at'])
+        return count
+
+
+def regenerate_placeholders(ids, actor_id):
+    # The placeholder stays published until a replacement passes every check.
+    with publication_lock(blocking=False), transaction.atomic():
+        if AutomationControl.objects.filter(pk=1, paused=True).exists():
+            raise ValueError('Fix the provider settings and resume the queue first.')
+        runs = AutomationRun.objects.filter(pk__in=ids, state__in=['published', 'review', 'failed'],
+                                            generated_article__isnull=False,
+                                            submission__status__in=['resolved', 'reviewing'])
+        count = 0
+        for run in runs:
+            if PLACEHOLDER not in run.generated_article.markdown:
+                continue
+            previous = {'state': run.state, 'reason': run.last_error, 'attempts': run.attempts}
+            run.research_session = {}
+            run.research = {}
+            run.draft = {}
+            run.output_review = {}
+            run.state = 'queued'
+            run.attempts = 0
+            run.last_error = ''
+            run.next_attempt_at = None
+            run.save()
+            Submission.objects.filter(pk=run.submission_id).update(status='reviewing', updated_at=timezone.now())
+            AutomationEvent.objects.create(run=run, kind='operator_regenerate', data={
+                'actor_id': actor_id, 'previous': previous})
+            count += 1
         return count
 
 

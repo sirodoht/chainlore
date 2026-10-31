@@ -137,7 +137,9 @@ After fixing the provider settings or billing, select the control in
 provider settings**. Under Automation runs, **Retry failed runs from their saved
 stage** recovers failed requests without SQL edits. **Restart screening and
 research for held review runs** deliberately starts fresh screening/research while
-preserving the old audit events. These operations require the respective change
+preserving the old audit events. **Regenerate placeholder pages with fresh research**
+re-runs research and writing for a published placeholder, which stays live until a
+replacement passes every check. These operations require the respective change
 permission, respect the worker lock, and record the operator in the audit log;
 ordinary audit fields remain read-only. Resolved/published runs cannot be retried
 through these actions.

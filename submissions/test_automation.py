@@ -13,7 +13,7 @@ from .article_validation import InvalidArticle, stub_draft, validate_draft
 from .automation import run_worker
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission
 from .publication import publication_lock, publish_site
-from .automation_control import resume_queue, retry_runs
+from .automation_control import regenerate_placeholders, resume_queue, retry_runs
 from .models import AutomationControl
 
 URLS = ['https://docs.example.com/design', 'https://docs.example.com/history', 'https://news.example.org/report']
@@ -177,6 +177,64 @@ class AutomationTests(TestCase):
         self.assertNotIn('alert(1)', article.markdown)
         self.assertIn('This article is a draft', (self.root / 'published/current/p/test-protocol/index.html').read_text())
         self.review_output.assert_called_once()
+
+    def publish_placeholder(self):
+        self.write_article.side_effect = ai.ProviderError('research_context_too_large')
+        run_worker()
+        # A live deployment's catalog lists the page, so the run must not see itself as a duplicate.
+        (self.site / 'article-catalog.json').write_text(json.dumps({
+            'bitcoin': {'title': 'Bitcoin', 'sections': {}}, 'test-protocol': {'title': 'Test Protocol', 'sections': {}}}))
+        self.write_article.side_effect = None
+        run = AutomationRun.objects.get()
+        self.assertIn('This is a placeholder', run.generated_article.markdown)
+        return run
+
+    def test_regenerating_replaces_a_placeholder_with_the_full_article(self):
+        run = self.publish_placeholder()
+        page = self.root / 'published/current/p/test-protocol/index.html'
+        self.assertEqual(regenerate_placeholders([run.pk], actor_id=7), 1)
+        self.assertIn('This is a placeholder', page.read_text())
+        run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'published')
+        self.assertNotIn('This is a placeholder', GeneratedArticle.objects.get().markdown)
+        self.assertNotIn('This is a placeholder', page.read_text())
+        self.assertIn('fictional protocol', page.read_text())
+        self.submission.refresh_from_db()
+        self.assertEqual(self.submission.status, 'resolved')
+        self.assertEqual(self.submission.resulting_url, 'https://chainlore.xyz/p/test-protocol/')
+        self.assertEqual(self.research.call_count, 2)
+        self.triage.assert_called_once()
+        self.assertTrue(run.events.filter(kind='operator_regenerate', data__actor_id=7).exists())
+
+    def test_failed_regeneration_leaves_the_placeholder_live_and_regenerable(self):
+        run = self.publish_placeholder()
+        regenerate_placeholders([run.pk], actor_id=7)
+        self.review_output.return_value = decision(suitable='no')
+        run_worker()
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'review')
+        self.assertIn('This is a placeholder', GeneratedArticle.objects.get().markdown)
+        with publication_lock():
+            publish_site()
+        self.assertIn('This is a placeholder', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+        self.assertEqual(regenerate_placeholders([run.pk], actor_id=7), 1)
+
+    def test_regenerate_ignores_full_articles_and_respects_a_paused_queue(self):
+        run_worker()
+        run = AutomationRun.objects.get()
+        self.assertEqual(regenerate_placeholders([run.pk], actor_id=7), 0)
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        AutomationControl.objects.update_or_create(pk=1, defaults={'paused': True})
+        with self.assertRaises(ValueError):
+            regenerate_placeholders([run.pk], actor_id=7)
+
+    def test_admin_action_regenerates_a_placeholder(self):
+        run = self.publish_placeholder()
+        self.client.force_login(get_user_model().objects.create_superuser('placeholder-operator', password='test password'))
+        self.client.post('/admin/submissions/automationrun/', {'action': 'regenerate_placeholder', '_selected_action': [str(run.pk)]})
+        run.refresh_from_db()
+        self.assertEqual(run.state, 'queued')
 
     def test_non_retryable_writer_error_publishes_a_placeholder(self):
         self.write_article.side_effect = ai.ProviderError('research_context_too_large')

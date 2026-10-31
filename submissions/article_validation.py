@@ -10,6 +10,9 @@ import markdown
 from django.utils.text import slugify
 
 
+PLACEHOLDER = 'This is a placeholder:'
+
+
 class InvalidArticle(ValueError):
     pass
 
@@ -67,7 +70,7 @@ def stub_draft(title, research):
     markers = ''.join(f'[^{index}]' for index, _ in enumerate(urls, 1))
     references = '\n'.join(f'[^{index}]: [{urlsplit(url).hostname}]({url})' for index, url in enumerate(urls, 1))
     markdown = (f'{title} is the subject of a reader request that Chainlore accepted as a cryptocurrency topic. '
-                'This is a placeholder: automated research could not produce a full article, so the page states '
+                f'{PLACEHOLDER} automated research could not produce a full article, so the page states '
                 'nothing about the subject beyond its name and lists any sources that were found. '
                 f'It has not been checked and should not be relied on.{markers}\n')
     if references:
