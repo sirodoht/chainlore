@@ -170,6 +170,7 @@ adopt upgrades by running compatible software.[^eips][^fusaka]
 
 ## See also
 
+- [Non-fungible token](nft.md)
 - [Bitcoin](bitcoin.md)
 - [Arbitrum](arbitrum.md)
 

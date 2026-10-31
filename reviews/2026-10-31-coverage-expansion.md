@@ -60,3 +60,10 @@ Added Mt. Gox, Lightning Network, and Monero. Mt. Gox uses the trustee's
 estimates, recovered coins, and criminal allegations. Lightning distinguishes
 channel capacity from directional liquidity. Monero describes probabilistic
 privacy and published limitations rather than promising untraceability.
+
+## Culture batch
+
+Added NFTs and memecoins. Distinguished token ownership from intellectual
+property rights, royalty reporting from payment enforcement, and memecoin
+labels from legal classification. Included the March 2026 SEC framework
+and attributed manipulation findings to the relevant research dataset.

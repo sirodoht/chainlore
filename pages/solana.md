@@ -337,6 +337,7 @@ override their validator's vote on a proposal.[^simd-0550-forum]
 
 ## See also
 
+- [Memecoin](memecoin.md)
 - [Blockchain bridge](blockchain-bridge.md)
 
 - [Ethereum](ethereum.md)

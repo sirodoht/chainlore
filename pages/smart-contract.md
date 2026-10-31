@@ -74,6 +74,7 @@ that the supplied information accurately represents the outside world.[^oracles]
 
 ## See also
 
+- [Non-fungible token](nft.md)
 - [Cryptocurrency wallet](cryptocurrency-wallet.md)
 - [Uniswap](uniswap.md)
 - [Aave](aave.md)

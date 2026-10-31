@@ -75,6 +75,7 @@ services.[^support]
 
 ## See also
 
+- [Non-fungible token](nft.md)
 - [Ethereum](ethereum.md)
 - [Solana](solana.md)
 - [Smart contract](smart-contract.md)
