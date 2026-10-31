@@ -21,3 +21,14 @@ credit. References were researched against live sources during authoring.
 No existing article's text, attribution, or review status is changed.
 An independent checker should review every final claim before promotion
 under POLICY.md.
+
+## Batch 2
+
+- TRON: protocol and staking documentation, issuer announcements, and the
+  SEC release and court judgment. Distinguishes allegations from the
+  March 2026 resolution and the penalty on Rainberry.
+- BNB Chain: current validator documentation, Chain Fusion documentation,
+  the 2022 bridge-incident account, and the August 2026 upgrade announcement.
+  Does not describe retired Beacon Chain services as currently active.
+- XRP Ledger: protocol documentation for XRP, trusted validator lists,
+  fees, exchange, and amendment activation. Distinguishes Ripple from XRPL.

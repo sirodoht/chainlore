@@ -4,6 +4,9 @@ All pages in Chainlore.
 
 ## Layer 1 blockchains
 
+- [TRON](pages/tron.md): TRX, elected block producers, resources, and stablecoins.
+- [BNB Chain](pages/bnb-chain.md): BNB Smart Chain, staking, and Chain Fusion.
+- [XRP Ledger](pages/xrp-ledger.md): XRP, validator lists, payments, and exchange.
 - [Monero](pages/monero.md): privacy-oriented proof of work, XMR, and tail emission.
 - [Bitcoin](pages/bitcoin.md): the first cryptocurrency, a proof-of-work
   peer-to-peer electronic cash system.
