@@ -314,6 +314,8 @@ to a public token launch.[^theblock-arc]
 
 ## See also
 
+- [Coinbase](coinbase.md)
+
 - [Blockchain bridge](blockchain-bridge.md)
 
 - [Stablecoin](stablecoin.md), the general article and list of stablecoins

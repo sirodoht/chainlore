@@ -301,6 +301,8 @@ Hyperliquid Labs leads core development.[^hyper101]
 
 ## See also
 
+- [MetaMask](metamask.md)
+
 - [Arbitrum](arbitrum.md)
 - [Ethereum](ethereum.md)
 

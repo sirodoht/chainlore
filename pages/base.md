@@ -12,7 +12,7 @@ updated: 2026-10-30
 # Base
 
 **Base** is a layer 2 network on [Ethereum](ethereum.md) developed and
-operated by Coinbase, the US cryptocurrency exchange. It processes
+operated by [Coinbase](coinbase.md), the US cryptocurrency exchange. It processes
 transactions off Ethereum, posts the data back to it, and uses ETH to pay
 for gas. Base was announced in February 2023 and opened to the public in
 August 2023. It was built on Optimism's OP Stack and was part of the
@@ -313,6 +313,8 @@ required.[^theblock-stage1][^theblock-unified]
 | 2026-09-30 | Cobalt upgrade |
 
 ## See also
+
+- [Coinbase](coinbase.md)
 
 - [Rollup](rollup.md)
 

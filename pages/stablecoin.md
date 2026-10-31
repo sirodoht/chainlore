@@ -491,6 +491,8 @@ said it had acted consistently with its duties.[^block-wlf][^ab-wlf]
 
 ## See also
 
+- [MakerDAO and Sky](makerdao-sky.md)
+
 - [Tether](tether.md), issuer of USDT
 - [USDC](usdc.md), issued by Circle
 - [Terra](terra.md), whose UST collapsed in 2022

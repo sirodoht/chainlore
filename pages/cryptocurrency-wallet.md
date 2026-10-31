@@ -72,6 +72,8 @@ wallet presents.[^erc20]
 
 ## See also
 
+- [MetaMask](metamask.md)
+
 - [Bitcoin](bitcoin.md)
 - [Ethereum](ethereum.md)
 - [Smart contract](smart-contract.md)

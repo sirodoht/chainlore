@@ -33,6 +33,9 @@ All pages in Chainlore.
 
 ## Decentralised finance
 
+- [MakerDAO and Sky](pages/makerdao-sky.md): the protocol behind Dai and
+  USDS, its collateral system, and its governance transition.
+
 - [Uniswap](pages/uniswap.md): a decentralised exchange protocol built on
   automated market makers.
 - [Aave](pages/aave.md): a lending and borrowing protocol.
@@ -40,6 +43,9 @@ All pages in Chainlore.
   stETH, a token for staked ether.
 
 ## Exchanges
+
+- [Coinbase](pages/coinbase.md): exchange, custody provider, and developer
+  of Base, with a commercial role in USDC.
 
 - [FTX](pages/ftx.md): a cryptocurrency exchange that collapsed and filed
   for bankruptcy in November 2022.
@@ -60,6 +66,9 @@ All pages in Chainlore.
   Kingdom's authorisation regime for crypto firms and stablecoins.
 
 ## Infrastructure
+
+- [MetaMask](pages/metamask.md): a wallet connecting browser and mobile
+  applications to blockchain accounts.
 
 - [Cryptocurrency wallet](pages/cryptocurrency-wallet.md): keys, accounts,
   custody, recovery, and transaction signing.

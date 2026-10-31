@@ -35,3 +35,12 @@ review dates.
 Sources were opened during research on 31 October 2026. The article
 footnotes identify the sources used. Frequently changing market figures
 are omitted. Static builds and link/citation checks run for each batch.
+
+## Organisations batch
+
+Added Coinbase, MetaMask, and MakerDAO and Sky. Sources include company
+announcements, regulator statements, protocol documentation, and governance
+records. The Coinbase dismissal is not described as a merits ruling;
+MetaMask's support-ticket incident is distinguished from a wallet compromise;
+and the Maker compensation poll is not described as an executed payment.
+Added navigation from Base, USDC, Hyperliquid, wallets, and stablecoins.
