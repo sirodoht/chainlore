@@ -140,10 +140,13 @@ spaced probes of the pending stage. Exhausted credentials/billing recovery remai
 an explicit operational Blocked state. Owners retain pause/resume and budget controls.
 The dashboard displays blockers and retry times; it is not an editor approval queue.
 
-Every paid provider call conservatively reserves input bytes, output-token allowance
-and bounded tool-content allowances before sending. Reservations survive failures and
-crashes. The dashboard displays reservations and reported input/output tokens separately;
-these are token budgets, not exact currency invoices. Dollar billing depends on providers.
+Each paid call reserves estimated input/output and tool headroom before sending.
+Server-tool estimates include extra allowance for repeated sampling. Completed calls
+settle against provider-reported input, output and cache input tokens; failed calls
+or responses without usable usage retain their estimates. An in-flight call can
+exceed its estimate: subsequent admission uses the higher actual cost. These are
+call-admission budgets, not provider-enforced spending caps or currency invoices.
+The dashboard shows the same accounted total used by admission checks.
 
 Defaults and environment controls:
 
@@ -152,8 +155,8 @@ Defaults and environment controls:
 - `CHAINLORE_EDITORIAL_SHADOW=1`: run checks without publishing; passed jobs explicitly
   stop in a shadow Blocked state. Never claim a shadow result was published.
 - `CHAINLORE_AUTOMATION_DAILY_LIMIT=10`: new jobs per UTC day, including maintenance.
-- `CHAINLORE_DAILY_TOKEN_LIMIT=2000000`: conservative daily reservation ceiling.
-- `CHAINLORE_RUN_TOKEN_LIMIT=500000`: lifetime reservation ceiling per job.
+- `CHAINLORE_DAILY_TOKEN_LIMIT=2000000`: shared daily call-admission budget.
+- `CHAINLORE_RUN_TOKEN_LIMIT=1000000`: lifetime call-admission budget per job.
 - `CHAINLORE_CHECKER_MODEL`: explicit checker model; defaults to the configured writer
   model in a separate context, not an implicit provider/model substitution.
 - `CHAINLORE_MAINTENANCE_ENABLED=1` and `CHAINLORE_MAINTENANCE_DAILY_LIMIT=1`:
@@ -163,6 +166,21 @@ Defaults and environment controls:
 Daily-budget blocks resume the next day. A per-job budget or exhausted recovery needs
 an operational limit/configuration decision, never an editorial approval. Both remain
 visible and preserve the existing article. API secrets and database files stay private.
+
+Interrupted or malformed verification output does not trigger rewriting. The checker
+keeps the candidate and its independently fetched sources, then gets at most two
+report-only attempts with a 32,000-token output allowance and no tools. Complete
+reports with factual findings still request revision. Incomplete reports end in an
+explicit operational block; they never confer publication approval. Saved reports
+are assessed after a restart before another paid call. Evidence from a different
+UTC day requires a fresh source check.
+
+To recover a historical run held by this bug, use
+`manage.py resume_verification --submission UUID` under the normal worker environment.
+It requires a blocked, undecided run, an unchanged candidate, an interrupted report,
+same-day evidence and no later paid work. It creates a new pending check using saved
+evidence, restores a lost draft from the writing audit if necessary, and preserves
+the earlier failed check. It neither raises budgets nor bypasses source verification.
 
 ### Scheduled upkeep and audit
 

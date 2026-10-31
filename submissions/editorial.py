@@ -214,7 +214,13 @@ def process(run):
     if stage == 'check':
         check = Verification.objects.get(pk=run.editorial['check_id'], run=run)
         check = check_step(check)
-        if check.state == 'failed':
+        if check.state == 'incomplete':
+            run.state = 'blocked'
+            run.last_error = check.report['errors'][0]
+            run.next_attempt_at = None
+            run.save()
+            event(run, 'operational_block', code=run.last_error)
+        elif check.state == 'failed':
             revise(run, check.report)
         elif check.state == 'passed':
             publish_checked(run, check)

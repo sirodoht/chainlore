@@ -210,7 +210,7 @@ class Verification(models.Model):
 
 
 class ProviderSpend(models.Model):
-    """Conservative token reservations survive crashes and bound API expenditure."""
+    """Estimated reservations survive crashes; completed calls record reported usage."""
     run = models.ForeignKey(AutomationRun, on_delete=models.PROTECT, related_name='spend')
     provider = models.CharField(max_length=20)
     stage = models.CharField(max_length=50)

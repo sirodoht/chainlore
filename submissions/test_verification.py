@@ -107,7 +107,8 @@ class VerificationTests(TestCase):
         self.assertEqual(len(call.call_args.args[3]['messages']),2)
         self.assertEqual(len(call.call_args.args[3]['tools']),2)
         step(self.check)
-        self.assertEqual(self.check.state,'failed')
+        self.assertEqual(self.check.state,'pending')
+        self.assertEqual(self.check.session['mode'],'report')
 
     def test_local_reference_is_rejected(self):
         with self.assertRaises(InvalidArticle):inventory(SOURCE.replace(URL,'http://127.0.0.1/secret'))

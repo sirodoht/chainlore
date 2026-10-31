@@ -31,7 +31,7 @@ class Command(BaseCommand):
         run = AutomationRun.objects.create(submission=submission, state='checking', inputs={'replay': True})
         check = Verification.objects.create(run=run, source=source, source_hash=digest(source))
         try:
-            for _ in range(3):
+            for _ in range(3 + settings.VERIFICATION_REPORT_ATTEMPTS):
                 check = step(check)
                 if check.state != 'pending':
                     break

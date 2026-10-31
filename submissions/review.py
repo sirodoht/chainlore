@@ -143,11 +143,11 @@ def dashboard(request):
     }
     rows.sort(key=order[sort])
     from .models import AutomationRun, AutomationControl, ProviderSpend
-    from django.db.models import Sum
+    from .budgets import totals
     from django.conf import settings
     context.update(operations=list(AutomationRun.objects.select_related('submission').exclude(state__in=['published','duplicate','declined','insufficient']).order_by('-updated_at')[:30]),
         queue_control=AutomationControl.objects.filter(pk=1).first(),
-        spend=ProviderSpend.objects.filter(created_at__date=today).aggregate(reserved=Sum('reserved_tokens'),input=Sum('input_tokens'),output=Sum('output_tokens')),
+        spend=totals(ProviderSpend.objects.filter(created_at__date=today)),
         token_limit=settings.EDITORIAL_DAILY_TOKEN_LIMIT)
     context.update(rows=rows, counts=counts, selected=selected, sort=sort, query=query,
                    open_reports=sum(reports.values()),

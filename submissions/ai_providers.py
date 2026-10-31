@@ -54,7 +54,8 @@ def call(run, provider, stage, payload, timeout=120, keep_thinking=False):
         from .budgets import reserve
         payload = copy.deepcopy(payload)
         if 'max_tokens' in payload:
-            payload['max_tokens'] = min(payload['max_tokens'], settings.EDITORIAL_OUTPUT_TOKENS)
+            limit = settings.VERIFICATION_REPORT_TOKENS if stage == 'fact_check_report' else settings.EDITORIAL_OUTPUT_TOKENS
+            payload['max_tokens'] = min(payload['max_tokens'], limit)
         reservation = reserve(run, provider, stage, payload)
     headers['Content-Type'] = 'application/json'
     AutomationEvent.objects.create(run=run, kind=stage + '_request', data=without_thinking(payload))

@@ -158,3 +158,11 @@ class TrackingTests(TestCase):
         response = self.detail(record)
         self.assertEqual(response.context['item']['status'], 'resolved')
         self.assertContains(response, 'An editor published the requested material.')
+
+    def test_budget_block_does_not_claim_recovery_attempts_exhausted(self):
+        record=Submission.objects.create(kind='correction',article='bitcoin',status='reviewing')
+        AutomationRun.objects.create(submission=record,state='blocked',last_error='run_token_budget',recovery_attempts=0)
+        response=self.detail(record)
+        self.assertContains(response,'budget adjustment is needed')
+        self.assertContains(response,'No automatic retry is currently scheduled')
+        self.assertNotContains(response,'attempts are exhausted')

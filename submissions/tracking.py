@@ -77,11 +77,16 @@ def present(submission, catalog):
                        'publishing': 'The verified version is being published.',
                        'blocked': 'Processing is blocked by an operational issue. The current article is preserved.'}[state]
     if state == 'blocked' and run:
-        reasons = {'daily_token_budget': 'The daily processing budget is exhausted.',
-                   'run_token_budget': 'This submission reached its processing budget.',
-                   'shadow_verified_not_published': 'Verification passed in a non-publishing test run.'}
-        outcome = reasons.get(run.last_error, 'Processing is blocked by a provider or publication failure; the current article is preserved.')
-        outcome += (' A retry is scheduled for ' + run.next_attempt_at.strftime('%-d %B %Y, %H:%M UTC') + '.' if run.next_attempt_at else ' Automatic recovery attempts are exhausted or processing is paused.')
+        reasons = {
+            'daily_token_budget': 'The next processing step would exceed the shared daily budget. Saved work is retained.',
+            'run_token_budget': 'The next processing step would exceed this submission’s budget. Saved work is retained; a budget adjustment is needed to continue.',
+            'verification_output_incomplete': 'The checker could not finish its report within the allowed reporting attempts. The draft and retrieved evidence are retained.',
+            'verification_report_incomplete': 'The checker did not return a complete report after the allowed attempts. The draft and retrieved evidence are retained.',
+            'invalid_check_report': 'The checker did not return a usable report after the allowed attempts. The draft and retrieved evidence are retained.',
+            'verification_evidence_stale': 'Saved verification evidence needs a fresh source check before processing can continue.',
+            'shadow_verified_not_published': 'Verification passed in a non-publishing test run.'}
+        outcome = reasons.get(run.last_error, 'Processing is blocked by a provider or publication failure; saved work is retained.')
+        outcome += (' A retry is scheduled for ' + run.next_attempt_at.strftime('%-d %B %Y, %H:%M UTC') + '.' if run.next_attempt_at else ' No automatic retry is currently scheduled.')
     return {'reference': submission.pk, 'title': title, 'kind': KINDS[submission.kind],
             'status': state, 'status_label': STATUSES[state], 'created_at': submission.created_at,
             'updated_at': submission.tracking_updated, 'outcome': outcome, 'result_url': result,
@@ -103,6 +108,9 @@ EVENT_LABELS = {
     'retry_scheduled': 'Retry scheduled', 'conflict_restarted': 'Restarted against the latest article',
     'operational_block': 'Operational blocker', 'budget_block': 'Processing budget reached',
     'shadow_verified': 'Verification passed in test mode',
+    'verification_retry': 'Continuing verification from saved evidence',
+    'verification_incomplete': 'Verification report could not be completed',
+    'verification_recovered': 'Verification resumed from saved evidence',
 }
 
 
