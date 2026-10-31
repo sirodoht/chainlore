@@ -217,6 +217,16 @@ class ImprovementTests(AutomationFixture):
         self.assertEqual(git(self.remote, 'rev-parse', 'main'), revision)
         self.assertEqual(git(self.remote, 'show', 'main:pages/bitcoin.md').count('## Additional context'), 1)
 
+    def test_existing_title_does_not_need_to_match_historic_slug(self):
+        self.submission.article = 'nft'
+        self.submission.save()
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        source = git(self.remote, 'show', 'main:pages/nft.md')
+        self.assertIn('title: Non-fungible token', source)
+        self.assertIn('## Additional context', source)
+        self.assertEqual(ArticleRevision.objects.get().slug, 'nft')
+
     def test_provider_payload_uses_article_and_actual_writer_credit(self):
         run = AutomationRun.objects.create(submission=self.submission,
             inputs={'article': 'bitcoin', 'kind': 'improvement'}, research=RESEARCH)

@@ -54,7 +54,7 @@ def validate_patch(record, patch, research):
     # References must contain only definitions; no unvalidated prose after References.
     require(all(re.fullmatch(r'\[\^\d+\]:\s+\[[^\]\n]+\]\(https?://[^\s)]+\)', line)
                 for line in references.strip().splitlines()), 'invalid_improvement_references')
-    metadata, body = split_article(record.original_markdown)
+    _, body = split_article(record.original_markdown)
     require(body.count('## References') == 1, 'unsupported_reference_section')
     prose = body.split('## References')[0]
     blocks = {block.strip() for block in re.split(r'\n\s*\n', prose) if block.strip()}
@@ -77,8 +77,10 @@ def validate_patch(record, patch, research):
         snippets.append(text.strip())
     # This is a substantive editing pass, not a complete rewrite of the original author.
     require(replaced <= len(prose) // 3, 'improvement_rewrites_too_much')
-    draft = {key: metadata[key] for key in ('title', 'ticker', 'category')}
-    draft.update(slug=record.slug, markdown='\n\n'.join(snippets) + '\n\n## References\n\n' + references.strip())
+    # Validate only new text here. Curated article titles need not slugify to their
+    # historic filenames (for example, Non-fungible token lives at nft.md).
+    draft = {'title': 'Article improvement', 'slug': 'article-improvement', 'ticker': 'None',
+             'category': 'Other', 'markdown': '\n\n'.join(snippets) + '\n\n## References\n\n' + references.strip()}
     validate_draft(draft, research, minimum_length=50)
 
 
