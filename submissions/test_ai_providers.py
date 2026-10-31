@@ -53,6 +53,34 @@ class ProviderTests(TestCase):
         self.run.refresh_from_db()
         self.assertEqual(len(self.run.research_session['responses']), 2)
 
+    def test_research_and_writing_use_adaptive_thinking_at_high_effort(self):
+        self.run.research = {'content': [fetched('https://docs.example.com/first')]}
+        for request in [ai.research_payload(self.run), None]:
+            if request is None:
+                with patch.object(ai, 'call', return_value={}) as call:
+                    ai.write_article(self.run)
+                request = call.call_args.args[3]
+            self.assertNotIn('thinking', request)
+            self.assertEqual(request['output_config'], {'effort': 'high'})
+            self.assertEqual(request['max_tokens'], 16000)
+
+    def test_paused_thinking_is_replayed_unchanged_but_never_audited(self):
+        thinking = {'type': 'thinking', 'thinking': '', 'signature': 'opaque-signature'}
+        paused = {**self.pause, 'content': [thinking, *self.pause['content']]}
+        requests = []
+
+        def transport(request, timeout):
+            requests.append(json.loads(request.data))
+            return io.BytesIO(json.dumps(paused if len(requests) == 1 else self.end).encode())
+        with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen', side_effect=transport):
+            result = ai.research(self.run)
+        self.assertEqual(requests[1]['messages'][-1]['content'][0], thinking)
+        self.assertNotIn('opaque-signature', json.dumps(result))
+        self.assertNotIn('opaque-signature', json.dumps(list(AutomationEvent.objects.values_list('data', flat=True))))
+        self.assertEqual(len(evidence_urls(result)), 3)
+        self.run.refresh_from_db()
+        self.assertEqual(self.run.research_session['responses'][0]['content'][0], thinking)
+
     def test_failed_continuation_reuses_saved_paid_work_after_restart(self):
         with patch.object(ai, 'call', side_effect=[self.pause, ai.ProviderError('anthropic_network_error', True)]):
             with self.assertRaises(ai.ProviderError):

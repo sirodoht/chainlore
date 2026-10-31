@@ -83,9 +83,9 @@ requests (including an existing backlog), one at a time, with a default limit of
 2. Resolve exact existing titles locally. Ask Jev (`jev-latest`) independent
    questions about scope, injection, and duplicate subjects. Generation requires
    confidence at least 0.8 and selected-option probability at least 0.9 on all three.
-3. Have `claude-haiku-5-5` research with up to eight web searches and six source
-   retrievals (4,000 content tokens each), then write a
-   bounded JSON/Markdown draft in a separate call without tools. No model gets
+3. Have `claude-haiku-5-5`, with adaptive thinking at high effort, research with
+   up to eight web searches and six source retrievals (4,000 content tokens each),
+   then write a bounded JSON/Markdown draft in a separate call without tools. No model gets
    shell access, filesystem tools, email tools, or publishing credentials.
 4. Check the slug, metadata, inert Markdown, citations, and source provenance.
    Citations must be pages research opened or results the search tool returned.
@@ -104,7 +104,9 @@ substitutes a model or treats a failed screening call as an approval.
 Provider errors, requests, responses, usage, decisions, validation results, hashes,
 publication IDs, and notification outcomes are available in the private admin
 under Automation runs, Automation events, and Generated articles. Hidden model
-thinking is not stored. Notifications retry up to three times, one hour apart;
+thinking stays out of audit events and saved research; only the private research
+checkpoint keeps the opaque signed blocks needed to resume a paused turn.
+Notifications retry up to three times, one hour apart;
 SMTP acceptance does not prove inbox delivery. Existing admin-new-submission
 notifications keep their original behavior.
 
