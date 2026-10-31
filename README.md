@@ -155,8 +155,8 @@ Defaults and environment controls:
 - `CHAINLORE_EDITORIAL_SHADOW=1`: run checks without publishing; passed jobs explicitly
   stop in a shadow Blocked state. Never claim a shadow result was published.
 - `CHAINLORE_AUTOMATION_DAILY_LIMIT=10`: new jobs per UTC day, including maintenance.
-- `CHAINLORE_DAILY_TOKEN_LIMIT=2000000`: shared daily call-admission budget.
-- `CHAINLORE_RUN_TOKEN_LIMIT=1500000`: lifetime call-admission budget per job.
+- `CHAINLORE_DAILY_TOKEN_LIMIT=4000000`: shared daily call-admission budget.
+- `CHAINLORE_RUN_TOKEN_LIMIT=3000000`: lifetime call-admission budget per job.
 - `CHAINLORE_CHECKER_MODEL`: explicit checker model; defaults to the configured writer
   model in a separate context, not an implicit provider/model substitution.
 - `CHAINLORE_MAINTENANCE_ENABLED=1` and `CHAINLORE_MAINTENANCE_DAILY_LIMIT=1`:
