@@ -4,8 +4,8 @@ Checker and substantive correction author: GPT-6-Astra high. Runtime evidence:
 `/root/review_history` session `01a192d3-4ce9-7c53-a0b5-0cc27455d986`,
 whose scoped `turn_context` records model `gpt-6-astra`, effort `high`.
 This independent reviewer did not write the incoming drafts. Original
-`written_by` credits are preserved. This record is being completed in subsets;
-only the completed articles listed below have received new checker metadata.
+`written_by` credits are preserved. All seven assigned articles below completed an independent check and received
+new checker metadata. Satoshi Nakamoto was explicitly outside this assignment.
 
 Method: read POLICY.md; compare every lead, infobox, body paragraph and timeline
 claim with live opened sources; inspect relevant document passages, not only
@@ -119,3 +119,87 @@ outcomes and agency allegations remain distinct, and a delisting is not
 misrepresented as a criminal acquittal. Final text, infobox and all references
 rechecked. Limitation: this check is a public-source snapshot, not private
 court docket access; ongoing proceedings are explicitly dated.
+
+## Completed: Vitalik Buterin
+
+This required substantive corrections and source replacement, with the original
+writer credit preserved and this review credited to GPT-6-Astra high. All 23
+retained reference URLs were opened, including every added primary document.
+The complete corrected lead, infobox, prose and timeline were read again after
+edits; the footnote graph has no missing, unused or duplicate definitions.
+
+Coverage by section:
+
+- Lead, infobox and origins: Ethereum.org supports Ethereum conception,
+  smart-contract platform, 1994 Russian birth/Canadian upbringing, named
+  co-founders and community-governance account. GitHub's actual vbuterin/blog
+  repository verifies the blog address and source. Waterloo's 2019 speaker
+  biography verifies discovering Bitcoin in 2011, September 2011 magazine
+  co-founding, and November 2013 whitepaper. Its 2024 institutional article
+  verifies computer-science study, Ian Goldberg research role, $100,000
+  fellowship in 2014 and subsequent departure for Ethereum.
+- Technology: the actual whitepaper verifies Turing completeness, contract
+  state transitions and its scoped-out proof-of-stake comparison. Ethereum.org
+  verifies the September 2022 transition. EIP-1559 verifies all six authors,
+  April 13, 2019 creation, Final status, base-fee formula, burn and priority fee.
+  Miner references are explicitly historical; economic rationales remain the
+  proposal authors' arguments rather than guarantees of manipulation immunity.
+- Scaling and current research: Buterin's March 28, 2024 essay directly verifies
+  internal execution/storage scaling. CoinDesk's February 27, 2026 full article
+  verifies its account of his renewed base-layer emphasis. The October 1, 2026
+  Foundation announcement verifies zkAPI attribution to Buterin and Crapis,
+  private API-payment purpose and network/content privacy limitations.
+- Governance: CoinDesk's January 2025 article body, not just metadata, verifies
+  Buterin's leadership intervention and criticism of inflammatory posts.
+  Miyaguchi's February 25 primary announcement supplies the previously missing
+  exact date and president role. The Block's May 24, 2026 body verifies his
+  personal-view qualification, sustainability/ETH-sales direction, CROPS
+  focus, desire for reduced influence and eight departures/planned departures
+  by that date. Removed extended quotations and incidental holdings figures;
+  this is an account of stated plans, not an audit of results.
+- Public goods: the original Buterin/Hitzig/Weyl preprint verifies September
+  2018, co-authorship and quadratic formula; Gitcoin's documentation verifies
+  its own use. CoinDesk's January 28, 2022 account verifies the approximately
+  50 trillion SHIB donation, contemporaneous $1.2bn valuation, unsolicited
+  origin, and proposed $100m USDC return for worldwide COVID projects. Clarified
+  that the return was only a portion and token valuation was not cash proceeds.
+- Incidents: EasyDNS's own April 18, 2026 admission verifies bogus account
+  recovery and DNSSEC response. The Block's April 19 report verifies Buterin's
+  warning, IPFS alternative and subsequent resolution. No claim of harm to
+  millions of users is made. The DAO account now uses the SEC report for
+  fundraising, Buterin's June 17 notice for vulnerability/initial response,
+  his July 20 completion post for 1,920,000, approximately 12m recovery ETH,
+  85% miner observation and 4.5m ETH already returned at that time, Ethereum
+  history for the opposing chain, and June 2026 The Block reporting for the
+  security endowment and his curator role.
+- Timeline: each event repeats verified body evidence or a direct primary
+  source. Corrected the Olympic claim from April to the May 9, 2015 announcement
+  actually signed by Buterin. Removed redundant or unsupported timeline detail.
+
+Removed weakly sourced Nerayoff wrongdoing accusations entirely: attribution
+alone did not meet POLICY.md's named-person source threshold. Also removed the
+weak sandwich-bot anecdote, aggregator-driven eth.limo details, unsupported
+education precision, superficial "sanctuary technology" claim, inaccessible
+Fortune/CNN-dependent details, and obsolete drafting/process disclaimers.
+The whitepaper text now records the initial 2013 sharing and hosted 2014
+publication description without presenting an unresolved contradiction.
+
+Searches explicitly covered developments through October 2026, including
+Foundation restructuring, eth.limo, scaling, API privacy work, and recent
+security commentary. Added the substantive October zkAPI development from its
+primary announcement. No claim that every public statement is catalogued is
+made. Some X originals could not be opened (403); retained statements from
+those posts are explicitly sourced to opened full CoinDesk/The Block accounts,
+not to inaccessible X references. References that failed or supported removed
+claims are not retained. Original source branding is not treated as independent
+verification of the subject's promotional claims.
+
+## Integration notes
+
+The parent reports the first three articles built/checked and committed in
+`03bcb9f`, and MEV/XRPL/Tornado built/checked and committed in `d1bd855`.
+After parent review, Tornado's appeal sentence was changed to direct dated
+attribution to Decrypt, and XRPL dates were normalized to day-month wording;
+the final wording was checked against the same opened sources. Parent handles
+all build/check runs, catalogue navigation and commits; this reviewer did not
+write generated output or change unassigned articles.
