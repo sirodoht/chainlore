@@ -125,7 +125,8 @@ def validate_draft(draft, research):
         require(all(key in {'href', 'id', 'class', 'title', 'style'} for key in node.attrib), 'unsafe_attribute')
         if node.tag == 'a':
             href = node.get('href', '')
-            require(href in urls or href.startswith(('#fn:', '#fnref:')), 'unapproved_link')
+            # A reused footnote renders numbered back-links such as #fnref2:1.
+            require(href in urls or bool(re.fullmatch(r'#fn(ref\d*)?:\d+', href)), 'unapproved_link')
     front = '\n'.join(f'{key}: {draft[key]}' for key in ('title', 'ticker', 'category'))
     source = f'---\n{front}\nstatus: draft\nupdated: {date.today().isoformat()}\n---\n\n{body.strip()}\n'
     return source, hashlib.sha256(source.encode()).hexdigest()

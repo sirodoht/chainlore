@@ -147,6 +147,17 @@ class AutomationTests(TestCase):
         self.research.assert_called_once()
         self.assertEqual(self.write_article.call_count, 3)
 
+    def test_reused_footnotes_publish_without_a_rewrite(self):
+        reused = DRAFT['markdown'].replace('attributes the description to the documentation.[^2]',
+                                           'attributes the description to the documentation.[^1][^2]')
+        self.assertNotEqual(reused, DRAFT['markdown'])
+        self.write_article.return_value = written({**DRAFT, 'markdown': reused})
+        run_worker()
+        self.assertEqual(AutomationRun.objects.get().state, 'published')
+        self.write_article.assert_called_once()
+        self.assertNotIn('This is a placeholder', GeneratedArticle.objects.get().markdown)
+        self.assertIn('fnref2:1', (self.root / 'published/current/p/test-protocol/index.html').read_text())
+
     def test_rejected_draft_is_retried_with_the_reason(self):
         bad = {**DRAFT, 'markdown': DRAFT['markdown'] + '<script>alert(1)</script>'}
         self.write_article.side_effect = [written(bad), written()]
