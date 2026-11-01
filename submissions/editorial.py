@@ -82,9 +82,12 @@ def revise(run, reason):
     count = run.editorial.get('revisions', 0)
     check = run.verifications.filter(pk=run.editorial.get('check_id'), state='failed').first() if isinstance(reason, dict) else None
     assessment = reason.get('assessment', {}) if isinstance(reason, dict) else {}
-    supported = sum(u.get('verdict') in ('supported', 'nonfactual') for u in assessment.get('units', []))
+    supported_ids = {u['id'] for u in assessment.get('units', []) if u.get('verdict') in ('supported', 'nonfactual')}
     if check:
-        supported += sum(len(b['ids']) for b in check.session.get('batches', []) if 'report' in b)
+        for batch in check.session.get('batches', []):
+            supported_ids.update(u['id'] for u in batch.get('report', {}).get('units', [])
+                                 if u.get('verdict') in ('supported', 'nonfactual'))
+    supported = len(supported_ids)
     score = {'supported':supported, 'issues':len(assessment.get('issues', [])),
              'candidate':digest(run.editorial.get('candidate', ''))}
     previous = run.editorial.get('revision_progress')

@@ -181,9 +181,11 @@ another paid call.
 Once source collection is complete, the checker
 keeps the candidate and its independently fetched sources, then checks groups of at most four units with at most two report-only attempts per
 group, a 32,000-token output allowance and no tools. Each cited group receives its
-complete cited documents; uncited facts retain the full source set. Group approvals
-are combined only when every unit is covered, then the full report is validated again. Complete
-reports with factual findings still request revision. Incomplete reports end in an
+complete cited documents; uncited facts retain the full source set. Each completed
+group is saved, including groups with factual findings. The checker finishes all
+groups before requesting one revision with their combined findings. A later passing
+group cannot erase earlier failures. Only complete coverage with no unresolved
+findings can pass, and the combined report is validated again. Incomplete reports end in an
 explicit operational block; they never confer publication approval. Saved reports
 are assessed after a restart before another paid call. The report records its completion date; saved source evidence
 does not expire solely because the UTC date changed.

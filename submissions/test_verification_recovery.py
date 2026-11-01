@@ -231,3 +231,79 @@ class GroupCoverageTests(TestCase):
         self.assertEqual(self.check.state,'pending')
         self.assertEqual(self.check.report['errors'],['verification_report_incomplete'])
         self.assertEqual(self.check.approved_hash,'')
+
+    def group_answer(self, request, findings=None):
+        data=json.loads(request['messages'][0]['content'])
+        result=report();ids={u['id'] for u in data['units']}
+        result['units']=[u for u in result['units'] if u['id'] in ids]
+        for unit in result['units']:
+            if findings and unit['id'] in findings:
+                unit.update(verdict='unsupported', claims=[])
+                result['verdict']='revise'
+                result['issues'].append(findings[unit['id']])
+        return {'stop_reason':'end_turn','model':'checker-test','content':[{'type':'text','text':json.dumps(result)}]}
+
+    @patch('submissions.ai_providers.call')
+    def test_all_groups_feed_one_revision_and_survive_restart(self, call):
+        self.run.submission.status='reviewing';self.run.submission.save()
+        self.run.state='checking'
+        self.run.editorial={'stage':'check','check_id':self.check.pk,'candidate':SOURCE,'revisions':0}
+        self.run.save()
+        units=report()['units']
+        findings={units[0]['id']:'Correct the title.', units[-1]['id']:'Correct the final row.'}
+        seen=[]
+        def answer(run, provider, stage, request, **kwargs):
+            seen.extend(u['id'] for u in json.loads(request['messages'][0]['content'])['units'])
+            return self.group_answer(request, findings)
+        call.side_effect=answer
+        for _ in range((len(units)+1)//2):
+            self.run.refresh_from_db()
+            editorial.process(self.run)
+            self.run.refresh_from_db();self.check.refresh_from_db()
+            if len(seen)<len(units):
+                self.assertEqual(self.run.state,'checking')
+                self.assertEqual(self.run.editorial['revisions'],0)
+                self.assertIsNone(self.check.completed_at)
+            self.assertEqual(self.check.approved_hash,'')
+        self.assertEqual(seen,[u['id'] for u in units])
+        self.assertEqual(self.check.state,'failed')
+        self.assertEqual(self.run.editorial['revisions'],1)
+        self.assertEqual(self.run.editorial['stage'],'write')
+        self.assertEqual(self.run.editorial['feedback']['assessment']['issues'],list(findings.values()))
+        self.assertEqual(self.run.editorial['revision_progress']['supported'],len(units)-2)
+        self.assertEqual(self.run.events.filter(kind='revision_requested').count(),1)
+        self.assertEqual(self.run.events.filter(kind='verification_group_findings').count(),2)
+
+    @patch('submissions.ai_providers.call')
+    def test_later_pass_cannot_erase_earlier_failure_or_source_rules(self, call):
+        first_id=report()['units'][0]['id']
+        def answer(run,provider,stage,request,**kwargs):
+            response=self.group_answer(request,{first_id:'Narrow the title.'})
+            result=json.loads(response['content'][0]['text'])
+            if result['issues']:
+                result['source_rules_met']=False
+            response['content'][0]['text']=json.dumps(result)
+            return response
+        call.side_effect=answer
+        for _ in range((len(report()['units'])+1)//2):
+            step(self.check);self.check.refresh_from_db()
+        self.assertEqual(self.check.state,'failed')
+        self.assertEqual(self.check.report['assessment']['issues'],['Narrow the title.'])
+        self.assertFalse(self.check.report['assessment']['source_rules_met'])
+        self.assertIn('source_rules_check_missing',self.check.report['errors'])
+        self.assertEqual(self.check.approved_hash,'')
+
+    @patch('submissions.ai_providers.call')
+    def test_interrupted_later_group_preserves_earlier_findings(self, call):
+        first_id=report()['units'][0]['id']
+        call.side_effect=lambda run,provider,stage,request,**kwargs:self.group_answer(request,{first_id:'Fix the title.'})
+        step(self.check);self.check.refresh_from_db()
+        saved=copy.deepcopy(self.check.session['batches'][0])
+        call.side_effect=None
+        call.return_value={'stop_reason':'max_tokens','model':'checker-test','content':[]}
+        for _ in range(2):
+            step(self.check);self.check.refresh_from_db()
+        self.assertEqual(self.check.state,'incomplete')
+        self.assertEqual(self.check.session['batches'][0],saved)
+        self.assertEqual(saved['report']['issues'],['Fix the title.'])
+        self.assertEqual(self.check.approved_hash,'')

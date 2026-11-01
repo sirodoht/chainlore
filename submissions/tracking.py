@@ -112,6 +112,7 @@ EVENT_LABELS = {
     'shadow_verified': 'Verification passed in test mode',
     'verification_retry': 'Continuing verification from saved evidence',
     'verification_group_checked': 'A group of claims passed verification',
+    'verification_group_findings': 'Corrections recorded; checking remaining claims',
     'verification_incomplete': 'Verification report could not be completed',
     'verification_sources_retry': 'Completing missing verification sources',
     'verification_sources_complete': 'Verification sources collected',

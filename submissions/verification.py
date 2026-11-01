@@ -363,6 +363,10 @@ def step(check):
         errors, evidence = validate_report(check, report, evidence_responses(check), units)
     except (InvalidArticle, TypeError, ValueError, AttributeError):
         return incomplete(check, 'invalid_check_report')
+    if (report.get('verdict') not in ('pass', 'revise', 'insufficient') or
+            not isinstance(report.get('issues'), list) or
+            any(not isinstance(issue, str) for issue in report['issues'])):
+        return incomplete(check, 'invalid_check_report')
     # A structurally incomplete report is an operational failure, not evidence
     # that the candidate needs a rewrite. Actual findings still request revision.
     if 'incomplete_claim_coverage' in errors or 'candidate_hash_mismatch' in errors or 'check_date_mismatch' in errors:
@@ -371,18 +375,29 @@ def step(check):
         if batch is not None:
             batch.update(validation_errors=errors, rejected_report=report)
         return incomplete(check, 'verification_report_incomplete')
-    if reporting and not errors:
+    if reporting:
         batch['report'] = report
         batch['checker'] = check.checker
+        batch['errors'] = errors
+        AutomationEvent.objects.create(run=check.run,
+            kind='verification_group_findings' if errors else 'verification_group_checked',
+            data={'check_id':check.pk, 'unit_ids':batch['ids'], 'issue_count':len(report['issues'])})
         if current_batch(check) is not None:
             check.report = {'assessment':{}, 'errors':[], 'completed_groups':sum('report' in b for b in check.session['batches'])}
             check.evidence = evidence
             check.save()
-            AutomationEvent.objects.create(run=check.run,kind='verification_group_checked',data={'check_id':check.pk,'unit_ids':batch['ids']})
             return check
-        report = {**report, 'units':[unit for group in check.session['batches'] for unit in group['report']['units']]}
+        groups = check.session['batches']
+        reports = [group['report'] for group in groups]
+        verdicts = {item['verdict'] for item in reports}
+        report = {**report,
+            'verdict':'revise' if 'revise' in verdicts else 'insufficient' if 'insufficient' in verdicts else 'pass',
+            'source_rules_met':all(item.get('source_rules_met') is True for item in reports),
+            'issues':list(dict.fromkeys(issue for item in reports for issue in item['issues'])),
+            'units':[unit for item in reports for unit in item['units']]}
         errors, evidence = validate_report(check, report, evidence_responses(check))
-        check.checker = ' + '.join(dict.fromkeys(group['checker'] for group in check.session['batches']))
+        errors = sorted(set(errors).union(error for group in groups for error in group.get('errors', [])))
+        check.checker = ' + '.join(dict.fromkeys(group['checker'] for group in groups))
     check.report = {'assessment': report, 'errors': errors}
     check.evidence = evidence
     check.state = 'failed' if errors else 'passed'

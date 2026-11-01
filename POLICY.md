@@ -124,6 +124,8 @@ are true.
 - A passing check is bound to the exact source hash. The publisher cannot substitute
   changed text or overwrite a different Git base under that approval.
 - Corrective passes retain saved evidence, cumulative edits, and checker findings.
+  Verification completes all claim groups and combines their findings before
+  requesting a revision, rather than stopping at the first failing group.
   They continue while verified coverage improves or findings are resolved. Two
   consecutive passes without that progress end as Insufficient evidence, preserving
   the current article. Format failures retry writing without consuming an article
