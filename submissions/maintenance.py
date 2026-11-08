@@ -37,7 +37,7 @@ def enqueue():
             checked = date.fromisoformat(page.get('checked', ''))
         except ValueError:
             checked = date.min
-        if checked != date.min and (today-checked).days < settings.MAINTENANCE_INTERVAL_DAYS:
+        if page.get('status') != 'draft' and checked != date.min and (today-checked).days < settings.MAINTENANCE_INTERVAL_DAYS:
             continue
         if Submission.objects.filter(article=slug, status__in=['new', 'reviewing']).exists():
             continue
@@ -53,3 +53,13 @@ def enqueue():
         'kind': 'maintenance', 'article': slug, 'title': title, 'public_title': f'Scheduled check: {title}',
         'details': 'Check every source and claim, investigate significant developments since the last check, repair broken references using equivalent primary evidence, and maintain category and related-article consistency.'})
     return submission
+
+
+def queue_full_check(record):
+    """One pending background check per article, even after several useful edits."""
+    if Submission.objects.filter(kind='maintenance', article=record.slug, status__in=['new', 'reviewing']).exists():
+        return
+    Submission.objects.get_or_create(maintenance_key=f'published:{record.slug}:{record.content_hash}', defaults={
+        'kind': 'maintenance', 'article': record.slug, 'title': record.title,
+        'public_title': f'Background check: {record.title}',
+        'details': 'Independently check the entire current article and its sources. Repair inaccessible references using equivalent evidence. Reader edits were published as Draft; only a completed full check may certify the article.'})

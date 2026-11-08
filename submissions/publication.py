@@ -119,14 +119,19 @@ def publish_site(base_release=None, import_legacy=False):
         # Validate before committing; a rejected/non-fast-forward push never goes live.
         credits = [f'{record.slug}: {record.writer_credit}' for record in records
                    if isinstance(record, ArticleRevision) and f'pages/{record.slug}.md' in paths]
+        edit_credits = []
         if settings.AUTONOMOUS_EDITORIAL_ENABLED and any(record.published_at is None for record in records):
             verification_credits = []
             for record in records:
                 if record.published_at is not None:
                     continue
                 check = record.run.verifications.filter(state='passed', approved_hash=record.content_hash).latest('pk')
-                verification_credits.append(f'{record.slug}: {check.checker}; checked {check.completed_at.date()}; source {check.approved_hash}; audit {check.pk}')
-            revision = commit_and_push(source, paths, credits, verification_credits)
+                credit = f'{record.slug}: {check.checker}; checked {check.completed_at.date()}; source {check.approved_hash}; audit {check.pk}'
+                if check.session.get('scope') in ('edit', 'draft'):
+                    edit_credits.append(credit)
+                else:
+                    verification_credits.append(credit)
+            revision = commit_and_push(source, paths, credits, verification_credits, edit_credits)
         else:
             revision = commit_and_push(source, paths, credits) if credits else commit_and_push(source, paths)
         published_hashes = {}
@@ -171,11 +176,18 @@ def publish_site(base_release=None, import_legacy=False):
                         elif run.editorial.get('no_change'):
                             submission.public_summary = 'An independent source check supported the existing article. No factual correction was justified; its check record has been refreshed.'
                         elif submission.kind == 'request':
-                            submission.public_summary = 'The requested article was independently fact-checked and published.'
+                            submission.public_summary = ('A sourced draft article was published. Full-article checking is queued separately.' if run.editorial.get('publication_scope') == 'draft' else 'The requested article was independently fact-checked and published.')
                         else:
                             from .editorial import change_summary
                             submission.public_summary = change_summary(run, record)
+                            if run.editorial.get('publication_scope') == 'edit':
+                                submission.public_summary += ' The changed passages were checked; the article is labelled Draft pending full-article checking.'
+                        if run.editorial.get('fulfillment') == 'partial':
+                            submission.public_summary += ' This addresses part of the suggestion; the full requested coverage is not complete.'
                     submission.save()
+                    if settings.AUTONOMOUS_EDITORIAL_ENABLED and run.editorial.get('publication_scope') in ('edit', 'draft'):
+                        from .maintenance import queue_full_check
+                        queue_full_check(record)
                 AutomationEvent.objects.create(run_id=record.run_id, kind='publication', data={
                     'release': name, 'content_hash': published_hashes[record.slug], 'slug': record.slug,
                     'revision': revision, 'decision': 'committed_article_published'})

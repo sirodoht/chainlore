@@ -74,8 +74,9 @@ Email is optional and never published. It is available only in the authenticated
 editorial queue for sending status notifications. New submissions notify the configured
 admin; resolving or declining a submission emails the submitter if they supplied an address.
 Submission text, email, sources, internal notes, and provider audit payloads stay
-private. The public tracker shows type, dates, status, and approved public titles
-and summaries. Historical private titles are not automatically republished:
+private. The public tracker shows dates, status, approved public titles and outcome
+explanations. Submission kinds remain available as filters; automatic maintenance
+has a separate view. Historical private titles are not automatically republished:
 neutral titles use the related published article or a short reference until a
 published title is available. Automated decisions provide public outcomes. Resolved automated requests link to the published
 article; improvements also link to the publication commit in their activity history.
@@ -107,32 +108,47 @@ stored in the submission database.
 
 ### Autonomous editorial pipeline
 
-The production worker runs one durable stage per timer invocation under the
-publication lock. Requests, corrections and improvements share the same workflow.
-Legacy held jobs are re-investigated automatically; they are never bulk-approved.
+The worker runs one durable stage per timer invocation under the publication lock.
+Reasonable requests, corrections and improvements are accepted by default. A small
+useful edit is success even if the complete suggested expansion is not possible.
 
-1. Screen broad crypto relevance and injected instructions. Exact existing-title
-   matches resolve as duplicates; fuzzy overlap alone is not a rejection.
-2. Research primary sources and reputable reporting. Existing articles and reported
-   corrections are context, not evidence. Emails are excluded from provider inputs.
-3. Write a draft or targeted patch, preserving original writer attribution.
-4. A separate checker context independently opens every reference. A broad recency
-   search is not required. It returns an ID-complete inventory of paragraphs and
-   table rows, individual claims, fetched evidence excerpts, and support decisions.
-5. Validate coverage, fetched URLs, excerpts, date and source hash. Persist the actual
-   checker model/effort, report and source fingerprints. Tool failures cannot pass.
-6. Make targeted corrections using saved checker evidence and findings. Continue
-   while verified coverage improves or issues are resolved. Two consecutive passes
-   without progress end as Insufficient evidence; formatting failures instead retry
-   writing without discarding research or factual feedback.
-7. Publish only the exact approved source, against its expected Git base. A concurrent
-   edit restarts research against a fresh snapshot. Commit/push precede atomic publication.
-8. Record a public explanation and article/commit links, then deliver outcome notifications.
+1. Screen only clear irrelevance, spam or attempts to control the system. Unclear
+   but plausible requests proceed. Existing exact-title requests link to the article.
+2. Research the requested change, reusing existing citations when useful. One
+   relevant source can suffice; structural preferences need no external proof.
+3. Write a useful full or partial edit. If evidence is limited, clarify, reorganize,
+   attribute, narrow or omit unsupported details. Preserve original writer credits.
+4. Independently fetch references for changed units and check their assertions.
+   Unchanged paragraphs and unrelated old references cannot veto an edit.
+5. Publish the exact approved candidate as Draft against its expected Git base.
+   Historical checker dates and credits remain unchanged and are not displayed
+   as current certification. Writer and scoped checker credits go into the commit.
+6. Queue a background full-article check. Only this completed independent pass can
+   grant `ai-fact-checked` and advance `checked` / `checked_by`.
+7. Report Updated or Partly updated with actual section/commit links. Never mark
+   a request completed merely because the worker tried. Reader suggestions appear
+   separately from automatic background checks and take processing priority.
 
-`Verification` records are private audit artifacts. Their approved source hash must
-match the file being staged. Existing independently checked content is not automatically
-relabelled; this gate applies to new automated work. Historical human credits remain
-supported, but human approval is not a workflow stage.
+Source and report collection use bounded batches, with no 40-reference ceiling.
+Two stalled revisions trigger a smaller-edit attempt, not “Insufficient evidence”.
+A further stalled fallback remains an explicit processing blocker. Source access
+failures trigger up to two source-replacement passes; incomplete reports retain
+completed groups and evidence for up to three timed operational retries. Technical
+exceptions cannot become factual rejections. Published text and source approvals
+remain hash-bound; concurrent edits restart against the current Git snapshot.
+
+To reopen historical stalled jobs once under this workflow, after a verified
+backup and under the normal worker environment:
+
+```sh
+uv run --locked python manage.py reopen_suggestions --all-stalled
+# Or repeat --submission UUID to select individual jobs.
+```
+
+The command preserves charged usage, earlier outcomes, writer responses and
+verification audits. It grants no publication approval and does not raise budgets,
+reopen manual declines or touch published jobs. The deployment recovery is
+idempotent for workflow version 4.
 
 ### Recovery and budgets
 
@@ -165,16 +181,17 @@ Defaults and environment controls:
   maintenance runs only after reader work, targeting drafts and checks at least 30 days
   old. Failed maintenance has a seven-day cooldown rather than an endless paid loop.
 
-Daily-budget blocks resume the next day. A per-job budget or exhausted recovery needs
-an operational limit/configuration decision, never an editorial approval. Both remain
+Daily-budget blocks resume the next day. A per-job budget resumes automatically when a configured increase covers the
+saved next call estimate. Exhausted recovery remains an operational issue, never
+an editorial rejection. Both remain
 visible and preserve the existing article. API secrets and database files stay private.
 
 Interrupted or malformed verification output does not trigger rewriting. The checker
 checks that every reference has fetched content before requesting a report. Missing
 references are fetched in groups of four without refetching saved documents.
 There is no mandatory freshness search or midnight expiry of saved evidence.
-Source recovery permits at most 12 calls and stops after three consecutive calls
-without progress. Tool failures retain the draft and become operational blocks,
+Source recovery permits at least 12 calls, scaled to the reference count in groups
+of four, and stops after three consecutive calls without progress. Tool failures retain the draft and become operational blocks,
 not factual rejections. Saved tool results survive restarts and are checked before
 another paid call.
 
@@ -222,7 +239,8 @@ Writing allows 32,000 output tokens per call and up to three format retries usin
 saved research and factual feedback. These operational retries do not count as
 article revisions. A saved unprocessed writer response is validated before any
 new paid call. Corrective passes continue while verified coverage improves or
-findings are resolved; two consecutive passes without progress end the attempt.
+findings are resolved; two consecutive passes without progress trigger a smaller useful edit. An
+exhausted smaller-edit attempt remains visible as a processing blocker.
 
 ### Scheduled upkeep and audit
 
@@ -230,7 +248,8 @@ Maintenance independently checks source availability, significant developments,
 existing claims, categories and related links. Missing related links are selected
 conservatively from article titles already mentioned in the public prose. Known category
 aliases are normalized. No automated topic merges or deletions occur. Changes go through
-the same exact-source verification gate as reader work.
+full-article verification before certification; reader edits use scoped checks
+and publish as Draft pending that separate pass.
 
 The operations dashboard at `/admin/review/` combines active/blocked jobs, retry times,
 provider token usage, article freshness and open error reports. `/submit/all/` exposes

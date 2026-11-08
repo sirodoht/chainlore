@@ -62,7 +62,8 @@ class VerificationRecoveryTests(TestCase):
         self.assertEqual(self.run.state,'blocked')
         self.assertEqual(self.run.editorial['revisions'],0)
         self.assertEqual(self.run.draft,{'edits':['saved']})
-        self.assertIsNone(self.run.next_attempt_at)
+        self.assertIsNotNone(self.run.next_attempt_at)
+        self.assertEqual(self.run.editorial['operational_retries'],1)
         step(self.check)
         self.assertEqual(call.call_count,3)
 

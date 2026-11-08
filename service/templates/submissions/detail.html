@@ -3,7 +3,7 @@
 <p><a href="{% url 'submission-list' %}">← All submissions</a></p>
 <div class="tracking-meta"><span class="tracking-status status-{{ item.status }}">{{ item.status_label }}</span><span>{{ item.kind }}</span></div>
 <dl class="tracking-dates"><dt>Submitted</dt><dd><time datetime="{{ item.created_at|date:'c' }}">{{ item.created_at|date:'j F Y, H:i' }} UTC</time></dd><dt>Latest update</dt><dd><time datetime="{{ item.updated_at|date:'c' }}">{{ item.updated_at|date:'j F Y, H:i' }} UTC</time></dd></dl>
-<section class="tracking-outcome" aria-labelledby="outcome-title"><h2 id="outcome-title">{% if item.status == 'resolved' or item.status == 'declined' or item.status == 'duplicate' or item.status == 'insufficient' %}Outcome{% else %}Progress{% endif %}</h2>
+<section class="tracking-outcome" aria-labelledby="outcome-title"><h2 id="outcome-title">{% if item.status == 'partial' or item.status == 'resolved' or item.status == 'declined' or item.status == 'duplicate' or item.status == 'insufficient' %}Outcome{% else %}Progress{% endif %}</h2>
 {{ item.outcome|linebreaks }}
 {% if item.original_url %}<p><a href="{{ item.original_url }}">View original submission</a></p>{% endif %}
 {% if item.result_url %}<p><a href="{{ item.result_url }}">{% if item.status == 'duplicate' %}View existing article{% else %}View resulting article{% endif %}</a></p>{% endif %}

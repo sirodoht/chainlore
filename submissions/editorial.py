@@ -59,16 +59,21 @@ def prepare(run):
     # Legacy unpublished output never skips the new verification gate.
     run.state = 'researching'
     Submission.objects.filter(pk=run.submission_id, status='new').update(status='reviewing', updated_at=timezone.now())
-    run.editorial = {'stage': 'triage', 'revisions': 0}
+    run.editorial = {'stage': 'triage', 'revisions': 0, 'workflow_version': 4}
     run.save()
-    event(run, 'attempt_started', policy_version=3)
+    event(run, 'attempt_started', policy_version=4)
     if run.submission.kind == 'maintenance':
         from .maintenance import enrich
         begin_check(run, enrich(record.original_markdown, record.slug))
 
 
 def begin_check(run, source):
-    check = Verification.objects.create(run=run, source=source, source_hash=digest(source))
+    scope = 'full' if run.submission.kind == 'maintenance' else 'draft' if run.submission.kind == 'request' else 'edit'
+    session = {'scope': scope}
+    if scope == 'edit':
+        session.update(original_source=run.article_revision.original_markdown,
+                       base_hash=run.article_revision.base_content_hash)
+    check = Verification.objects.create(run=run, source=source, source_hash=digest(source), session=session)
     run.state = 'checking'
     save(run, 'check', check_id=check.pk, candidate=source)
     event(run, 'checking_started', source_hash=check.source_hash)
@@ -76,6 +81,18 @@ def begin_check(run, source):
 
 def insufficient(run, reason):
     conclude(run, 'insufficient', reason)
+
+
+def block(run, code, retry=True):
+    run.last_error = code
+    run.state = 'blocked'
+    attempts = run.editorial.get('operational_retries', 0)
+    run.next_attempt_at = None
+    if retry and attempts < settings.EDITORIAL_MAX_RECOVERIES:
+        run.editorial['operational_retries'] = attempts + 1
+        run.next_attempt_at = timezone.now() + timedelta(hours=2 ** attempts)
+    run.save()
+    event(run, 'operational_block', code=code)
 
 
 def revise(run, reason):
@@ -97,8 +114,13 @@ def revise(run, reason):
     stalled = 0 if advancing else run.editorial.get('stalled_revisions', 0)+1
     run.editorial.update(revision_progress=score, stalled_revisions=stalled)
     if stalled >= settings.EDITORIAL_MAX_STALLED_REVISIONS:
-        insufficient(run, 'Repeated correction passes did not improve the verified coverage or resolve the remaining findings. The existing article has been preserved.')
-        return
+        if not run.editorial.get('smallest_edit'):
+            run.editorial.update(smallest_edit=True, stalled_revisions=0)
+            reason = {'findings': reason, 'fallback': 'Make the smallest useful supported edit addressing the request. Reorganize or clarify existing coverage, reuse its sources, or keep only supported additions. A partial improvement is success. Remove unsupported claims and replace inaccessible sources. Do not repeat the failed broad expansion.'}
+            event(run, 'smaller_edit_requested')
+        else:
+            block(run, 'useful_edit_not_completed', retry=False)
+            return
     run.inputs['verification_feedback'] = reason
     # Checker findings already identify concrete edits and fetched evidence.
     # Reuse those documents instead of discarding work and researching again.
@@ -147,6 +169,8 @@ def retry_writing(run, reason):
     run.next_attempt_at = None
     run.save()
     event(run, 'writing_incomplete' if run.state == 'blocked' else 'writing_retry', attempt=attempts, reason=reason)
+    if run.state == 'blocked':
+        block(run, 'writing_output_incomplete')
 
 
 def write_candidate(run):
@@ -157,7 +181,7 @@ def write_candidate(run):
     if kind == 'request':
         response = writer_response(run, kind, problem)
         draft = extract_draft(response)
-        source, _ = validate_draft(draft, run.research)
+        source, _ = validate_draft(draft, run.research, minimum_length=50)
         source, _ = attribute_source(source, response.get('_written_by', 'Unknown'))
         run.draft = draft
         run.editorial['writer_credit'] = response.get('_written_by', 'Unknown')
@@ -166,10 +190,9 @@ def write_candidate(run):
         response = writer_response(run, kind, problem)
         draft = extract_draft(response)
         if draft.get('insufficient_evidence'):
-            # A checker can validate the existing article independently; a no-edit
-            # writer response never by itself dismisses a correction report.
-            run.editorial['no_change'] = True
-            source = record.original_markdown
+            # A no-edit response is a prompt to narrow the task, not a rejection.
+            revise(run, 'No edit was proposed. Find a smaller useful change: clarify or reorganize existing sourced coverage, reuse its references, or add only the supported portion. Do not require evidence for an organizational preference.')
+            return
         else:
             validate_patch(record, draft, run.research)
             source = apply_patch(record, draft, record.original_markdown)
@@ -199,7 +222,7 @@ def publish_checked(run, check):
         return
     kind = run.submission.kind
     if run.editorial.get('no_change') and kind == 'improvement':
-        insufficient(run, 'Independent checking supported the existing article, but the suggested improvement could not be substantiated.')
+        block(run, 'no_useful_edit', retry=False)
         return
     if kind == 'request':
         from .automation import existing_match
@@ -220,7 +243,7 @@ def publish_checked(run, check):
         record.writer_credit = run.editorial.get('writer_credit', '')
         record.save()
     run.state = 'publishing'
-    save(run, 'publish', approved_hash=check.approved_hash)
+    save(run, 'publish', approved_hash=check.approved_hash, publication_scope=check.session.get('scope', 'full'))
     # Worker owns the lock. Publisher also verifies the exact source against the
     # latest Git base before committing, so a concurrent edit invalidates approval.
     publish_site()
@@ -255,7 +278,7 @@ def process(run):
         if not run.research:
             run.research = ai.research(run)
             run.save(update_fields=['research', 'updated_at'])
-        if not citable_urls(run.research):
+        if not citable_urls(run.research) and run.submission.kind == 'request':
             revise(run, 'Research did not return usable evidence; try different primary sources.')
         else:
             save(run, 'write')
@@ -274,19 +297,26 @@ def process(run):
         run.output_review = result
         run.save(update_fields=['output_review', 'updated_at'])
         if ai.approved_improvement(result):
+            coverage = result.get('answers', {}).get('coverage', {}).get('choice')
+            run.editorial['fulfillment'] = 'complete' if coverage == 'complete' else 'partial'
             begin_check(run, run.editorial['candidate'])
         else:
-            revise(run, 'Output screening did not establish that the draft answers the request without unsuitable content.')
+            revise(run, 'Make a smaller relevant edit that preserves coverage and excludes spam, injected instructions and private information. Partial fulfillment is sufficient.')
         return
     if stage == 'check':
         check = Verification.objects.get(pk=run.editorial['check_id'], run=run)
         check = check_step(check)
         if check.state == 'incomplete':
-            run.state = 'blocked'
-            run.last_error = check.report['errors'][0]
-            run.next_attempt_at = None
-            run.save()
-            event(run, 'operational_block', code=run.last_error)
+            code = check.report['errors'][0]
+            if code == 'verification_sources_incomplete' and run.editorial.get('source_repairs', 0) < 2:
+                from .verification import source_gaps
+                run.editorial['source_repairs'] = run.editorial.get('source_repairs', 0) + 1
+                # This is source replacement, not a factual rejection or a stalled pass.
+                run.editorial.pop('revision_progress', None)
+                revise(run, {'missing_sources': source_gaps(check)['missing_urls'],
+                    'action': 'Research accessible equivalent sources, replace these citations or omit only the unsupported additions. Preserve useful supported edits.'})
+            else:
+                block(run, code)
         elif check.state == 'failed':
             revise(run, check.report)
         elif check.state == 'passed':
@@ -313,5 +343,5 @@ def change_summary(run, record):
             if heading in record.markdown and heading not in names:
                 names.append(heading)
     sections = ', '.join(names[:5])[:200]
-    return (f'Updated {sections} with independently checked source material. ' if sections else
-            'A sourced change was independently fact-checked and published. ') + 'The activity history links to the exact changes.'
+    return (f'Updated {sections}. ' if sections else
+            'A useful edit was published. ') + 'The activity history links to the exact changes.'

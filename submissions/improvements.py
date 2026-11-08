@@ -50,7 +50,7 @@ def snapshot_article(run):
 def validate_patch(record, patch, research):
     edits, references = patch.get('edits'), patch.get('references')
     require(isinstance(edits, list) and 1 <= len(edits) <= 30, 'invalid_improvement_edits')
-    require(isinstance(references, str) and references.strip(), 'missing_improvement_references')
+    require(isinstance(references, str), 'missing_improvement_references')
     # References must contain only definitions; no unvalidated prose after References.
     require(all(re.fullmatch(r'\[\^\d+\]:\s+\[[^\]\n]+\]\(https?://[^\s)]+\)', line)
                 for line in references.strip().splitlines()), 'invalid_improvement_references')
@@ -78,8 +78,11 @@ def validate_patch(record, patch, research):
                 strip_citations = lambda value: re.sub(r'\[\^[^\]]+\]', '', value).strip()
                 require(strip_citations(anchor) == strip_citations(text), 'unsupported_improvement_replacement')
             else:
-                require(not anchor.startswith(('#', '- ', '* ')), 'unsupported_improvement_replacement')
-                replaced += len(anchor)
+                require(not anchor.startswith(('- ', '* ')), 'unsupported_improvement_replacement')
+                if anchor.startswith('#'):
+                    require(bool(re.fullmatch(r'#{2,3} [^\n]+', text)), 'unsupported_improvement_replacement')
+                else:
+                    replaced += len(anchor)
         snippets.append(text.strip())
     # This is a substantive editing pass, not a complete rewrite of the original author.
     require(replaced <= len(prose) // 3, 'improvement_rewrites_too_much')
@@ -87,7 +90,12 @@ def validate_patch(record, patch, research):
     # historic filenames (for example, Non-fungible token lives at nft.md).
     draft = {'title': 'Article improvement', 'slug': 'article-improvement', 'ticker': 'None',
              'category': 'Other', 'markdown': '\n\n'.join(snippets) + '\n\n## References\n\n' + references.strip()}
-    validate_draft(draft, research, minimum_length=50)
+    from .verification import reference_definitions
+    urls = {url for values in reference_definitions(record.original_markdown).values() for url in values}
+    combined = {'content': list(research.get('content', [])) + [
+        {'type': 'web_search_tool_result', 'content': [{'type': 'web_search_result', 'url': url} for url in urls]}]}
+    structural = all(all(line.startswith(('## ', '### ')) for line in snippet.splitlines() if line.strip()) for snippet in snippets)
+    validate_draft(draft, {'content': []} if structural and not references.strip() else combined, minimum_length=1)
 
 
 def apply_patch(record, patch, current):
@@ -134,8 +142,8 @@ def apply_patch(record, patch, current):
     require(len(body) <= 200000, 'improved_article_too_large')
     metadata.update(status='draft', updated=date.today().isoformat())
     metadata.setdefault('written_by', 'Unknown')
-    for field in ('checked', 'checked_by', 'reviewed', 'reviewed_by'):
-        metadata.pop(field, None)
+    # Historical check and human review credits remain; draft pages do not display
+    # these as a current check. A scoped edit must never advance the check date.
     front = '\n'.join(f'{key}: {value}' for key, value in metadata.items())
     return '---\n' + front + '\n---\n' + body
 

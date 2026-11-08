@@ -91,7 +91,7 @@ class SourceRecoveryTests(TestCase):
         self.assertEqual(self.check.state, 'pending')
 
     @patch('submissions.ai_providers.call')
-    def test_repeated_tool_failures_block_without_rejecting_or_rewriting(self, call):
+    def test_repeated_tool_failures_research_replacement_without_rejecting(self, call):
         self.check.session={'payload':payload(self.check),'responses':[],'mode':'sources'};self.check.save()
         call.return_value=self.response([{'type':'web_fetch_tool_result','content':{'type':'web_fetch_tool_result_error','error_code':'unavailable'}}])
         for _ in range(3):
@@ -99,9 +99,12 @@ class SourceRecoveryTests(TestCase):
         self.run.refresh_from_db(); self.check.refresh_from_db(); self.run.submission.refresh_from_db()
         self.assertEqual(self.check.state,'incomplete')
         self.assertEqual(self.check.report['errors'],['verification_sources_incomplete'])
-        self.assertEqual(self.run.state,'blocked')
+        self.assertEqual(self.run.state,'revising')
+        self.assertEqual(self.run.editorial['stage'],'research')
+        self.assertEqual(self.run.editorial['source_repairs'],1)
+        self.assertIn('https://example.com/history', self.run.editorial['feedback']['missing_sources'])
         self.assertEqual(self.run.submission.status,'reviewing')
-        self.assertEqual(self.run.editorial['revisions'],0)
+        self.assertEqual(self.run.editorial['revisions'],1)
         step(self.check)
         self.assertEqual(call.call_count,3)
 

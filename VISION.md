@@ -14,10 +14,11 @@ events in chronological order.
 
 Article requests are treated generously: a plausible connection to crypto is
 enough to begin research. An uncertain classification or overlap with another
-article does not prevent research. New articles are published only after an
-independent source check; insufficient evidence produces an explained outcome
-instead of unsupported content. Only clear spam, unrelated requests, or malicious instructions
-are rejected during screening.
+article does not prevent research. Useful changes may be published as labelled drafts after
+checking their new assertions, with full-article verification continuing in the
+background. Limited evidence narrows the edit: small additions, clarification and
+reorganization are worthwhile. Unsupported facts are not invented. Only clear
+spam, unrelated requests or malicious instructions are rejected during screening.
 
 ## Sources
 

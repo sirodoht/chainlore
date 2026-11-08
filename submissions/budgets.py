@@ -8,7 +8,10 @@ from .models import ProviderSpend
 
 
 class BudgetExceeded(Exception):
-    pass
+    def __init__(self, code, required=0, limit=0):
+        super().__init__(code)
+        self.required = required
+        self.limit = limit
 
 
 def accounted_tokens():
@@ -37,9 +40,9 @@ def reserve(run, provider, stage, payload):
         daily = totals(ProviderSpend.objects.filter(created_at__gte=today))['accounted'] or 0
         total = totals(ProviderSpend.objects.filter(run=run))['accounted'] or 0
         if total + amount > settings.EDITORIAL_RUN_TOKEN_LIMIT:
-            raise BudgetExceeded('run_token_budget')
+            raise BudgetExceeded('run_token_budget', total + amount, settings.EDITORIAL_RUN_TOKEN_LIMIT)
         if daily + amount > settings.EDITORIAL_DAILY_TOKEN_LIMIT:
-            raise BudgetExceeded('daily_token_budget')
+            raise BudgetExceeded('daily_token_budget', daily + amount, settings.EDITORIAL_DAILY_TOKEN_LIMIT)
         return ProviderSpend.objects.create(run=run, provider=provider, stage=stage, reserved_tokens=amount)
 
 

@@ -10,7 +10,7 @@ KINDS = {key: label for key, label in Submission.Kind.choices if key != 'questio
 STATUSES = {'queued': 'Queued', 'in-progress': 'Processing', 'researching': 'Researching',
             'checking': 'Checking', 'revising': 'Revising', 'publishing': 'Publishing',
             'blocked': 'Blocked', 'insufficient': 'Insufficient evidence',
-            'resolved': 'Resolved', 'declined': 'Declined', 'duplicate': 'Duplicate'}
+            'resolved': 'Updated', 'partial': 'Partly updated', 'retrying': 'Retrying', 'declined': 'Declined', 'duplicate': 'Already covered'}
 
 
 def queryset():
@@ -20,7 +20,9 @@ def queryset():
             When(status='insufficient', then=Value('insufficient')),
             When(status='declined', then=Value('declined')),
             When(status='resolved', automation__state='duplicate', then=Value('duplicate')),
+            When(status='resolved', automation__editorial__fulfillment='partial', then=Value('partial')),
             When(status='resolved', then=Value('resolved')),
+            When(automation__state='blocked', automation__next_attempt_at__isnull=False, then=Value('retrying')),
             When(automation__state='blocked', then=Value('blocked')),
             When(automation__state__in=['researching','checking','revising','publishing'], then=F('automation__state')),
             When(automation__state__in=['review', 'failed'], then=Value('queued')),
@@ -47,7 +49,7 @@ def present(submission, catalog):
     result = result_link(submission.resulting_url, catalog)
     result_slug = result.split('/')[2] if result else ''
     subject = catalog.get(submission.article or result_slug, {}).get('title', '')
-    title = submission.public_title or (f'{KINDS[submission.kind]}: {subject}' if subject else
+    title = submission.public_title or (subject if subject else
                                        f'{KINDS[submission.kind]} #{str(submission.pk)[:8]}')
     duplicate = submission.duplicate_of
     if duplicate is None and state == 'duplicate' and result:
@@ -59,10 +61,10 @@ def present(submission, catalog):
             outcome = 'This submission is already covered by an earlier submission or article.'
         elif state == 'insufficient':
             outcome = 'The available evidence did not establish a publishable change. The existing article is preserved.'
-        elif state == 'resolved' and run and run.state == 'published' and result:
+        elif state in ('resolved', 'partial') and run and run.state == 'published' and result:
             outcome = ('The requested article was published.' if submission.kind == 'request'
                        else 'An updated version of the article was published.')
-        elif state == 'resolved':
+        elif state in ('resolved', 'partial'):
             outcome = 'Marked resolved. A detailed outcome has not yet been recorded.'
         elif state == 'declined':
             known_decline = run and run.events.filter(kind='decision', data__reason='out_of_scope_or_injection').exists()
@@ -75,16 +77,21 @@ def present(submission, catalog):
                        'checking': 'An independent pass is checking the proposed article against live sources.',
                        'revising': 'The proposed article is being revised to address verification findings.',
                        'publishing': 'The verified version is being published.',
+                       'retrying': 'Saved work will resume automatically.',
                        'blocked': 'Processing is blocked by an operational issue. The current article is preserved.'}[state]
-    if state == 'blocked' and run:
+    if state in ('blocked', 'retrying') and run:
         reasons = {
+            'verified_base_changed': 'The article changed while the edit was being checked. The worker could not finish rebasing after its allowed retries; no competing edit was overwritten.',
+            'verification_reference_limit': 'The checker hit a software reference limit before checking the facts. This is a processing failure, not a rejection of the suggestion.',
+            'useful_edit_not_completed': 'The worker could not finish a useful supported edit, even after narrowing the change. Saved work and findings are retained; no change has been published.',
+            'no_useful_edit': 'The proposed edit made no substantive change. Saved work is retained for another attempt.',
             'daily_token_budget': 'The next processing step would exceed the shared daily budget. Saved work is retained.',
             'run_token_budget': 'The next processing step would exceed this submission’s budget. Saved work is retained; a budget adjustment is needed to continue.',
             'verification_output_incomplete': 'The checker could not finish its report within the allowed reporting attempts. The draft and retrieved evidence are retained.',
             'verification_report_incomplete': 'The checker did not return a complete report after the allowed attempts. The draft and retrieved evidence are retained.',
             'invalid_check_report': 'The checker did not return a usable report after the allowed attempts. The draft and retrieved evidence are retained.',
             'verification_evidence_stale': 'Saved verification evidence needs a fresh source check before processing can continue.',
-            'verification_sources_incomplete': 'The checker could not finish collecting source evidence within the allowed attempts. The draft and retrieved sources are retained; this is not a factual rejection.',
+            'verification_sources_incomplete': 'A required source could not be retrieved after bounded attempts and source repairs. The draft and retrieved sources are retained; this is not a factual rejection.',
             'writing_output_incomplete': 'The writer could not return a valid complete edit after the allowed attempts. The research, previous draft and factual feedback are retained.',
             'shadow_verified_not_published': 'Verification passed in a non-publishing test run.'}
         outcome = reasons.get(run.last_error, 'Processing is blocked by a provider or publication failure; saved work is retained.')
@@ -106,6 +113,8 @@ EVENT_LABELS = {
     'improvement_conflict': 'Article changed during processing; preparing a fresh attempt',
     'provider_error': 'Processing interrupted', 'worker_error': 'Processing interrupted',
     'git_error': 'Publication delayed',
+    'smaller_edit_requested': 'Trying a smaller useful improvement',
+    'workflow_recovered': 'Reopened under the draft-edit workflow',
     'checking_started': 'Independent verification started', 'revision_requested': 'Revision requested by verification',
     'retry_scheduled': 'Retry scheduled', 'conflict_restarted': 'Restarted against the latest article',
     'operational_block': 'Operational blocker', 'budget_block': 'Processing budget reached',

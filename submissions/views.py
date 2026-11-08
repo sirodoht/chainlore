@@ -91,6 +91,7 @@ def submission_list(request):
         records = records.filter(kind=kind)
     else:
         kind = ''
+        records = records.exclude(kind='maintenance')
     if status in tracking.STATUSES:
         records = records.filter(tracking_status=status)
     else:

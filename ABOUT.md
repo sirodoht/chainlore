@@ -22,19 +22,26 @@ investigates aging sources and significant developments.
 
 ## Autonomous editorial workflow
 
-Requests, error reports and improvements enter the same automated workflow:
-research, writing or a proposed patch, independent source verification, and
-publication. The writer and verifier use separate contexts; their model credits
-are recorded from provider metadata. The checker independently retrieves sources
-rather than trusting the writer's dossier. Screening is not fact-checking.
+Reasonable requests, error reports and improvements are accepted by default.
+The worker researches the suggestion and makes the best supported useful edit,
+even when that is smaller than the requested expansion. Existing sources can
+support clarification and reorganization; unsupported details are omitted.
 
-Unsupported work gets further research within fixed limits, then a documented
-outcome if evidence remains insufficient. Existing articles are preserved when a
-proposed change fails. New requests do not receive fabricated filler or an
-unverified placeholder in order to count as completed.
+The writer and edit checker use separate contexts. Changed assertions and their
+citations are checked independently, and a useful full or partial edit can be
+published as **Draft**. Unrelated old references do not block it. A separate
+background pass checks the whole article before it can be labelled **AI
+fact-checked**. Historical writer and checker credits remain intact; scoped edit
+checks do not advance the article's full-check date. Screening is not fact-checking.
 
-The [submission tracker](/submit/all/) shows progress, outcome links and dated
-milestones. Private messages and email addresses remain private. A requester who
+When a large edit stalls, the worker tries a smaller useful change. Source access,
+provider, formatting and budget failures remain processing problems with bounded
+recovery, not verdicts against a reader's suggestion. A request is marked updated
+only after actual publication. New requests do not receive fabricated filler or
+an empty placeholder to count as completed.
+
+The [submission tracker](/submit/all/) shows actual outcomes, partial updates and retry status,
+with links to published changes. Automatic background checks have a separate view. Private messages and email addresses remain private. A requester who
 supplies an email can receive the final outcome. Owner intervention may still be
 needed for credentials, billing, budgets or an exhausted operational recovery;
 ordinary editorial decisions do not wait for a human.

@@ -83,7 +83,11 @@ class EditorialProgressTests(TestCase):
             self.assertEqual(self.run.editorial['stage'],'write')
         self.assertEqual(self.run.editorial['revisions'],4)
         for _ in range(2):editorial.revise(self.run,reason)
-        self.assertEqual(self.run.state,'insufficient')
+        self.assertEqual(self.run.state,'revising')
+        self.assertTrue(self.run.editorial['smallest_edit'])
+        for _ in range(2):editorial.revise(self.run,reason)
+        self.assertEqual(self.run.state,'blocked')
+        self.assertEqual(self.run.last_error,'useful_edit_not_completed')
 
     def test_table_citation_repairs_preserve_facts_and_other_content(self):
         table='| Date | Event |\n|---|---|\n| 2009 | Example launched with its first public software release. |'

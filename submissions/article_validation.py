@@ -5,7 +5,7 @@ import json
 import re
 import xml.etree.ElementTree as ET
 from datetime import date
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qsl
 import markdown
 from django.utils.text import slugify
 from .categories import CATEGORY_SECTIONS
@@ -117,6 +117,9 @@ def validate_draft(draft, research, minimum_length=300):
     citable = citable_urls(research)
     require((len(ids) >= 1 or not citable) and len(ids) == len(set(ids)) and set(ids) == set(markers), 'invalid_footnotes')
     urls = {item[2] for item in definitions}
+    private_parameters = {'accesstoken', 'token', 'apikey', 'authorization', 'password', 'signature'}
+    require(not any(key.lower().replace('_', '').replace('-', '') in private_parameters
+                    for url in urls for key, _ in parse_qsl(urlsplit(url).query)), 'private_source_url')
     require(urls <= citable, 'source_not_in_research')
     require('## References' in body or not citable, 'missing_references')
     # Paragraphs with prose must cite evidence; tables and headings are exempt.

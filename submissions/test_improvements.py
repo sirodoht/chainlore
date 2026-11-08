@@ -50,9 +50,12 @@ class ImprovementTests(AutomationFixture):
         source = git(self.remote, 'show', 'main:pages/bitcoin.md')
         self.assertIn('written_by: Opus 5.5 High', source)
         self.assertIn('status: draft', source)
-        self.assertNotIn('checked_by:', source)
-        self.assertNotIn('\nchecked:', source)
-        self.assertNotIn('reviewed_by:', source)
+        from .improvements import split_article
+        historical, _ = split_article(self.original)
+        revised, _ = split_article(source)
+        self.assertEqual(revised.get('checked_by'), historical.get('checked_by'))
+        self.assertEqual(revised.get('checked'), historical.get('checked'))
+        self.assertEqual(revised.get('reviewed_by'), historical.get('reviewed_by'))
         self.assertIn('## Additional context', source)
         self.assertIn(f'[^imp-{run.pk}-1]', source)
         self.assertIn('[^core30]:', source)  # Existing named references survive unchanged.

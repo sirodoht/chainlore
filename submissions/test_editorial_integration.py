@@ -15,7 +15,11 @@ def approve(check):
     # Provider responses are mocked here; separate verification tests exercise
     # real coverage, opened evidence, quotes, dates and hash requirements.
     metadata,body=split_article(check.source)
-    metadata.update(status='ai-fact-checked',checked=timezone.localdate().isoformat(),checked_by='independent-test-checker high')
+    if check.session.get('scope') in ('edit','draft'):
+        metadata['status']='draft'
+    else:
+        metadata.update(status='ai-fact-checked',checked=timezone.localdate().isoformat(),checked_by='independent-test-checker high')
+    check.checker='independent-test-checker high'
     check.approved_source='---\n'+'\n'.join(f'{k}: {v}' for k,v in metadata.items())+'\n---\n'+body
     check.approved_hash=digest(check.approved_source)
     check.state='passed';check.completed_at=timezone.now();check.save()
@@ -43,11 +47,14 @@ class EditorialIntegrationTests(fixtures.AutomationFixture):
         run=self.drive()
         self.assertEqual(run.state,'published',run.last_error)
         source=git(self.remote,'show','main:pages/test-protocol.md')
-        self.assertIn('status: ai-fact-checked',source)
-        self.assertIn('checked_by: independent-test-checker high',source)
+        self.assertIn('status: draft',source)
+        self.assertNotIn('checked_by: independent-test-checker high',source)
         self.assertNotIn('private@example.net',source)
         self.submission.refresh_from_db()
-        self.assertIn('fact-checked',self.submission.public_summary)
+        self.assertIn('draft article',self.submission.public_summary)
+        self.assertEqual(self.submission.automation.editorial['publication_scope'],'draft')
+        from .models import Submission
+        self.assertTrue(Submission.objects.filter(kind='maintenance',article='test-protocol').exists())
         self.assertEqual(Verification.objects.filter(run=run,state='passed').count(),1)
 
     def test_error_report_uses_same_checked_publication_pipeline(self):
@@ -58,7 +65,7 @@ class EditorialIntegrationTests(fixtures.AutomationFixture):
         self.assertEqual(run.inputs['claim'],'A disputed claim')
         source=git(self.remote,'show','main:pages/bitcoin.md')
         self.assertIn('## Additional context',source)
-        self.assertIn('status: ai-fact-checked',source)
+        self.assertIn('status: draft',source)
         self.assertIn('written_by: Opus 5.5 High',source)
 
     def test_concurrent_edit_invalidates_verified_patch(self):
@@ -78,6 +85,7 @@ class EditorialIntegrationTests(fixtures.AutomationFixture):
         def fail(check):
             check.state='failed';check.report={'errors':['unopened_references']};check.save();return check
         self.checker.side_effect=fail
-        run=self.drive(20)
-        self.assertEqual(run.state,'insufficient')
+        run=self.drive(40)
+        self.assertEqual(run.state,'blocked')
+        self.assertEqual(run.last_error,'useful_edit_not_completed')
         self.assertNotIn('pages/test-protocol.md',git(self.remote,'ls-tree','-r','--name-only','main'))

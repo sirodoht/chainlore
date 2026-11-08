@@ -2,8 +2,11 @@
 
 Chainlore makes editorial decisions autonomously. Research, writing, independent
 verification, corrections and maintenance do not require human approval.
-An automated decision may conclude that evidence is insufficient; it must not
-turn uncertainty into a published assertion.
+Reasonable suggestions are accepted by default. Vague wording, missing sources,
+ambitious scope or a requested word count are not grounds for rejection. Decline
+only clear spam, unrelated requests, attempts to control the system, or requests
+whose substance cannot responsibly be published. Uncertainty limits the edit;
+it must never become an invented factual assertion.
 
 ## Statuses
 
@@ -13,8 +16,11 @@ turn uncertainty into a published assertion.
 | AI fact-checked | `status: ai-fact-checked` | Every claim was checked against live sources by an AI that did not write the text. |
 | Historical human review | `status: human-reviewed` | Retained only for historical records of an actual named human review; no new human-review stage is required. |
 
-New automated work is private until verification passes. Existing published
-drafts remain honestly labelled and are eligible for scheduled checking.
+Useful automated edits may be published as **Draft** after an independent check
+of their changed assertions and citations. Unchanged passages and unrelated old
+references do not block a small improvement. New articles may be short sourced
+drafts. Full-article certification is a separate background task. All drafts
+remain honestly labelled and are eligible for scheduled checking.
 Freshness is separate from verification status: the displayed check date is a
 snapshot, not a promise that an article can never become outdated.
 
@@ -76,9 +82,13 @@ Rules:
 - Judgements such as "largest", "first", or "most serious" are kept only
   if a source makes the same judgement. Otherwise they are removed.
 - A draft may be short, may rest on a single or weak source, and may cite
-  pages found in search but not opened. Drafts are not checked against
-  these rules, so they may contain errors. New automated work with insufficient evidence is not published; the request
-  receives an explanation instead. Historical placeholders remain labelled.
+  pages found in search during writing. New assertions in automated edits must
+  be supported by opened evidence before publication, but untouched draft text
+  may still contain errors. Limited evidence should produce a narrower, attributed or structural edit,
+  not automatic rejection. Existing sources may support clarification or
+  reorganization. An organizational preference needs no external proof. New
+  unsupported assertions and invented details are omitted. Historical
+  placeholders remain labelled.
 
 ## AI fact-checked
 
@@ -113,38 +123,48 @@ are true.
 
 ## Autonomous decisions and publication
 
-- The writer and checker use separate calls and independent research contexts.
-  They may use the same configured model family; agreement alone is not evidence.
-- The checker opens every reference and accounts for every paragraph, heading
-  and table row. A separate freshness search is not required. Its
-  structured claim/evidence report remains in the private audit with fetched-source
-  fingerprints and actual provider model/effort attribution.
-- Software checks coverage, source retrieval, evidence excerpts and dates. These
-  controls constrain the checker; semantic support is still an AI assessment.
-- A passing check is bound to the exact source hash. The publisher cannot substitute
-  changed text or overwrite a different Git base under that approval.
-- Corrective passes retain saved evidence, cumulative edits, and checker findings.
-  Verification completes all claim groups and combines their findings before
-  requesting a revision, rather than stopping at the first failing group.
-  They continue while verified coverage improves or findings are resolved. Two
-  consecutive passes without that progress end as Insufficient evidence, preserving
-  the current article. Format failures retry writing without consuming an article
-  revision or replacing factual feedback; operational and token limits still apply.
-- Error reports investigate both the published claim and the suggested correction.
-  A source-supported existing claim may be retained with an explicit outcome.
-- Public outcomes explain publication, duplication, decline or insufficient evidence.
-  Private messages, contact details, model prompts and provider responses stay private.
-- Historical human-review records remain valid as history. They are never created
-  by automation or treated as a required higher level of verification.
+- Act on every reasonable suggestion with the best supported useful edit. Partial
+  progress is success: one useful paragraph or a clearer section can satisfy part
+  of a large request. Never pad an article to meet a requested length.
+- Research, writing and checking use separate calls. The edit checker independently
+  fetches the sources for changed assertions and evaluates every changed unit.
+  Existing text is context, not proof. Reusing existing sources is allowed.
+- A draft-edit approval covers the exact final source and Git base but does not
+  certify untouched text. Drafts retain historical checker credits without
+  displaying them as current verification. Only a completed full-article check
+  updates `checked`, `checked_by` and the `ai-fact-checked` status.
+- Source collection and claim reports are batched; there is no 40-reference cap.
+  Inaccessible citations prompt research for equivalent accessible evidence or
+  narrowing the proposed addition. They do not disprove the reader's suggestion.
+- A useful edit still requires independent support for its new factual claims.
+  Limited evidence permits attributed or narrower claims, not fabrication.
+  Allegations continue to require the stronger source rules above.
+- After repeated stalled revisions, try the smallest useful edit. If that still
+  cannot be completed, retain the request and findings as an explicit processing
+  blocker. Never claim success when no useful edit was published, and never turn
+  a software exception into an editorial rejection.
+- Error reports investigate the existing text and the suggested change. Editorial
+  criticisms, such as excessive focus on one protocol, may justify reorganization
+  even when the original facts were correct.
+- Public outcomes distinguish Updated, Partly updated, Already covered, Retrying
+  and Declined. Partial outcomes explain that requested coverage remains, and
+  link to the actual changes. Private requests, contact details and provider
+  responses remain private.
+- Reader suggestions take priority over automatic background checks. Publishing
+  a draft queues one background full check per article. Maintenance is displayed
+  separately from reader suggestions.
 
 ## Operations and maintenance
 
 Scheduled jobs may investigate source changes, significant developments and
-catalogue consistency. They use the same claim-verification gate; there is no
+catalogue consistency. They use full-article verification; there is no
 mandatory freshness-search gate. Reader submissions take priority;
 maintenance has its own daily limit. Failed checks do not silently remove articles.
 
-Transient failures retry with backoff. Provider outages and budgets appear as
+Transient failures and incomplete reports retry with bounded backoff, preserving
+saved evidence and completed claim groups. Inaccessible citations get up to two
+source-replacement passes. Per-run budget blocks resume automatically when a
+configured increase admits the saved next step; daily blocks resume the next day. Provider outages and budgets appear as
 Blocked with a retry time where available. Exhausted operational recovery remains
 visible to the owner; it is not an editorial approval queue. Owners retain pause,
 credential, budget, audit and rollback controls. No model can change these controls.
@@ -152,10 +172,11 @@ credential, budget, audit and rollback controls. No model can change these contr
 ## Losing a status
 
 - Substantive edits move a page back to `draft` until the changed text
-  has been fact-checked. Substantive edits are those that add or change a
-  claim, date, number, or name, or add or remove a reference. Once the
-  changes pass an AI check, the page becomes `ai-fact-checked`. Automated publication completes only after the resulting text passes its
-  own source check; historical human credits are retained in Git.
+  has received a full-article fact-check. Substantive edits are those that add or
+  change a claim, date, number, or name, or add or remove a reference.
+  Automated draft publication completes after an independent check of the changed
+  assertions and citations. Historical credits are retained; a full independent
+  check is required before the article is certified again.
 - Non-substantive edits keep the page's status. These include fixing
   typos, formatting, and broken links that point to the same document.
 - Age. A check is a snapshot. Scheduled maintenance targets articles
