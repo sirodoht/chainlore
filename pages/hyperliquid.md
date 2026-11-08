@@ -3,10 +3,10 @@ title: Hyperliquid
 ticker: HYPE
 category: Layer 1
 written_by: Opus 5.5 High
-status: ai-fact-checked
+status: draft
 checked: 2026-10-30
 checked_by: GPT-6-Astra high
-updated: 2026-10-30
+updated: 2026-11-08
 ---
 
 # Hyperliquid
@@ -108,11 +108,7 @@ builder-deployed perpetual markets backed by a 500,000 HYPE stake.[^hip3-launch]
 These include equity perpetuals.[^hip3-equities] HIP-4 outcome markets
 launched on 2 May 2026 in a limited initial release.[^hip4-launch]
 
-On 16 September 2026 Payward announced plans to offer US clients
-Hyperliquid perpetuals through its regulated entities. As of 30 October
-2026, the planned deployment remained subject to regulatory approval;
-Hyperliquid had announced permissioned-market functionality on
-testnet.[^payward][^payward-update]
+On 16 September 2026 Payward, the parent company of Kraken, announced that it intends to deploy onchain perpetual futures markets for US clients, starting with Hyperliquid HIP-3 markets.[^imp-11-1] In that plan, Bitnomial, Payward's CFTC-regulated exchange and clearinghouse, would create, own and administer the market and clear and settle the contracts, while NinjaTrader Clearing, a CFTC-registered futures commission merchant, would carry client accounts.[^imp-11-1] The release says the listing is subject to regulatory approval.[^imp-11-1] On 26 October 2026 Hyperliquid said it intends to make Payward the first CFTC-regulated deployer on its HIP-3 markets.[^imp-11-2] The Block reported that the HIP-3 upgrade would let deployers restrict market access through onchain allowlists, that it remained unclear how permissioning would work in practice, including whether a Payward-deployed market would include built-in KYC checks, and that the functionality was available on testnet.[^imp-11-2] As of 26 October 2026, The Block reported that the planned deployment remained subject to regulatory approval.[^imp-11-2]
 
 On 29 October 2026 Intercontinental Exchange and Trade[XYZ] announced
 an agreement to bring Trade[XYZ]'s Hyperliquid markets into a regulated
@@ -357,8 +353,6 @@ Hyperliquid Labs leads core development.[^hyper101]
 [^corewriter]: Hyperliquid documentation. Interacting with HyperCore. <https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm/interacting-with-hypercore>
 [^about]: Hyperliquid documentation. About Hyperliquid. <https://hyperliquid.gitbook.io/hyperliquid-docs/about-hyperliquid>
 [^unit-docs]: Unit documentation. About Unit. <https://docs.hyperunit.xyz/>
-[^payward]: Payward (2026). Payward Intends to Bring Onchain Perpetual Futures to US Clients. <https://www.payward.com/press-release/payward-hyperliquid-onchain-perpetual-futures>
-[^payward-update]: The Block (2026). Hyperliquid says Kraken parent Payward to be first CFTC-regulated HIP-3 deployer. <https://www.theblock.co/news/markets/2026-10-26-hyperliquid-payward-kraken-cftc-regulated-hip-3-deployer-431787>
 [^oversight]: House Oversight Committee (2026). Letter to Hyperliquid Labs, 29 September. <https://oversight.house.gov/wp-content/uploads/2026/09/Hyperliquid-Letter-9.29.26.pdf>
 [^oversight-response]: The Block (2026). Comer presses Crypto.com, Hyperliquid and PredictIt on identity checks and suspicious trades. <https://www.theblock.co/news/regulation/2026-09-29-comer-presses-crypto-com-hyperliquid-predictit-identity-checks-suspicious-trades-417192>
 [^dprk-followup]: CoinDesk (2026). North Korean-linked trading on Hyperliquid; background on December 2024 concerns. <https://www.coindesk.com/business/2026/08/31/north-korean-hackers-are-moving-tens-of-millions-on-hyperliquid-as-trump-pushes-to-onshore-the-crypto-platform>
@@ -368,3 +362,6 @@ Hyperliquid Labs leads core development.[^hyper101]
 [^hyper101]: Hyperliquid documentation. *Hyperliquid 101*. <https://hyperliquid.gitbook.io/hyperliquid-docs/about-hyperliquid/hyperliquid-101-for-non-crypto-audiences>
 [^contracts]: Hyperliquid documentation. *Contract specifications*. <https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications>
 [^ice]: Intercontinental Exchange (2026). *Intercontinental Exchange and Trade[XYZ] to Bring Hyperliquid-Based Perpetual Markets Onshore*. <https://ir.theice.com/press/news-details/2026/Intercontinental-Exchange-and-TradeXYZ-to-Bring-Hyperliquid-Based-Perpetual-Markets-Onshore/default.aspx>
+
+[^imp-11-1]: [Press release | Payward Intends to Bring Onchain Perpetual Futures to US Clients, Starting on Hyperliquid](https://www.payward.com/press-release/payward-hyperliquid-onchain-perpetual-futures)
+[^imp-11-2]: [Hyperliquid says Kraken parent Payward to be first CFTC-regulated HIP-3 deployer](https://www.theblock.co/news/markets/2026-10-26-hyperliquid-payward-kraken-cftc-regulated-hip-3-deployer-431787)
