@@ -128,6 +128,10 @@ removed from total and circulating supply.[^fees]
 In May 2026 US spot HYPE exchange-traded products began
 trading, including 21Shares' THYP and Bitwise's BHYP.[^etf]
 
+### Treasury company seeks US futures registration
+
+On 5 November 2026 Hyperliquid Strategies, a Nasdaq-listed treasury company tied to the HYPE token, disclosed that a subsidiary had applied to the Commodity Futures Trading Commission to become a futures commission merchant (FCM).[^imp-6-1] An FCM holds customer accounts for US futures trading. The company said that, subject to regulatory approval, the unit would carry US client accounts for permissioned markets deployed under Hyperliquid's HIP-3 framework.[^imp-6-1] It also cautioned that there could be no assurance about the timing or outcome of the application, or of approval for permissioned HIP-3 markets.[^imp-6-1]
+
 ## Technology
 
 ### Consensus
@@ -172,6 +176,8 @@ Hyperliquid Improvement Proposals (HIPs) specify protocol features:
   builders who stake HYPE.[^hips]
 - **HIP-4**: fully collateralized outcome contracts with bounded settlement
   values, without leverage or liquidations.[^hip4]
+
+According to the HIP-4 documentation, the first outcome market is a recurring binary outcome that settles daily at 06:00 UTC to the BTC mark price on HyperCore. The documentation says multi-outcome markets will be supported but were not part of the initial mainnet release.[^imp-6-2]
 
 ### Vaults
 
@@ -264,6 +270,12 @@ Hyperliquid Labs leads core development.[^hyper101]
   announcement. Hyperliquid Labs told The Block it was reviewing the
   request. The letter requested information; it was not a finding of
   wrongdoing.[^oversight][^oversight-response]
+
+### 2026 market and insider-trading cases
+
+On 28 July 2026 CoinDesk reported that perpetual futures tied to the American depositary receipts of South Korean chipmaker SK Hynix had plunged 20% in one minute on Hyperliquid before rebounding above US$1,000. CoinDesk's headline described the low as US$900.[^imp-6-3]
+
+In September 2026 CoinDesk reported that U.S. authorities allege two Robinhood engineers stole confidential information from their employer to trade perpetual futures on Hyperliquid for personal benefit. CoinDesk summarized the allegations as the pair accessing restricted listing channels to execute dozens of pre-announcement trades for personal profit.[^imp-6-4] A Securities Docket page that reproduces CoinDesk's report quotes prosecutors as saying that the use of perpetual futures did not shield the alleged trades from commodities and wire-fraud laws. It also notes that the case rests on wire-fraud and commodities-fraud charges, with no parallel securities-fraud charge.[^imp-6-5] These are charges and allegations, not findings.[^imp-6-4]
 
 ## Timeline
 
@@ -365,3 +377,9 @@ Hyperliquid Labs leads core development.[^hyper101]
 
 [^imp-11-1]: [Press release | Payward Intends to Bring Onchain Perpetual Futures to US Clients, Starting on Hyperliquid](https://www.payward.com/press-release/payward-hyperliquid-onchain-perpetual-futures)
 [^imp-11-2]: [Hyperliquid says Kraken parent Payward to be first CFTC-regulated HIP-3 deployer](https://www.theblock.co/news/markets/2026-10-26-hyperliquid-payward-kraken-cftc-regulated-hip-3-deployer-431787)
+
+[^imp-6-1]: [Hyperliquid Strategies Seeks US Futures License After $620.6M Profit Quarter](https://coinpaprika.com/news/hyperliquid-strategies-seeks-us-futures)
+[^imp-6-2]: [HIP-4: Outcome markets](https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-4-outcome-markets)
+[^imp-6-3]: [SK Hynix perps suffer flash crash to $900 on Hyperliquid](https://www.coindesk.com/markets/2026/07/28/perpetuals-tied-to-sk-hynix-suffer-a-flash-crash-to-usd900-on-hyperliquid)
+[^imp-6-4]: [Two Robinhood (HOOD) engineers face criminal charges for pre-listing Hyperliquid trades](https://www.coindesk.com/business/2026/09/16/two-robinhood-engineers-charged-with-insider-trading-using-hyperliquid-perpetuals)
+[^imp-6-5]: [SDNY: Two Robinhood Engineers Charged with Insider Trading on Hyperliquid Perpetuals](https://securitiesdocket.com/sdny-two-robinhood-engineers-charged-with-insider-trading-on-hyperliquid-perpetuals/)
