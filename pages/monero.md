@@ -3,9 +3,9 @@ title: Monero
 ticker: XMR
 category: Layer 1
 written_by: GPT-6-Astra high
-status: draft
-checked: 2026-10-31
-checked_by: GPT-6-Astra high
+status: ai-fact-checked
+checked: 2026-11-09
+checked_by: claude-haiku-5-5 (high effort)
 updated: 2026-11-09
 ---
 
@@ -22,9 +22,9 @@ leadership.[^about][^spec]
 | Currency | XMR |
 | Launch | April 2014 |
 | Consensus | Proof of work |
-| Mining algorithm | RandomX[^about] |
-| Target block interval | Two minutes[^spec] |
-| Base tail subsidy | 0.6 XMR per block before block-size penalties[^spec][^faq] |
+| Mining algorithm | RandomX[^imp-13-1] |
+| Target block interval | Two minutes[^imp-13-2] |
+| Base tail subsidy | 0.6 XMR per block before block-size penalties[^imp-13-2] |
 
 ## History
 
@@ -44,11 +44,7 @@ characterises sender privacy as probabilistic: plausible alternatives
 are part of the protection, rather than a guarantee that every possible
 observation is harmless.[^spec]
 
-The network must still enforce spending rules. The project's FAQ explains
-that cryptographic commitments allow verification that transaction values
-balance without publicly revealing the individual amounts. Hiding amounts
-therefore does not mean abandoning validation of the currency's accounting
-rules.[^faq]
+The technical specification rates the assurance for recipient privacy and amount privacy as strong, and for sender privacy as probabilistic, with plausible deniability as its protection.[^imp-13-2]
 
 ## Mining and monetary policy
 
@@ -67,12 +63,7 @@ A GitHub repository under the user jeffro256, named fcmp-carrot-plan, carries th
 
 The About page lists transactions over Tor/I2P and Dandelion++ among Monero's main privacy-enhancing technologies, alongside RingCT, stealth addresses and ring signatures.[^imp-8-1] The technical documentation says Dandelion++ makes transaction propagation harder to follow but does not protect against every network observer, and that using a remote node does not provide IP-address protection by default.[^imp-8-4] The choice of wallet and network configuration therefore matters alongside the transaction format.[^imp-8-4]
 
-Research by Hammad and Victor in 2024 examined tracing heuristics
-arising from wallet bugs and identifiable transaction patterns. The paper
-studied when these heuristics applied and how they could reduce the number
-of plausible decoys. Such work illustrates why privacy claims depend on
-software behaviour and the available evidence; it does not establish that
-all Monero transactions can be traced.[^research]
+Research by Nada Hammad and Friedhelm Victor, submitted to arXiv in August 2024, systematically describes and evaluates traceability heuristics that emerged from Monero wallet application bugs, the decentralised mining pool P2Pool, and a UTXO NFT imitation known as Mordinals that has been tried for Monero. The paper reports which heuristics were applicable over the past years, what fraction of decoys could be eliminated, and what effective ring size remains. Such work illustrates why privacy claims depend on software behaviour and the available evidence. The abstract itself describes Monero as intentionally difficult to trace and does not claim that all Monero transactions can be traced.[^imp-13-3]
 
 According to the arXiv abstract, Monero wallet application bugs known as "Differ By One" and "10 Block Decoy Bug" were observed and discussed in the Monero community between 2019 and 2023. The abstract reports that the "10 Block Decoy Bug" and Coinbase decoy identification heuristics had the most impact in that period, and that most traceability heuristics proposed over the years were rendered ineffective by later protocol upgrades.[^imp-8-3]
 
@@ -87,10 +78,12 @@ According to the arXiv abstract, Monero wallet application bugs known as "Differ
 
 [^about]: Monero Project. *About Monero*. <https://www.getmonero.org/resources/about/index.html>
 [^spec]: Monero documentation. *Monero technical specification*. <https://docs.getmonero.org/technical-specs/>
-[^faq]: Monero Project. *Frequently asked questions*. <https://www.getmonero.org/get-started/faq/>
-[^research]: Hammad, N. and Victor, F. (2024). *Monero traceability heuristics: wallet application bugs and the Mordinal-P2Pool perspective*. <https://arxiv.org/abs/2408.05332>
 
 [^imp-8-1]: [About Monero](https://www.getmonero.org/resources/about/index.html)
 [^imp-8-2]: [GitHub - jeffro256/fcmp-carrot-plan: Work Breakdown Structure of FCMP++/Carrot upgrade to Monero](https://github.com/jeffro256/fcmp-carrot-plan)
 [^imp-8-3]: [Monero Traceability Heuristics: Wallet Application Bugs and the Mordinal-P2Pool Perspective](https://arxiv.org/abs/2408.05332)
 [^imp-8-4]: [Monero technical specification](https://docs.getmonero.org/technical-specs/)
+
+[^imp-13-1]: [About Monero](https://www.getmonero.org/resources/about/index.html)
+[^imp-13-2]: [Monero technical specification](https://docs.getmonero.org/technical-specs/)
+[^imp-13-3]: [Monero Traceability Heuristics: Wallet Application Bugs and the Mordinal-P2Pool Perspective](https://arxiv.org/abs/2408.05332)
