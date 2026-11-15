@@ -3,10 +3,10 @@ title: Liquidation
 ticker: None
 category: DeFi
 written_by: GPT-6-Astra high
-status: ai-fact-checked
+status: draft
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
-updated: 2026-10-31
+updated: 2026-11-15
 ---
 
 # Liquidation
@@ -27,17 +27,17 @@ The trigger and execution rules depend on the particular system.[^aave][^hyperli
 
 ## Lending positions
 
+This section uses Aave and Compound as examples of how lending protocols differ. Aave uses a health factor, Compound III uses liquidation collateral factors, and Compound v2 uses a close factor. These are specific designs, not a general rule for all lending protocols.[^imp-7-1][^imp-7-2][^imp-7-3]
+
 Aave expresses a borrower's collateral buffer through a health factor:
 collateral value, adjusted by liquidation thresholds, divided by debt
 value. A value below one makes a position eligible for liquidation.
 This can follow a fall in collateral prices, an increase in debt value,
 or other changes to the position.[^aave]
 
-An Aave liquidator repays debt and receives collateral plus a liquidation
-bonus. The process is permissionless and competitive. The permitted
-repayment fraction depends on the position and protocol rules; it is
-not always a complete sale of all the borrower's assets. Aave's
-documentation describes both partial and full-liquidation cases.[^aave]
+On Aave, a liquidator repays part or all of a borrower's debt and receives collateral plus a liquidation bonus. Liquidations are permissionless, so any network participant can start one once a position is eligible, and they are highly competitive.[^imp-7-1]
+
+Aave caps the repayment. Up to 50% of total debt can be liquidated when the health factor is above 0.95 and both collateral and debt are at least $2,000 each. Up to 100% can be liquidated when the health factor is 0.95 or below, or when either value is below $2,000. Partial liquidations must leave at least $1,000 of both collateral and debt; otherwise the position must be fully cleared.[^imp-7-1]
 
 The threshold is not identical to insolvency. A position can cross its
 liquidation threshold while collateral is still worth more than its
@@ -95,3 +95,7 @@ price used in that test.[^aave][^sky][^hyperliquid]
 [^sky]: Sky Protocol documentation. *Collateral Liquidation*. <https://developers.skyeco.com/protocol/vaults/collateral-liquidation/>
 [^hyperliquid]: Hyperliquid documentation. *Liquidations*. <https://hyperliquid.gitbook.io/hyperliquid-docs/trading/liquidations>
 [^adl]: Hyperliquid documentation. *Auto-deleveraging*. <https://hyperliquid.gitbook.io/hyperliquid-docs/trading/auto-deleveraging>
+
+[^imp-7-1]: [Health Factor & Liquidations – Aave](https://aave.com/help/borrowing/liquidations)
+[^imp-7-2]: [Liquidation – Compound III Docs](https://docs.compound.finance/liquidation/)
+[^imp-7-3]: [cTokens – Compound v2 Docs](https://docs.compound.finance/v2/ctokens/)
