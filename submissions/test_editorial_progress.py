@@ -48,15 +48,15 @@ class EditorialProgressTests(TestCase):
         self.assertEqual(self.run.editorial['stage'],'screen')
 
     @patch('submissions.ai_providers.write_article')
-    def test_explicit_missing_evidence_returns_to_research_not_format_retry(self, writer):
+    def test_explicit_missing_evidence_ends_with_a_clear_outcome_not_another_round(self, writer):
         self.run.submission.kind='request';self.run.submission.save()
         writer.return_value=written_patch({'insufficient_evidence':True})
         editorial.process(self.run)
-        self.run.refresh_from_db()
-        self.assertEqual(self.run.editorial['stage'],'research')
-        self.assertEqual(self.run.research,{})
-        self.assertEqual(self.run.editorial['writer_retries'],0)
-        self.assertEqual(self.run.state,'revising')
+        self.run.refresh_from_db();self.run.submission.refresh_from_db()
+        self.assertEqual(self.run.state,'insufficient')
+        self.assertEqual(self.run.submission.status,'insufficient')
+        self.assertEqual(self.run.research,RESEARCH)
+        self.assertEqual(writer.call_count,1)
 
     @patch('submissions.ai_providers.write_improvement')
     def test_repeated_format_failures_remain_operational_not_factual_rejections(self, writer):
@@ -68,26 +68,6 @@ class EditorialProgressTests(TestCase):
         self.assertEqual(self.run.submission.status,'reviewing')
         self.assertEqual(self.run.editorial['revisions'],2)
         self.assertEqual(self.run.editorial['feedback'],self.feedback)
-
-    def test_corrections_continue_beyond_two_when_verified_coverage_advances(self):
-        self.run.editorial['revisions']=0
-        for index in range(4):
-            candidate=SOURCE+'\n'*index
-            reason={'assessment':{'verdict':'revise','issues':['Correct the remaining claim.'],
-                'units':[{'id':str(i),'verdict':'supported'} for i in range(index+1)]},'errors':['unresolved_checker_issues']}
-            check=Verification.objects.create(run=self.run,source=candidate,source_hash=digest(candidate),state='failed',
-                session={'responses':evidence()},report=reason)
-            self.run.editorial.update(candidate=candidate,check_id=check.pk)
-            editorial.revise(self.run,reason)
-            self.assertEqual(self.run.state,'revising')
-            self.assertEqual(self.run.editorial['stage'],'write')
-        self.assertEqual(self.run.editorial['revisions'],4)
-        for _ in range(2):editorial.revise(self.run,reason)
-        self.assertEqual(self.run.state,'revising')
-        self.assertTrue(self.run.editorial['smallest_edit'])
-        for _ in range(2):editorial.revise(self.run,reason)
-        self.assertEqual(self.run.state,'blocked')
-        self.assertEqual(self.run.last_error,'useful_edit_not_completed')
 
     def test_table_citation_repairs_preserve_facts_and_other_content(self):
         table='| Date | Event |\n|---|---|\n| 2009 | Example launched with its first public software release. |'
@@ -101,21 +81,3 @@ class EditorialProgressTests(TestCase):
         proposal['edits'][0]['markdown']=proposal['edits'][0]['markdown'].replace('2009','2010')
         with self.assertRaisesMessage(InvalidArticle,'unsupported_improvement_replacement'):
             validate_patch(self.record,proposal,RESEARCH)
-
-    @patch('submissions.management.commands.resume_editorial_correction.publication_lock')
-    def test_exhausted_correction_reopens_with_saved_findings_and_no_approval(self, lock):
-        check=Verification.objects.create(run=self.run,source=SOURCE,source_hash=digest(SOURCE),state='failed',
-            completed_at=timezone.now(),session={'responses':evidence()},report=self.feedback)
-        self.run.editorial.update(stage='check',check_id=check.pk);self.run.save()
-        editorial.insufficient(self.run,'Old revision limit reached.')
-        call_command('resume_editorial_correction',submission=str(self.run.submission_id),stdout=StringIO())
-        self.run.refresh_from_db();self.run.submission.refresh_from_db();check.refresh_from_db()
-        self.assertEqual(self.run.state,'revising')
-        self.assertEqual(self.run.editorial['stage'],'write')
-        self.assertEqual(self.run.editorial['feedback'],self.feedback)
-        self.assertEqual(self.run.submission.status,'reviewing')
-        self.assertEqual(self.run.editorial['revisions'],3)
-        self.assertEqual(check.state,'failed')
-        self.assertFalse(self.run.verifications.filter(state='passed').exists())
-        with self.assertRaises(CommandError):
-            call_command('resume_editorial_correction',submission=str(self.run.submission_id),stdout=StringIO())

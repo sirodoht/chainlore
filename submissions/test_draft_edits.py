@@ -112,16 +112,17 @@ class DraftEditTests(TestCase):
         with self.assertRaisesMessage(ValueError, 'no_useful_edit'):
             verification.step(check)
 
-    def test_insufficient_writer_response_tries_smaller_edit_not_full_article_check(self):
+    def test_insufficient_writer_response_ends_without_a_check_or_another_round(self):
         self.run.editorial = {'stage':'write','revisions':0}
         self.run.save()
         response = {'stop_reason':'end_turn','content':[{'type':'text','text':'{"insufficient_evidence":true}'}]}
         with patch('submissions.ai_providers.write_improvement', return_value=response):
             editorial.process(self.run)
         self.run.refresh_from_db()
-        self.assertEqual(self.run.state, 'revising')
+        self.assertEqual(self.run.state, 'insufficient')
         self.assertFalse(self.run.verifications.exists())
-        self.assertIn('smaller', str(self.run.editorial['feedback']))
+        self.run.submission.refresh_from_db()
+        self.assertIn('existing article is unchanged', self.run.submission.public_summary)
 
     def test_reopened_technical_failure_retains_audit_and_spend_and_is_idempotent(self):
         self.run.state = 'insufficient'

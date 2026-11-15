@@ -184,6 +184,12 @@ def publish_site(base_release=None, import_legacy=False):
                                 submission.public_summary += ' The changed passages were checked; the article is labelled Draft pending full-article checking.'
                         if run.editorial.get('fulfillment') == 'partial':
                             submission.public_summary += ' This addresses part of the suggestion; the full requested coverage is not complete.'
+                        left_out = run.editorial.get('left_out', 0)
+                        if left_out:
+                            from .salvage import queue_follow_up
+                            submission.public_summary += (f' {left_out} proposed passage{"s" if left_out != 1 else ""} could not be '
+                                                          'confirmed against the sources and were left out'
+                                                          + ('; a follow-up has been queued for them.' if queue_follow_up(run, record) else '.'))
                     submission.save()
                     if settings.AUTONOMOUS_EDITORIAL_ENABLED and run.editorial.get('publication_scope') in ('edit', 'draft'):
                         from .maintenance import queue_full_check

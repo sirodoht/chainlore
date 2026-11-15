@@ -91,22 +91,23 @@ class SourceRecoveryTests(TestCase):
         self.assertEqual(self.check.state, 'pending')
 
     @patch('submissions.ai_providers.call')
-    def test_repeated_tool_failures_research_replacement_without_rejecting(self, call):
+    def test_repeated_tool_failures_stop_collecting_and_check_what_was_opened(self, call):
         self.check.session={'payload':payload(self.check),'responses':[],'mode':'sources'};self.check.save()
         call.return_value=self.response([{'type':'web_fetch_tool_result','content':{'type':'web_fetch_tool_result_error','error_code':'unavailable'}}])
         for _ in range(3):
             self.run.refresh_from_db(); editorial.process(self.run)
         self.run.refresh_from_db(); self.check.refresh_from_db(); self.run.submission.refresh_from_db()
-        self.assertEqual(self.check.state,'incomplete')
-        self.assertEqual(self.check.report['errors'],['verification_sources_incomplete'])
-        self.assertEqual(self.run.state,'revising')
-        self.assertEqual(self.run.editorial['stage'],'research')
-        self.assertEqual(self.run.editorial['source_repairs'],1)
-        self.assertIn('https://example.com/history', self.run.editorial['feedback']['missing_sources'])
+        # No research or writer round: the check continues with the sources it has,
+        # and claims resting on the unopened reference stay unconfirmed.
+        self.assertEqual(self.check.state,'pending')
+        self.assertTrue(self.check.session['sources_exhausted'])
+        self.assertEqual(self.check.session['mode'],'report')
+        self.assertEqual(self.run.state,'checking')
+        self.assertEqual(self.run.editorial['stage'],'check')
         self.assertEqual(self.run.submission.status,'reviewing')
-        self.assertEqual(self.run.editorial['revisions'],1)
-        step(self.check)
         self.assertEqual(call.call_count,3)
+        step(self.check)
+        self.assertEqual(call.call_args.args[2],'fact_check_report')
 
     @patch('submissions.ai_providers.call')
     def test_saved_search_is_assessed_after_restart_without_a_paid_call(self, call):
@@ -125,11 +126,11 @@ class SourceRecoveryTests(TestCase):
         self.check.save()
         finding=report(); finding.update(verdict='revise', issues=['Correct the launch date.'])
         call.return_value=self.response([{'type':'text','text':json.dumps(finding)}])
-        editorial.process(self.run)
-        self.run.refresh_from_db(); self.check.refresh_from_db()
+        with patch('submissions.editorial.publish_confirmed') as publish:
+            editorial.process(self.run)
+        self.check.refresh_from_db()
         self.assertEqual(self.check.state,'failed')
-        self.assertEqual(self.run.state,'revising')
-        self.assertEqual(self.run.editorial['revisions'],1)
+        self.assertEqual(publish.call_args.args[1].pk,self.check.pk)
 
     @patch('submissions.management.commands.resume_verification.publication_lock')
     def test_reopen_only_source_failure_preserves_old_outcome_and_revision_count(self, lock):

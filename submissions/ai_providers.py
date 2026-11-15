@@ -13,6 +13,7 @@ ANTHROPIC_MAX_TOKENS = 128000
 RESEARCH_TIMEOUT = 600
 WRITING_TIMEOUT = 600
 RESEARCH_MAX_RESPONSES = 3
+MAX_RESPONSE_BYTES = 16_000_000
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -74,8 +75,9 @@ def call(run, provider, stage, payload, timeout=120, keep_thinking=False):
     request = urllib.request.Request(url, headers=headers, data=json.dumps(payload).encode())
     try:
         with urlopen(request, timeout=timeout) as response:
-            raw = response.read(2_000_001)
-            if len(raw) > 2_000_000:
+            # Fetched PDFs arrive base64-encoded inside the response; the verifier reads up to 8 MB of PDF.
+            raw = response.read(MAX_RESPONSE_BYTES + 1)
+            if len(raw) > MAX_RESPONSE_BYTES:
                 raise ProviderError('response_too_large')
             result = json.loads(raw)
     except urllib.error.HTTPError as exc:

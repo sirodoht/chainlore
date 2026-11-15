@@ -132,6 +132,9 @@ EVENT_LABELS = {
     'correction_resumed': 'Targeted correction resumed from saved findings',
     'verification_recovered': 'Verification resumed from saved evidence',
     'verification_evidence_findings': 'Unconfirmed claims sent back for revision',
+    'confirmed_subset_approved': 'Confirmed passages approved; unconfirmed passages left out',
+    'nothing_confirmed': 'No proposed text could be confirmed',
+    'full_check_not_certified': 'Full check found passages to repair',
     'idea_chosen': 'Subject chosen by the editor',
     'idea_rejected': 'Choosing another subject',
 }

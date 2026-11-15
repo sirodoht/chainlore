@@ -86,6 +86,9 @@ class EditorialIntegrationTests(fixtures.AutomationFixture):
             check.state='failed';check.report={'errors':['unopened_references']};check.save();return check
         self.checker.side_effect=fail
         run=self.drive(40)
-        self.assertEqual(run.state,'blocked')
-        self.assertEqual(run.last_error,'useful_edit_not_completed')
+        # One check, no rewrite loop: nothing was confirmed, so the job ends with a clear outcome.
+        self.assertEqual(run.state,'insufficient')
+        self.assertEqual(self.checker.call_count,1)
+        self.submission.refresh_from_db()
+        self.assertIn('could not confirm any',self.submission.public_summary)
         self.assertNotIn('pages/test-protocol.md',git(self.remote,'ls-tree','-r','--name-only','main'))

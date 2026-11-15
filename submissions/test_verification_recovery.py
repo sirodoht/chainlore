@@ -52,20 +52,23 @@ class VerificationRecoveryTests(TestCase):
         self.assertEqual(data['article'],SOURCE)
 
     @patch('submissions.ai_providers.call')
-    def test_repeated_incomplete_reports_block_without_rewriting(self,call):
-        call.return_value=self.truncated()
-        for _ in range(3):
+    def test_unusable_reports_leave_groups_unconfirmed_and_end_without_rewriting(self,call):
+        self.run.submission.kind='request';self.run.submission.save()
+        self.check.session={'scope':'draft','payload':payload(self.check),'responses':evidence(),'mode':'report'};self.check.save()
+        call.return_value={'stop_reason':'max_tokens','model':'checker high','content':[]}
+        for _ in range(4):
             self.run.refresh_from_db();editorial.process(self.run)
-        self.run.refresh_from_db();self.check.refresh_from_db()
-        self.assertEqual(call.call_count,3)
-        self.assertEqual(self.check.state,'incomplete')
-        self.assertEqual(self.run.state,'blocked')
-        self.assertEqual(self.run.editorial['revisions'],0)
+        self.run.refresh_from_db();self.check.refresh_from_db();self.run.submission.refresh_from_db()
+        # Two attempts at the group; the second thinks less. No third attempt and no writer call.
+        self.assertEqual(call.call_count,2)
+        self.assertEqual([c.args[3]['output_config']['effort'] for c in call.call_args_list],['high','low'])
+        self.assertEqual(self.check.state,'failed')
+        self.assertTrue(all(batch['report']['units']==[] for batch in self.check.session['batches']))
+        self.assertEqual(self.run.state,'insufficient')
+        self.assertEqual(self.run.submission.status,'insufficient')
         self.assertEqual(self.run.draft,{'edits':['saved']})
-        self.assertIsNotNone(self.run.next_attempt_at)
-        self.assertEqual(self.run.editorial['operational_retries'],1)
-        step(self.check)
-        self.assertEqual(call.call_count,3)
+        self.assertIsNone(self.run.next_attempt_at)
+        self.assertFalse(self.run.verifications.filter(state='passed').exists())
 
     @patch('submissions.ai_providers.call')
     def test_saved_response_is_assessed_after_crash_without_another_paid_call(self,call):
@@ -113,25 +116,25 @@ class VerificationRecoveryTests(TestCase):
             call_command('resume_verification',submission=str(self.run.submission_id),stdout=StringIO())
         self.assertEqual(self.run.verifications.count(),1)
 
+    @override_settings(VERIFICATION_BATCH_SIZE=100)
     @patch('submissions.ai_providers.call')
-    def test_unconfirmed_pass_becomes_writer_findings_without_another_report(self,call):
-        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report'}
+    def test_unconfirmed_pass_is_not_published_and_needs_no_second_report(self,call):
+        self.run.submission.kind='request';self.run.submission.save()
+        self.check.session={'scope':'draft','payload':payload(self.check),'responses':evidence(),'mode':'report'}
         self.check.save()
         invalid=report()
         factual=next(u for u in invalid['units'] if u['claims'])
         factual['claims'][0]['quote']='A quote absent from the source'
         call.return_value={'stop_reason':'end_turn','model':'checker-v1','content':[{'type':'text','text':json.dumps(invalid)}]}
-        with patch('submissions.editorial.ai.research_context'):
-            editorial.process(self.run)
+        editorial.process(self.run)
         self.assertEqual(call.call_count,1)
         self.run.refresh_from_db();self.check.refresh_from_db()
         self.assertEqual(self.check.state,'failed')
         self.assertEqual(self.check.approved_hash,'')
-        self.assertEqual(self.run.state,'revising')
-        self.assertEqual(self.run.editorial['revisions'],1)
-        issues=self.run.editorial['feedback']['assessment']['issues']
-        self.assertTrue(any('no cited passage was found' in issue for issue in issues))
+        # The unconfirmed unit is the title, so no part of the draft can be published.
+        self.assertEqual(self.run.state,'insufficient')
         self.assertTrue(AutomationEvent.objects.filter(kind='verification_evidence_findings').exists())
+        self.assertTrue(AutomationEvent.objects.filter(kind='nothing_confirmed').exists())
 
     @patch('submissions.ai_providers.call')
     def test_saved_rejected_report_is_used_without_a_paid_call(self,call):
@@ -260,8 +263,9 @@ class GroupCoverageTests(TestCase):
         return {'stop_reason':'end_turn','model':'checker-test','content':[{'type':'text','text':json.dumps(result)}]}
 
     @patch('submissions.ai_providers.call')
-    def test_all_groups_feed_one_revision_and_survive_restart(self, call):
+    def test_all_groups_are_checked_once_and_findings_end_the_job_without_a_rewrite(self, call):
         self.run.submission.status='reviewing';self.run.submission.save()
+        self.check.session['scope']='draft';self.check.save()
         self.run.state='checking'
         self.run.editorial={'stage':'check','check_id':self.check.pk,'candidate':SOURCE,'revisions':0}
         self.run.save()
@@ -278,16 +282,14 @@ class GroupCoverageTests(TestCase):
             self.run.refresh_from_db();self.check.refresh_from_db()
             if len(seen)<len(units):
                 self.assertEqual(self.run.state,'checking')
-                self.assertEqual(self.run.editorial['revisions'],0)
                 self.assertIsNone(self.check.completed_at)
             self.assertEqual(self.check.approved_hash,'')
         self.assertEqual(seen,[u['id'] for u in units])
         self.assertEqual(self.check.state,'failed')
-        self.assertEqual(self.run.editorial['revisions'],1)
-        self.assertEqual(self.run.editorial['stage'],'write')
-        self.assertEqual(self.run.editorial['feedback']['assessment']['issues'],list(findings.values()))
-        self.assertEqual(self.run.editorial['revision_progress']['supported'],len(units)-2)
-        self.assertEqual(self.run.events.filter(kind='revision_requested').count(),1)
+        self.assertEqual(self.check.report['assessment']['issues'],list(findings.values()))
+        # The title was one of the findings, so nothing can be published; no writer round follows.
+        self.assertEqual(self.run.state,'insufficient')
+        self.assertFalse(self.run.events.filter(kind='revision_requested').exists())
         self.assertEqual(self.run.events.filter(kind='verification_group_findings').count(),2)
 
     @patch('submissions.ai_providers.call')
@@ -319,7 +321,11 @@ class GroupCoverageTests(TestCase):
         call.return_value={'stop_reason':'max_tokens','model':'checker-test','content':[]}
         for _ in range(2):
             step(self.check);self.check.refresh_from_db()
-        self.assertEqual(self.check.state,'incomplete')
+        # The unusable group is recorded as unconfirmed and the check moves on.
+        self.assertEqual(self.check.state,'pending')
+        self.assertEqual(self.check.session['batches'][1]['report']['units'],[])
+        self.assertEqual(self.check.session['batches'][1]['errors'],['verification_output_incomplete'])
+        self.assertNotIn('report',self.check.session['batches'][2])
         self.assertEqual(self.check.session['batches'][0],saved)
         self.assertEqual(saved['report']['issues'],['Fix the title.'])
         self.assertEqual(self.check.approved_hash,'')

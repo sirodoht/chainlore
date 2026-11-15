@@ -16,16 +16,6 @@ class AutonomousTests(TestCase):
         self.submission=Submission.objects.create(kind='correction',article='bitcoin',status='reviewing')
         self.run=AutomationRun.objects.create(submission=self.submission,editorial={'stage':'check','revisions':0})
 
-    def test_revisions_terminate_without_an_editor(self):
-        for _ in range(3):editorial.revise(self.run,'unsupported claim')
-        self.assertTrue(self.run.editorial['smallest_edit'])
-        self.assertEqual(self.run.state,'revising')
-        for _ in range(2):editorial.revise(self.run,'unsupported claim')
-        self.run.refresh_from_db();self.submission.refresh_from_db()
-        self.assertEqual(self.run.state,'blocked')
-        self.assertEqual(self.submission.status,'reviewing')
-        self.assertEqual(self.run.last_error,'useful_edit_not_completed')
-
     def test_operational_failure_has_bounded_recovery(self):
         for _ in range(4):recover(self.run,'provider_network_error')
         self.run.refresh_from_db()

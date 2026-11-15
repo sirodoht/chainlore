@@ -125,22 +125,53 @@ useful edit is success even if the complete suggested expansion is not possible.
    attribute, narrow or omit unsupported details. Preserve original writer credits.
 4. Independently fetch references for changed units and check their assertions.
    Unchanged paragraphs and unrelated old references cannot veto an edit.
-5. Publish the exact approved candidate as Draft against its expected Git base.
+5. Keep what the check confirmed and leave out the rest. There is no
+   rewrite-and-recheck loop: one research, one write and one check per job.
+6. Publish the exact approved candidate as Draft against its expected Git base.
    Historical checker dates and credits remain unchanged and are not displayed
    as current certification. Writer and scoped checker credits go into the commit.
-6. Queue a background full-article check. Only this completed independent pass can
+7. Queue a background full-article check. Only this completed independent pass can
    grant `ai-fact-checked` and advance `checked` / `checked_by`.
-7. Report Updated or Partly updated with actual section/commit links. Never mark
+8. Report Updated or Partly updated with actual section/commit links. Never mark
    a request completed merely because the worker tried. Reader suggestions appear
    separately from automatic background checks and take processing priority.
 
 Source and report collection use bounded batches, with no 40-reference ceiling.
-Two stalled revisions trigger a smaller-edit attempt, not “Insufficient evidence”.
-A further stalled fallback remains an explicit processing blocker. Source access
-failures trigger up to two source-replacement passes; incomplete reports retain
-completed groups and evidence for up to three timed operational retries. Technical
-exceptions cannot become factual rejections. Published text and source approvals
-remain hash-bound; concurrent edits restart against the current Git snapshot.
+Published text and source approvals remain hash-bound; concurrent edits restart
+against the current Git snapshot. Technical exceptions cannot become factual rejections.
+
+#### Every check ends in a publication or a clear outcome
+
+The checker returns a verdict per paragraph, list item and table row. A unit is
+confirmed only if its group produced a report, the checker marked it supported
+with quotes that software finds verbatim in a fetched source, and every reference
+it cites was opened. When a check does not pass whole (`submissions/salvage.py`):
+
+- Software removes the unconfirmed units, any heading left empty and any footnote
+  left unused. It never rewrites text. An edit that replaces existing text is kept
+  whole or dropped whole, so the original paragraph is never half-replaced.
+- Every remaining unit is matched against the saved verdicts again, and that exact
+  text receives a new approval record pointing at the original check. It publishes
+  as Draft and is reported as Partly updated, with the number of passages left out.
+- The passages left out, with the checker's findings, become one follow-up
+  improvement job for the same article, at most two rounds deep.
+- If nothing was confirmed, the job ends as “Insufficient evidence” with a public
+  explanation and the article is unchanged. The same applies when research finds
+  no sources, the writer finds nothing it can support, or screening rejects the draft.
+
+The things that used to stop a job now only shrink what it publishes: a group whose
+report is unusable after two attempts (the second at low effort) is unconfirmed; a
+reference that cannot be fetched leaves the claims citing it unconfirmed; and when
+the job's token budget runs out mid-check, the groups already checked are published.
+
+A full check of an existing article never deletes published text. If it cannot
+confirm some passages the article keeps its status, the check is not certified, and
+one `Repair:` improvement job is queued with those passages and findings.
+
+Operational failures remain Blocked rather than being reported as editorial
+outcomes: provider or publication errors after their retries, a writer that cannot
+return valid output after three attempts, and a budget exhausted before any group
+was checked.
 
 To reopen historical stalled jobs once under this workflow, after a verified
 backup and under the normal worker environment:
@@ -196,8 +227,7 @@ checks that every reference has fetched content before requesting a report. Miss
 references are fetched in groups of four without refetching saved documents.
 There is no mandatory freshness search or midnight expiry of saved evidence.
 Source recovery permits at least 12 calls, scaled to the reference count in groups
-of four, and stops after three consecutive calls without progress. Tool failures retain the draft and become operational blocks,
-not factual rejections. Saved tool results survive restarts and are checked before
+of four, and stops after three consecutive calls without progress. When collection stops, the check continues with the sources it has. Saved tool results survive restarts and are checked before
 another paid call.
 
 Once source collection is complete, the checker
@@ -205,16 +235,15 @@ keeps the candidate and its independently fetched sources, then checks groups of
 group, a 32,000-token output allowance and no tools. Each cited group receives its
 complete cited documents; uncited facts retain the full source set. Each completed
 group is saved, including groups with factual findings. The checker finishes all
-groups before requesting one revision with their combined findings. A later passing
+groups before the outcome is decided. A later passing
 group cannot erase earlier failures. Only complete coverage with no unresolved
-findings can pass, and the combined report is validated again. Incomplete reports end in an
-explicit operational block; they never confer publication approval. Saved reports
+findings can pass whole, and the combined report is validated again. An unusable report
+never confers approval: its group is recorded as unconfirmed and the check moves on. Saved reports
 are assessed after a restart before another paid call. The report records its completion date; saved source evidence
 does not expire solely because the UTC date changed.
 Contradictory passes (no reported issues, but unmet source rules or a nonmatching
 evidence quote) never approve publication and never pay for another report. Each
-unconfirmed claim becomes a concrete finding: the writer cites a passage that states
-it, attributes it more narrowly, or removes it, and the revision is checked again. A
+unconfirmed claim becomes a concrete finding and its unit is left out of the publication. A
 resumed check reuses a saved rejected report the same way, without a paid call.
 
 To recover a historical run held by this bug, use
@@ -236,18 +265,12 @@ groups. It requires a strictly higher allowance and retains old responses and al
 charged usage. Opaque encrypted search blobs stay in the audit; report prompts
 carry readable search metadata and fetched source text.
 
-A historically exhausted correction with actionable checker findings can resume
-with `manage.py resume_editorial_correction --submission UUID`. It preserves the
-old outcome, source hash, findings, cumulative patch and usage; it resumes writing
-from saved evidence and grants no publication approval. Writers may add citations
-to table blocks while preserving every other table character and factual value.
+Writers may add citations to table blocks while preserving every other table
+character and factual value.
 
 Writing allows 32,000 output tokens per call and up to three format retries using
-saved research and factual feedback. These operational retries do not count as
-article revisions. A saved unprocessed writer response is validated before any
-new paid call. Corrective passes continue while verified coverage improves or
-findings are resolved; two consecutive passes without progress trigger a smaller useful edit. An
-exhausted smaller-edit attempt remains visible as a processing blocker.
+saved research and factual feedback. A saved unprocessed writer response is validated before any
+new paid call. Exhausted format retries remain visible as a processing blocker.
 
 ### Daily editor's picks
 

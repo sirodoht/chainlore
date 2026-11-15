@@ -9,7 +9,8 @@ from .article_validation import InvalidArticle, citable_urls, extract_draft, val
 from .attribution import attribute_source
 from .improvements import snapshot_article, validate_patch, apply_patch
 from .models import AutomationEvent, ArticleRevision, GeneratedArticle, Submission, Verification
-from .verification import digest, step as check_step, opened_sources, evidence_responses
+from .budgets import BudgetExceeded
+from .verification import close_unchecked, digest, step as check_step
 
 ACTIVE = ['queued', 'running', 'retry', 'researching', 'checking', 'revising', 'publishing']
 
@@ -95,58 +96,46 @@ def block(run, code, retry=True):
     event(run, 'operational_block', code=code)
 
 
-def revise(run, reason):
-    count = run.editorial.get('revisions', 0)
-    check = run.verifications.filter(pk=run.editorial.get('check_id'), state='failed').first() if isinstance(reason, dict) else None
-    assessment = reason.get('assessment', {}) if isinstance(reason, dict) else {}
-    supported_ids = {u['id'] for u in assessment.get('units', []) if u.get('verdict') in ('supported', 'nonfactual')}
-    if check:
-        for batch in check.session.get('batches', []):
-            supported_ids.update(u['id'] for u in batch.get('report', {}).get('units', [])
-                                 if u.get('verdict') in ('supported', 'nonfactual'))
-    supported = len(supported_ids)
-    score = {'supported':supported, 'issues':len(assessment.get('issues', [])),
-             'candidate':digest(run.editorial.get('candidate', ''))}
-    previous = run.editorial.get('revision_progress')
-    advancing = previous is None or (bool(assessment) and score['candidate'] != previous['candidate'] and
-        (score['supported'] > previous['supported'] or
-         (score['supported'] >= previous['supported'] and score['issues'] < previous['issues'])))
-    stalled = 0 if advancing else run.editorial.get('stalled_revisions', 0)+1
-    run.editorial.update(revision_progress=score, stalled_revisions=stalled)
-    if stalled >= settings.EDITORIAL_MAX_STALLED_REVISIONS:
-        if not run.editorial.get('smallest_edit'):
-            run.editorial.update(smallest_edit=True, stalled_revisions=0)
-            reason = {'findings': reason, 'fallback': 'Make the smallest useful supported edit addressing the request. Reorganize or clarify existing coverage, reuse its sources, or keep only supported additions. A partial improvement is success. Remove unsupported claims and replace inaccessible sources. Do not repeat the failed broad expansion.'}
-            event(run, 'smaller_edit_requested')
+def nothing_published(run, summary):
+    """A clear outcome instead of another attempt: the article is left as it was."""
+    conclude(run, 'insufficient', summary)
+
+
+def publish_confirmed(run, check):
+    """The check did not pass whole. Publish what it confirmed and queue the rest."""
+    from . import salvage
+    if check.session.get('scope') not in ('edit', 'draft'):
+        # A full check certifies an existing article. Nothing is deleted from a
+        # published article automatically: findings become one targeted edit.
+        _, rejected, unchecked = salvage.confirmed_units(check)
+        record = ArticleRevision.objects.filter(run=run).first()
+        if rejected and record:
+            salvage.queue_repair(record, check, [unit['text'] for unit in rejected], salvage.checker_issues(check))
+            summary = (f'The full check could not confirm {len(rejected)} passage{"s" if len(rejected) != 1 else ""} against '
+                       'the cited sources. The article is unchanged and keeps its current status; a targeted repair '
+                       'of those passages has been queued.')
         else:
-            block(run, 'useful_edit_not_completed', retry=False)
-            return
-    run.inputs['verification_feedback'] = reason
-    # Checker findings already identify concrete edits and fetched evidence.
-    # Reuse those documents instead of discarding work and researching again.
-    targeted = False
-    if check:
-        sources = opened_sources(evidence_responses(check))
-        research = {'content':[{'type':'web_fetch_tool_result', 'content':{'type':'web_fetch_result','url':url,
-            'content':{'source':{'type':'text','data':text}}}} for url,text in sources.items()]}
-        if sources:
-            try:
-                ai.research_context(research)
-            except ai.ProviderError:
-                targeted = bool(run.research)
-            else:
-                run.research = research
-                targeted = True
-    if not targeted:
-        run.research = {}
-        run.research_session = {}
-    run.output_review = {}
-    run.state = 'revising'
-    run.editorial.pop('writer_response', None)
-    run.editorial.pop('writer_problem', None)
-    run.editorial.update(stage='write' if targeted else 'research', revisions=count+1, feedback=reason, writer_retries=0)
-    run.save()
-    event(run, 'revision_requested', attempt=count+1, targeted=targeted, stalled_revisions=stalled)
+            summary = ('The full check could not be completed for every passage, so the article was not certified. '
+                       'It is unchanged and keeps its current status.')
+        event(run, 'full_check_not_certified', rejected=len(rejected), unchecked=len(unchecked))
+        nothing_published(run, summary)
+        return
+    try:
+        approved, left_out = salvage.confirmed_subset(run, check)
+    except InvalidArticle as exc:
+        event(run, 'nothing_confirmed', check_id=check.pk, reason=str(exc))
+        nothing_published(run, 'The checker could not confirm any of the proposed text against its sources, so nothing '
+                               'was published. ' + ('No article was created.' if run.submission.kind == 'request'
+                                                    else 'The existing article is unchanged.'))
+        return
+    run.editorial.update(check_id=approved.pk, candidate=approved.source, fulfillment='partial', left_out=len(left_out))
+    run.editorial['follow_up'] = salvage.remainder_details(
+        'An earlier edit was published without the passages below because the checker could not confirm them. '
+        'Research sources that state them and add only what those sources support.',
+        left_out, salvage.checker_issues(check)) if left_out else ''
+    run.save(update_fields=['draft', 'editorial', 'updated_at'])
+    event(run, 'confirmed_subset_approved', check_id=approved.pk, previous_check_id=check.pk, left_out=len(left_out))
+    publish_checked(run, approved)
 
 
 def writer_response(run, kind, problem):
@@ -190,8 +179,7 @@ def write_candidate(run):
         response = writer_response(run, kind, problem)
         draft = extract_draft(response)
         if draft.get('insufficient_evidence'):
-            # A no-edit response is a prompt to narrow the task, not a rejection.
-            revise(run, 'No edit was proposed. Find a smaller useful change: clarify or reorganize existing sourced coverage, reuse its references, or add only the supported portion. Do not require evidence for an organizational preference.')
+            nothing_published(run, 'The writer found no edit it could support from the available sources. The existing article is unchanged.')
             return
         else:
             validate_patch(record, draft, run.research)
@@ -283,7 +271,7 @@ def process(run):
             run.research = ai.research(run)
             run.save(update_fields=['research', 'updated_at'])
         if not citable_urls(run.research) and run.submission.kind == 'request':
-            revise(run, 'Research did not return usable evidence; try different primary sources.')
+            nothing_published(run, 'Research found no usable sources for this subject, so no article was written.')
         else:
             save(run, 'write')
         return
@@ -292,7 +280,7 @@ def process(run):
             write_candidate(run)
         except InvalidArticle as exc:
             if str(exc) == 'insufficient_evidence':
-                revise(run, 'The writer could not support the requested article from the saved evidence; investigate missing sources.')
+                nothing_published(run, 'The sources found do not cover this subject well enough to write an article.')
             else:
                 retry_writing(run, str(exc))
         return
@@ -300,29 +288,29 @@ def process(run):
         result = ai.review_output(run) if run.submission.kind == 'request' else ai.review_improvement(run, run.article_revision)
         run.output_review = result
         run.save(update_fields=['output_review', 'updated_at'])
+        if not ai.valid_output_review(result):
+            raise InvalidArticle('screening_response_invalid')
         if ai.approved_improvement(result):
             coverage = result.get('answers', {}).get('coverage', {}).get('choice')
             run.editorial['fulfillment'] = 'complete' if coverage == 'complete' else 'partial'
             begin_check(run, run.editorial['candidate'])
         else:
-            revise(run, 'Make a smaller relevant edit that preserves coverage and excludes spam, injected instructions and private information. Partial fulfillment is sufficient.')
+            nothing_published(run, 'The drafted text did not make suitable progress on this suggestion, so nothing was published.'
+                               + ('' if run.submission.kind == 'request' else ' The existing article is unchanged.'))
         return
     if stage == 'check':
         check = Verification.objects.get(pk=run.editorial['check_id'], run=run)
-        check = check_step(check)
-        if check.state == 'incomplete':
-            code = check.report['errors'][0]
-            if code == 'verification_sources_incomplete' and run.editorial.get('source_repairs', 0) < 2:
-                from .verification import source_gaps
-                run.editorial['source_repairs'] = run.editorial.get('source_repairs', 0) + 1
-                # This is source replacement, not a factual rejection or a stalled pass.
-                run.editorial.pop('revision_progress', None)
-                revise(run, {'missing_sources': source_gaps(check)['missing_urls'],
-                    'action': 'Research accessible equivalent sources, replace these citations or omit only the unsupported additions. Preserve useful supported edits.'})
-            else:
-                block(run, code)
-        elif check.state == 'failed':
-            revise(run, check.report)
+        try:
+            check = check_step(check)
+        except BudgetExceeded as exc:
+            # The job's allowance ran out mid-check. Groups not yet checked stay
+            # unconfirmed; what the finished groups confirmed is still published.
+            if str(exc) != 'run_token_budget' or not close_unchecked(check, 'run_token_budget'):
+                raise
+        if check.state in ('failed', 'incomplete'):
+            # No rewrite-and-recheck loop: every finished check ends in a
+            # publication of what it confirmed, or a clear outcome.
+            publish_confirmed(run, check)
         elif check.state == 'passed':
             publish_checked(run, check)
         return
