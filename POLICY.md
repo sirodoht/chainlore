@@ -161,6 +161,15 @@ catalogue consistency. They use full-article verification; there is no
 mandatory freshness-search gate. Reader submissions take priority;
 maintenance has its own daily limit. Failed checks do not silently remove articles.
 
+Once a day, when no reader submission is waiting, the worker also chooses its own
+work: usually a missing article, otherwise one concrete improvement to an existing
+article. A proposed new subject must not duplicate an existing article or an open
+request; after three rejected proposals the job stops as a visible blocker. An
+improvement is limited to one achievable, sourced edit and skips articles with open
+work or a recent editor's improvement. Editor's picks receive no special approval:
+they follow the same research, verification, draft-publication and budget rules as
+reader suggestions, and yield to them.
+
 Transient failures and incomplete reports retry with bounded backoff, preserving
 saved evidence and completed claim groups. Inaccessible citations get up to two
 source-replacement passes. Per-run budget blocks resume automatically when a

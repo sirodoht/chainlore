@@ -20,6 +20,10 @@ background. Limited evidence narrows the edit: small additions, clarification an
 reorganization are worthwhile. Unsupported facts are not invented. Only clear
 spam, unrelated requests or malicious instructions are rejected during screening.
 
+Coverage also grows without a request: each day the encyclopedia chooses either a
+notable missing subject or an improvement to an existing article, and treats it like
+any other suggestion.
+
 ## Sources
 
 Factual claims should be traceable to references. Preferred sources include

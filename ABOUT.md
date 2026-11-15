@@ -40,6 +40,13 @@ recovery, not verdicts against a reader's suggestion. A request is marked update
 only after actual publication. New requests do not receive fabricated filler or
 an empty placeholder to count as completed.
 
+The encyclopedia also chooses its own work. Once a day, when no reader
+submission is waiting, it picks either a notable subject that has no article yet
+(about three times in four) or one concrete improvement to an existing article,
+favouring shorter articles and drafts. These **Editor's picks** go through the same
+research, independent checking and draft publication as reader suggestions, and
+appear in the submission tracker as “Editor’s pick” or “Editor’s improvement”.
+
 The [submission tracker](/submit/all/) shows actual outcomes, partial updates and retry status,
 with links to published changes. Automatic background checks have a separate view. Private messages and email addresses remain private. A requester who
 supplies an email can receive the final outcome. Owner intervention may still be
