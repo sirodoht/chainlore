@@ -6,7 +6,7 @@ written_by: Opus 5.5 High
 status: draft
 checked: 2026-10-30
 checked_by: GPT-6-Astra high
-updated: 2026-11-08
+updated: 2026-11-15
 ---
 
 # Hyperliquid
@@ -271,6 +271,22 @@ Hyperliquid Labs leads core development.[^hyper101]
   request. The letter requested information; it was not a finding of
   wrongdoing.[^oversight][^oversight-response]
 
+### JELLYJELLY manipulation and delisting (March 2025)
+
+JELLYJELLY was a Solana-based memecoin with a perpetual futures market on Hyperliquid.[^imp-10-2] On 26 March 2025 Hyperliquid's validators voted to delist that market after suspicious trading left the community-owned HLP vault holding a large short position.[^imp-10-2]
+
+Arkham describes three Hyperliquid accounts that attacked the exchange using a “self-liquidation” method. The first account, 0xde9, took a US$4.1 million short position in JELLY, while two other accounts, 0x20e and 0x67f, took long positions of US$2.15 million and US$1.9 million to counter it.[^imp-10-1] Blockworks instead reports an $8 million short, so the sources disagree on the initial size.[^imp-10-3] Arkham says that as JELLY's price rose, the short was quickly liquidated and passed to the HLP vault, which could not clear it because of its size. Losses grew as the price kept rising, and traders piled into the long side expecting a squeeze and an OKX listing.[^imp-10-1]
+
+Reported losses are unrealized and based on onchain analytics. The Block, citing Lookonchain data, puts HLP's unrealized losses at about US$12 million.[^imp-10-2] Blockworks says onchain watchers tracked more than US$10 million in unrealized losses at the peak.[^imp-10-3] According to The Block, Hyperliquid's native token dropped as much as 22% during the incident.[^imp-10-2]
+
+The Block reports that Binance and OKX listed perpetual futures for JELLYJELLY within about an hour. At the same time, Hyperliquid halted JELLYJELLY trading and froze the contract.[^imp-10-2] Blockworks suggests the exchange listings were “capitalizing on the volatility in a way that may have forced Hyperliquid’s hand.”[^imp-10-3]
+
+Hyperliquid's announcement, as quoted by The Block, said: “After evidence of suspicious market activity, the validator set convened and voted to delist JELLY perps.”[^imp-10-2] Blockworks reports that validators forcibly settled all JELLYJELLY perpetual positions at US$0.0095, which it describes as the entry price of the attacker's short.[^imp-10-3] Arkham says this closing move closed the HLP short position for a $700K gain, and that the attackers lost their profits.[^imp-10-1] The Block also quotes Hyperliquid giving HLP's 24-hour P&L as approximately 700k USDC at the time of writing. That is the team's own figure.[^imp-10-2]
+
+Hyperliquid also said that “All users apart from flagged addresses will be made whole from the Hyper Foundation,” and that this would be done automatically in the coming days based on onchain data.[^imp-10-2] This section does not confirm whether those payments were completed. Arkham reports that the three accounts deposited a total of US$7.17 million into Hyperliquid, had withdrawn about US$6.26 million, and had about US$900,000 remaining on the two long accounts.[^imp-10-1] These are component balances, and the sources reviewed do not establish a consolidated net result.
+
+Arkham called the manual closing price “a highly controversial move for a decentralized exchange,” and argued that it overrode the platform's autonomous smart contracts.[^imp-10-1] Blockworks argues that the settlement showed what Galois Capital called a “validator put,” an implicit backstop under which the protocol would intervene to cap HLP losses. It notes that some validators confirmed quorum was reached, but that more than half the stake belonged to five Hyper Foundation validators. That is a March 2025 observation.[^imp-10-3] Blockworks names critics including Hasu, ZachXBT and Wintermute's Evgeny Gaevoy, who argued that a DEX should not override prices. Bitget's managing director, Gracy Chen, called Hyperliquid's handling “immature, unethical and unprofessional.”[^imp-10-3]
+
 ### 2026 market and insider-trading cases
 
 On 28 July 2026 CoinDesk reported that perpetual futures tied to the American depositary receipts of South Korean chipmaker SK Hynix had plunged 20% in one minute on Hyperliquid before rebounding above US$1,000. CoinDesk's headline described the low as US$900.[^imp-6-3]
@@ -383,3 +399,7 @@ In September 2026 CoinDesk reported that U.S. authorities allege two Robinhood e
 [^imp-6-3]: [SK Hynix perps suffer flash crash to $900 on Hyperliquid](https://www.coindesk.com/markets/2026/07/28/perpetuals-tied-to-sk-hynix-suffer-a-flash-crash-to-usd900-on-hyperliquid)
 [^imp-6-4]: [Two Robinhood (HOOD) engineers face criminal charges for pre-listing Hyperliquid trades](https://www.coindesk.com/business/2026/09/16/two-robinhood-engineers-charged-with-insider-trading-using-hyperliquid-perpetuals)
 [^imp-6-5]: [SDNY: Two Robinhood Engineers Charged with Insider Trading on Hyperliquid Perpetuals](https://securitiesdocket.com/sdny-two-robinhood-engineers-charged-with-insider-trading-on-hyperliquid-perpetuals/)
+
+[^imp-10-1]: [JELLYJELLY Exploit on Hyperliquid (Arkham Intelligence, 26 March 2025)](https://info.arkm.com/research/jellyjelly-exploit-on-hyperliquid)
+[^imp-10-2]: [Hyperliquid delists JELLYJELLY memecoin amid whale manipulation fiasco (The Block, 26 March 2025)](https://www.theblock.co/post/348314/hyperliquid-delists-jellyjelly-memecoin-amid-whale-manipulation-fiasco)
+[^imp-10-3]: [A perp too far: Hyperliquid’s ‘validator put’ (Blockworks)](https://blockworks.com/news/hyperliquid-decentralization-validator-put)
