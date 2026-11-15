@@ -17,6 +17,10 @@ Environment=CHAINLORE_ARTICLE_GIT_KEY=/var/www/chainlore/private/article-git-key
 Environment=CHAINLORE_ARTICLE_GIT_KNOWN_HOSTS=/var/www/chainlore/private/github-known-hosts
 Environment=CHAINLORE_AUTOMATION_ENABLED=1
 Environment=CHAINLORE_AUTOMATION_DAILY_LIMIT=10
+# Per-job allowance. The shared daily limit (CHAINLORE_DAILY_TOKEN_LIMIT, default
+# 8,000,000) still bounds total spend, so this changes how a day's budget is shared,
+# not how much can be spent.
+Environment=CHAINLORE_RUN_TOKEN_LIMIT=12000000
 ExecStart=/var/www/chainlore/app-current/.venv/bin/python manage.py process_requests
 # Three research and two writing calls at 600s, screening, builds and email.
 TimeoutStartSec=65min

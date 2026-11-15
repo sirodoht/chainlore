@@ -210,7 +210,8 @@ Defaults and environment controls:
   stop in a shadow Blocked state. Never claim a shadow result was published.
 - `CHAINLORE_AUTOMATION_DAILY_LIMIT=10`: new jobs per UTC day, including maintenance.
 - `CHAINLORE_DAILY_TOKEN_LIMIT=8000000`: shared daily call-admission budget.
-- `CHAINLORE_RUN_TOKEN_LIMIT=6000000`: lifetime call-admission budget per job.
+- `CHAINLORE_RUN_TOKEN_LIMIT=6000000`: lifetime call-admission budget per job. The Brick worker unit sets 12000000;
+  the daily budget above still bounds total spend.
 - `CHAINLORE_CHECKER_MODEL`: explicit checker model; defaults to the configured writer
   model in a separate context, not an implicit provider/model substitution.
 - `CHAINLORE_MAINTENANCE_ENABLED=1` and `CHAINLORE_MAINTENANCE_DAILY_LIMIT=1`:
