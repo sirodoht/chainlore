@@ -51,7 +51,10 @@ uv run --locked python manage.py makemigrations --check --dry-run
 ```
 
 The static checker validates article metadata, internal links, and citation
-anchors. Django tests cover form validation, CSRF, duplicate submissions,
+anchors. The build itself rejects any article whose rendered Markdown contains
+elements, attributes or link schemes outside an inert allowlist (`SAFE_TAGS` in
+`scripts/build.py`), so scripts, embeds, event handlers and `javascript:` links
+cannot be published whoever wrote the source. Django tests cover form validation, CSRF, duplicate submissions,
 spam controls, private receipts, and admin access and review operations.
 
 ## Submissions
@@ -104,7 +107,9 @@ a hidden spam field, and a signed token to prevent repeated posts from creating
 duplicate records. Limits are 10 submissions across all three types per connection per hour and
 10 admin login attempts per connection per 15 minutes. Rate-limit keys use
 hashed addresses and expire at the end of their window; raw addresses are not
-stored in the submission database.
+stored in the submission database. IPv6 clients are counted per /64 prefix.
+Decision emails go to an unverified address, so they name only the published
+article or public title, never the submitter's own wording.
 
 ### Autonomous editorial pipeline
 
@@ -327,6 +332,11 @@ tests, and uploads versioned releases with rsync. Application code runs as
 `deploy`. Caddy serves articles directly and proxies `/submit/` and `/admin/`
 to Gunicorn on `127.0.0.1:5011`. Django admin assets are served by Caddy under
 `/service-static/`. The health endpoint is loopback-only through Caddy routing.
+Caddy adds HSTS, a same-origin Content-Security-Policy and related headers to
+every response, and serves content-hashed assets as immutable; `deploy.sh`
+fails if the live site lacks them. Both systemd units run sandboxed
+(`systemd-analyze security chainlore`). Production errors are logged to the
+journal without request bodies.
 
 Paths on Brick:
 

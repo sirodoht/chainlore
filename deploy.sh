@@ -55,4 +55,14 @@ ssh "$host" bash -s -- "$release" < deploy/activate.sh
 curl --fail --silent --show-error --retry 3 --retry-delay 2 --retry-all-errors \
     https://chainlore.xyz/build-info.json
 curl --fail --silent --show-error -o /dev/null https://chainlore.xyz/submit/request/
+# The static site and the proxied service must both carry the security headers.
+for path in / /submit/request/; do
+    headers="$(curl --fail --silent --show-error --dump-header - -o /dev/null "https://chainlore.xyz$path")"
+    for header in content-security-policy strict-transport-security x-content-type-options; do
+        if ! grep -qi "^$header:" <<<"$headers"; then
+            echo "Deployed, but $path is missing the $header header." >&2
+            exit 1
+        fi
+    done
+done
 printf '\nLive: https://chainlore.xyz\nAdmin: https://chainlore.xyz/admin/\n'

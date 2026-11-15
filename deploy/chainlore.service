@@ -13,11 +13,30 @@ ExecStart=/var/www/chainlore/app-current/.venv/bin/gunicorn service.wsgi:applica
 Restart=on-failure
 RestartSec=3
 UMask=0077
+# Sandbox: no privileges, devices, kernel interfaces or view of other processes.
 NoNewPrivileges=true
 PrivateTmp=true
+PrivateDevices=true
 ProtectSystem=strict
 ProtectHome=true
+ProtectProc=invisible
+ProtectClock=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
 ReadWritePaths=/var/www/chainlore/private
+TasksMax=64
 
 [Install]
 WantedBy=multi-user.target
