@@ -133,3 +133,7 @@ All pages in Chainlore.
 ## Concepts
 
 - [Elliptic curve cryptography](pages/elliptic-curve-cryptography.md): Elliptic curve cryptography (ECC) refers to cryptographic schemes built on the arithmetic of points on elliptic curves over finite fields. This is an unverified draft, not…
+
+## Other topics
+
+- [Dogecoin](pages/dogecoin.md): Dogecoin (ticker DOGE) is a cryptocurrency. According to the project’s history page, it was originally created as a joke in late 2013 by Billy Markus and Jackson Palmer, and…
