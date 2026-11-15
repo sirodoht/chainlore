@@ -309,3 +309,19 @@ class FullCheckTests(TestCase):
         checked(self.check)
         with self.assertRaisesMessage(InvalidArticle, 'partial_approval_requires_draft_scope'):
             approve_confirmed(self.check, ARTICLE)
+
+
+@override_settings(AUTOMATION_ENABLED=True, IDEAS_ENABLED=False, MAINTENANCE_ENABLED=False)
+class SchedulingTests(TestCase):
+    def test_follow_ups_yield_to_readers_and_do_not_preempt_work_in_progress(self):
+        from .autonomous_worker import schedule
+        idea = AutomationRun.objects.create(state='checking', editorial={'stage': 'check'},
+            submission=Submission.objects.create(kind='request', status='reviewing', maintenance_key='idea:2026-11-15:1'))
+        follow_up = Submission.objects.create(kind='improvement', article='example', maintenance_key='followup:1:7')
+        # A queued follow-up is not a waiting reader, so the editor's pick in progress continues.
+        self.assertEqual(schedule().pk, idea.pk)
+        idea.state = 'published'; idea.save()
+        reader = Submission.objects.create(kind='request', title='Reader request')
+        self.assertEqual(schedule().submission_id, reader.pk)
+        AutomationRun.objects.filter(submission=reader).update(state='published')
+        self.assertEqual(schedule().submission_id, follow_up.pk)

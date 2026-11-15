@@ -94,10 +94,10 @@ def schedule():
     if old:
         old.state = 'queued'; old.editorial = {}; old.next_attempt_at = None
         old.save()
-    reader_waiting = Submission.objects.filter(kind__in=['request','improvement','correction'], status='new', automation__isnull=True).exists()
+    reader_waiting = Submission.objects.filter(kind__in=['request','improvement','correction'], status='new', automation__isnull=True, maintenance_key__isnull=True).exists()
     active = AutomationRun.objects.filter(state__in=editorial.ACTIVE)
-    # Self-directed work (maintenance and daily ideas) always yields to readers.
-    background = Q(submission__kind='maintenance')|Q(submission__maintenance_key__startswith='idea:')
+    # Self-directed work (maintenance, daily ideas, follow-ups and repairs) always yields to readers.
+    background = Q(submission__kind='maintenance')|Q(submission__maintenance_key__isnull=False)
     if reader_waiting:
         active = active.exclude(background)
     run = active.filter(
@@ -107,8 +107,13 @@ def schedule():
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
     if AutomationRun.objects.filter(created_at__gte=today).count() >= settings.AUTOMATION_DAILY_LIMIT:
         return None
-    submission = Submission.objects.filter(kind__in=['request','improvement','correction'],
+    submission = Submission.objects.filter(kind__in=['request','improvement','correction'], maintenance_key__isnull=True,
         status='new', automation__isnull=True, duplicate_of__isnull=True).order_by('created_at').first()
+    if not submission:
+        # The remainder of an earlier partial publication, or a repair found by a full check.
+        submission = Submission.objects.filter(
+            Q(maintenance_key__startswith='followup:')|Q(maintenance_key__startswith='repair:'),
+            status='new', automation__isnull=True).order_by('created_at').first()
     maintenance_available = (settings.MAINTENANCE_ENABLED and
         AutomationRun.objects.filter(submission__kind='maintenance', created_at__gte=today).count() < settings.MAINTENANCE_DAILY_LIMIT)
     if not submission:
