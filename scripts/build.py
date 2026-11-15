@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build Chainlore from Markdown. No server or JavaScript framework required."""
 import copy
+import functools
 import hashlib
 import html
 import json
@@ -45,6 +46,13 @@ TIMELINE_VIEWS = {
 }
 # Regulation articles also record how companies responded to a law, which is not itself law.
 TIMELINE_MARKET = re.compile(r'\b(?:announces?|delists|(?:JPYC|SBI) launches|begins (?:phased )?roll\w+)\b')
+# Rendered Markdown is the last gate before publication. Anything outside this
+# inert subset fails the build, whoever or whatever wrote the article.
+SAFE_TAGS = {'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'sup', 'sub', 'em', 'strong',
+             'del', 'code', 'pre', 'blockquote', 'hr', 'br', 'table', 'thead', 'tbody', 'tr', 'th', 'td'}
+SAFE_ATTRIBUTES = {'href', 'id', 'class', 'title', 'rel', 'role', 'style'}
+SAFE_STYLE = re.compile(r'text-align: (?:left|right|center);?')
+SAFE_SCHEMES = {'', 'http', 'https'}
 TIMELINE_STOPWORDS = {'a', 'an', 'and', 'at', 'for', 'in', 'into', 'its', 'of', 'on', 'the', 'to', 'with'}
 
 
@@ -122,11 +130,29 @@ def wikipedia_backlinks(tree):
         paragraph.insert(0, backlinks)
 
 
+def require_inert(tree, name):
+    """Reject scripts, embeds, event handlers and non-web link schemes in rendered Markdown."""
+    for node in tree.iter():
+        if node.tag not in SAFE_TAGS:
+            raise ValueError(f'{name}: unsupported HTML element <{node.tag}>')
+        for key, value in node.attrib.items():
+            if key not in SAFE_ATTRIBUTES or (key == 'style' and not SAFE_STYLE.fullmatch(value)):
+                raise ValueError(f'{name}: unsupported HTML attribute {key} on <{node.tag}>')
+        if node.tag == 'a':
+            try:
+                scheme = urlsplit(node.get('href', '')).scheme.lower()
+            except ValueError:
+                scheme = None
+            if scheme not in SAFE_SCHEMES:
+                raise ValueError(f'{name}: unsupported link {node.get("href")!r}')
+
+
 def render(path):
     meta, text = load(path)
     md = markdown.Markdown(extensions=['tables', 'footnotes', 'toc', 'fenced_code'],
                            extension_configs={'toc': {'permalink': False}}, output_format='xhtml')
     tree = ET.fromstring('<div>' + md.convert(text) + '</div>')
+    require_inert(tree, path.name)
     wikipedia_backlinks(tree)
     for link in tree.iter('a'):
         url = urlsplit(link.get('href', ''))
@@ -175,6 +201,12 @@ def render(path):
             'lead': serialize(lead), 'description': description, 'text': plain(tree), 'source': path}
 
 
+@functools.lru_cache(maxsize=None)
+def asset_version(name):
+    """Content hash for cache-busting query strings; versioned assets are cached as immutable."""
+    return hashlib.sha256((ROOT / 'site/assets' / name).read_bytes()).hexdigest()[:12]
+
+
 def write_page(route, title, content, source='INDEX.md', description='', toc='', active='Article'):
     tabs = f'<a class="active" href="{route}" aria-current="page">{html.escape(active)}</a>'
     if route != '/all-articles/':
@@ -191,7 +223,8 @@ def write_page(route, title, content, source='INDEX.md', description='', toc='',
         source_link=source_link,
         toc=toc, tabs=tabs, report_error_link=report_error_link, improvement_link=improvement_link,
         sidebar_class='sidebar sidebar-home' if route == '/' else 'sidebar',
-        css_version=hashlib.sha256((ROOT / 'site/assets/site.css').read_bytes()).hexdigest()[:12])
+        css_version=asset_version('site.css'), search_version=asset_version('search.js'),
+        sidebar_version=asset_version('sidebar.js'), timeline_version=asset_version('timeline.js'))
     destination = OUT / route.strip('/') / 'index.html'
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(output)
@@ -435,7 +468,7 @@ def homepage(pages, event_count):
             index_html += '<p>' + ' · '.join(f'<a href="{html.escape(link.get("href"))}">{html.escape(plain(link))}</a>' for link in links) + '</p>'
     # A fresh random pick of other articles on each build.
     picks = random.sample([slug for slug in pages if slug != 'hyperliquid'], 5)
-    rows = ''.join(f'<div class="article-row"><h3><a href="/p/{slug}/">{pages[slug]["title"]}</a></h3><p>{html.escape(summaries.get(slug) or pages[slug]["description"][:150])}</p></div>' for slug in picks)
+    rows = ''.join(f'<div class="article-row"><h3><a href="/p/{slug}/">{html.escape(pages[slug]["title"])}</a></h3><p>{html.escape(summaries.get(slug) or pages[slug]["description"][:150])}</p></div>' for slug in picks)
     counts = Counter(p['meta']['status'] for p in pages.values())
     statuses = ', '.join(f'{label} ({counts[key]})' for key, (label, _) in STATUSES.items() if counts[key])
     references = sum(len(re.findall(r'^\[\^[^\]]+\]:', p['source'].read_text(), re.M)) for p in pages.values())
