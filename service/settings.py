@@ -125,6 +125,10 @@ EDITORIAL_RUN_TOKEN_LIMIT = int(os.environ.get('CHAINLORE_RUN_TOKEN_LIMIT', '600
 MAINTENANCE_ENABLED = os.environ.get('CHAINLORE_MAINTENANCE_ENABLED', '1') == '1'
 MAINTENANCE_DAILY_LIMIT = int(os.environ.get('CHAINLORE_MAINTENANCE_DAILY_LIMIT', '1'))
 MAINTENANCE_INTERVAL_DAYS = 30
+# Daily self-directed work: a new article or an improvement to an existing one.
+IDEAS_ENABLED = os.environ.get('CHAINLORE_IDEAS_ENABLED', '1') == '1'
+IDEAS_DAILY_LIMIT = int(os.environ.get('CHAINLORE_IDEAS_DAILY_LIMIT', '1'))
+IDEAS_NEW_ARTICLE_SHARE = float(os.environ.get('CHAINLORE_IDEAS_NEW_ARTICLE_SHARE', '0.75'))
 
 # Reporting retries reuse the independent checker's saved source evidence.
 VERIFICATION_REPORT_TOKENS = 32000

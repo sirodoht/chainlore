@@ -197,7 +197,7 @@ class DraftEditTests(TestCase):
         self.assertTrue(approved_improvement(decision(suitable='yes', coverage='partial')))
         self.assertFalse(approved_improvement(decision(suitable='yes', coverage='none')))
 
-    @override_settings(MAINTENANCE_ENABLED=False)
+    @override_settings(MAINTENANCE_ENABLED=False, IDEAS_ENABLED=False)
     def test_disabled_maintenance_does_not_start_queued_background_check(self):
         self.run.state='published';self.run.save()
         self.submission.status='resolved';self.submission.save()

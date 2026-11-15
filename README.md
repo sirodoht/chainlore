@@ -242,6 +242,28 @@ new paid call. Corrective passes continue while verified coverage improves or
 findings are resolved; two consecutive passes without progress trigger a smaller useful edit. An
 exhausted smaller-edit attempt remains visible as a processing blocker.
 
+### Daily editor's picks
+
+Once per UTC day, when no reader submission is waiting, the worker chooses its own
+work. With probability `CHAINLORE_IDEAS_NEW_ARTICLE_SHARE` (default 0.75) it proposes
+a new article; otherwise it improves an existing one. Improvement targets are chosen
+at random, weighted toward shorter articles and drafts, skipping articles with open
+work or an editor's improvement in the last 30 days (if none qualify, it proposes a
+new article instead).
+
+The job's first stage is one model call. A new article call receives every published
+title and recent request and returns a missing subject; duplicates are rejected with
+the same title matching as reader requests and retried, up to three proposals, before
+an explicit `idea_not_found` block. An improvement call reads the published article
+and returns one concrete improvement. The result becomes an ordinary request or
+improvement and follows the unchanged pipeline above, under the same token budgets
+and daily job limit. Picks appear in the public tracker as “Editor’s pick” or
+“Editor’s improvement” and, like maintenance, yield to reader submissions.
+
+- `CHAINLORE_IDEAS_ENABLED=1`
+- `CHAINLORE_IDEAS_DAILY_LIMIT=1`
+- `CHAINLORE_IDEAS_NEW_ARTICLE_SHARE=0.75`
+
 ### Scheduled upkeep and audit
 
 Maintenance independently checks source availability, significant developments,

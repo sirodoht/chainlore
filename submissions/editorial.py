@@ -256,7 +256,11 @@ def process(run):
         run.save(update_fields=['state', 'updated_at'])
         return
     if not run.editorial.get('stage'):
-        prepare(run)
+        from . import ideas
+        if ideas.pending(run):
+            ideas.propose(run)
+        else:
+            prepare(run)
         return
     stage = run.editorial['stage']
     if stage == 'triage':

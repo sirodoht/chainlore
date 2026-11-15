@@ -96,10 +96,12 @@ def schedule():
         old.save()
     reader_waiting = Submission.objects.filter(kind__in=['request','improvement','correction'], status='new', automation__isnull=True).exists()
     active = AutomationRun.objects.filter(state__in=editorial.ACTIVE)
+    # Self-directed work (maintenance and daily ideas) always yields to readers.
+    background = Q(submission__kind='maintenance')|Q(submission__maintenance_key__startswith='idea:')
     if reader_waiting:
-        active = active.exclude(submission__kind='maintenance')
+        active = active.exclude(background)
     run = active.filter(
-        Q(next_attempt_at__isnull=True)|Q(next_attempt_at__lte=now)).select_related('submission').annotate(maintenance_priority=Case(When(submission__kind='maintenance', then=Value(1)), default=Value(0), output_field=IntegerField())).order_by('maintenance_priority', 'updated_at', 'pk').first()
+        Q(next_attempt_at__isnull=True)|Q(next_attempt_at__lte=now)).select_related('submission').annotate(maintenance_priority=Case(When(background, then=Value(1)), default=Value(0), output_field=IntegerField())).order_by('maintenance_priority', 'updated_at', 'pk').first()
     if run:
         return run
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -109,6 +111,9 @@ def schedule():
         status='new', automation__isnull=True, duplicate_of__isnull=True).order_by('created_at').first()
     maintenance_available = (settings.MAINTENANCE_ENABLED and
         AutomationRun.objects.filter(submission__kind='maintenance', created_at__gte=today).count() < settings.MAINTENANCE_DAILY_LIMIT)
+    if not submission:
+        from .ideas import enqueue as enqueue_idea
+        submission = enqueue_idea()
     if not submission and maintenance_available:
         submission = Submission.objects.filter(kind='maintenance', status='new', automation__isnull=True).order_by('created_at').first()
         if not submission:
