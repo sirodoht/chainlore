@@ -131,6 +131,7 @@ EVENT_LABELS = {
     'writing_incomplete': 'Writing interrupted; research and feedback retained',
     'correction_resumed': 'Targeted correction resumed from saved findings',
     'verification_recovered': 'Verification resumed from saved evidence',
+    'verification_evidence_findings': 'Unconfirmed claims sent back for revision',
     'idea_chosen': 'Subject chosen by the editor',
     'idea_rejected': 'Choosing another subject',
 }

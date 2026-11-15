@@ -114,23 +114,38 @@ class VerificationRecoveryTests(TestCase):
         self.assertEqual(self.run.verifications.count(),1)
 
     @patch('submissions.ai_providers.call')
-    def test_contradictory_pass_retries_report_with_feedback_without_rewriting(self,call):
+    def test_unconfirmed_pass_becomes_writer_findings_without_another_report(self,call):
         self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report'}
         self.check.save()
-        invalid=report();invalid['source_rules_met']=False
-        invalid['units'][0]['claims'][0]['quote']='A quote absent from the source'
+        invalid=report()
+        factual=next(u for u in invalid['units'] if u['claims'])
+        factual['claims'][0]['quote']='A quote absent from the source'
         call.return_value={'stop_reason':'end_turn','model':'checker-v1','content':[{'type':'text','text':json.dumps(invalid)}]}
-        editorial.process(self.run)
+        with patch('submissions.editorial.ai.research_context'):
+            editorial.process(self.run)
+        self.assertEqual(call.call_count,1)
         self.run.refresh_from_db();self.check.refresh_from_db()
-        self.assertEqual(self.run.state,'checking')
-        self.assertEqual(self.run.editorial['revisions'],0)
+        self.assertEqual(self.check.state,'failed')
         self.assertEqual(self.check.approved_hash,'')
-        call.return_value=self.finished()
+        self.assertEqual(self.run.state,'revising')
+        self.assertEqual(self.run.editorial['revisions'],1)
+        issues=self.run.editorial['feedback']['assessment']['issues']
+        self.assertTrue(any('no cited passage was found' in issue for issue in issues))
+        self.assertTrue(AutomationEvent.objects.filter(kind='verification_evidence_findings').exists())
+
+    @patch('submissions.ai_providers.call')
+    def test_saved_rejected_report_is_used_without_a_paid_call(self,call):
+        invalid=report()
+        factual=next(u for u in invalid['units'] if u['claims'])
+        factual['claims'][0]['quote']='A quote absent from the source'
+        batch={'ids':[u['id'] for u in invalid['units']],'responses':[],'processed_responses':0,
+               'rejected_report':invalid,'validation_errors':['unsubstantiated_claim_'+str(factual['id'])]}
+        self.check.session={'payload':payload(self.check),'responses':evidence(),'mode':'report','batches':[batch]}
+        self.check.save()
         step(self.check)
-        self.assertEqual(self.check.state,'passed')
-        data=json.loads(call.call_args.args[3]['messages'][0]['content'])
-        self.assertIn('source_rules_check_missing',data['previous_report_validation_errors'])
-        self.assertEqual(data['previous_report'],invalid)
+        call.assert_not_called()
+        self.assertEqual(self.check.state,'failed')
+        self.assertEqual(self.check.report['assessment']['verdict'],'revise')
 
     @patch('submissions.management.commands.resume_verification.publication_lock')
     def test_contradictory_recovery_preserves_attempts_and_rejects_later_paid_work(self,lock):

@@ -207,8 +207,10 @@ explicit operational block; they never confer publication approval. Saved report
 are assessed after a restart before another paid call. The report records its completion date; saved source evidence
 does not expire solely because the UTC date changed.
 Contradictory passes (no reported issues, but unmet source rules or a nonmatching
-evidence quote) use the same bounded report retry with validation feedback. They
-never approve publication or consume an article rewrite attempt.
+evidence quote) never approve publication and never pay for another report. Each
+unconfirmed claim becomes a concrete finding: the writer cites a passage that states
+it, attributes it more narrowly, or removes it, and the revision is checked again. A
+resumed check reuses a saved rejected report the same way, without a paid call.
 
 To recover a historical run held by this bug, use
 `manage.py resume_verification --submission UUID` under the normal worker environment.

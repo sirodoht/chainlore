@@ -205,6 +205,32 @@ def structural_unit(unit):
             or text.strip() in ('| | |','|---|---|','| Date | Event |'))
 
 
+def claim_confirmed(claim, sources):
+    quote = claim.get('quote', '')
+    source_text = sources.get(canonical(str(claim.get('url', ''))), '')
+    normalize = lambda value: ' '.join(value.split()).casefold()
+    return (isinstance(quote, str) and 8 <= len(quote.strip()) and len(quote) <= 500 and
+            normalize(quote) in normalize(source_text) and bool(claim.get('claim')) and bool(claim.get('explanation')))
+
+
+def unconfirmed_findings(check, report, errors):
+    """Turn a pass whose evidence software cannot confirm into concrete edits for the writer."""
+    sources = opened_sources(evidence_responses(check))
+    ids = {error.removeprefix('unsubstantiated_claim_') for error in errors if error.startswith('unsubstantiated_claim_')}
+    issues = []
+    for unit in report.get('units', []):
+        if not isinstance(unit, dict) or str(unit.get('id')) not in ids:
+            continue
+        for claim in unit.get('claims') or []:
+            if isinstance(claim, dict) and not claim_confirmed(claim, sources):
+                issues.append(f'Unit {unit["id"]}: no cited passage was found that states “{str(claim.get("claim", ""))[:300]}”. '
+                              'Cite a source passage that states it, attribute it more narrowly, or remove it.')
+    if 'source_rules_check_missing' in errors or 'source_or_freshness_check_missing' in errors:
+        issues.append('The checker did not confirm that these citations meet the source rules. Prefer primary or reputable '
+                      'sources and attribute self-reported claims.')
+    return issues or ['The checker’s evidence for this group could not be confirmed. Tighten the claims to what the cited sources state.']
+
+
 def validate_report(check, report, responses, selected_units=None):
     units, urls = check_inventory(check)
     if selected_units is not None:
@@ -237,11 +263,7 @@ def validate_report(check, report, responses, selected_units=None):
         for claim in claims:
             if not isinstance(claim, dict):
                 errors.append('invalid_claim'); continue
-            quote = claim.get('quote', '')
-            source_text = sources.get(canonical(str(claim.get('url', ''))), '')
-            normalize = lambda value: ' '.join(value.split()).casefold()
-            if (not isinstance(quote, str) or len(quote.strip()) < 8 or len(quote) > 500 or
-                normalize(quote) not in normalize(source_text) or not claim.get('claim') or not claim.get('explanation')):
+            if not claim_confirmed(claim, sources):
                 errors.append('unsubstantiated_claim_' + str(result.get('id')))
     if report.get('issues') != []:
         errors.append('unresolved_checker_issues')
@@ -372,6 +394,14 @@ def step(check):
             container = responses[-1].get('container')
             if container and container.get('id'):
                 request['container'] = container['id']
+    if reporting and batch.get('rejected_report') and not batch.get('responses'):
+        # A resumed check keeps a pass rejected for unconfirmed evidence. Its
+        # findings go to the writer; asking the checker again would be waste.
+        report = batch['rejected_report']
+        errors = batch['validation_errors']
+        evidence = {url: {'sha256': digest(text), 'characters': len(text)}
+                    for url, text in opened_sources(evidence_responses(check)).items()}
+        return record_report(check, batch, report, errors, evidence, reporting)
     progress = batch if reporting else check.session
     saved = progress.setdefault('responses', [])
     processed = 'processed_responses'
@@ -416,7 +446,16 @@ def step(check):
     if contradictory_pass(report, errors):
         if batch is not None:
             batch.update(validation_errors=errors, rejected_report=report)
-        return incomplete(check, 'verification_report_incomplete')
+    return record_report(check, batch, report, errors, evidence, reporting)
+
+
+def record_report(check, batch, report, errors, evidence, reporting):
+    if contradictory_pass(report, errors):
+        # Unconfirmed evidence is an editorial finding, never a paid report retry.
+        report = {**report, 'verdict': 'revise', 'issues': unconfirmed_findings(check, report, errors)}
+        errors = sorted(set(errors) | {'unresolved_checker_issues', 'checker_did_not_pass'})
+        AutomationEvent.objects.create(run=check.run, kind='verification_evidence_findings',
+            data={'check_id': check.pk, 'issue_count': len(report['issues'])})
     if reporting:
         batch['report'] = report
         batch['checker'] = check.checker
