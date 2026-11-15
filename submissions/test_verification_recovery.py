@@ -207,7 +207,7 @@ class BudgetSettlementTests(TestCase):
 
     @override_settings(EDITORIAL_DAILY_TOKEN_LIMIT=1000000,EDITORIAL_RUN_TOKEN_LIMIT=1000000)
     @patch('submissions.ai_providers.credential',return_value='test')
-    @patch('submissions.ai_providers.urllib.request.urlopen')
+    @patch('submissions.ai_providers.urlopen')
     def test_report_transport_has_its_own_output_allowance(self,transport,credential):
         from .ai_providers import call
         transport.return_value.__enter__.return_value.read.return_value=json.dumps({'usage':{'input_tokens':10,'output_tokens':10}}).encode()

@@ -15,6 +15,16 @@ WRITING_TIMEOUT = 600
 RESEARCH_MAX_RESPONSES = 3
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Provider endpoints are fixed. Following a redirect would resend the API key elsewhere."""
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+urlopen = urllib.request.build_opener(NoRedirect).open
+
+
 class ProviderError(Exception):
     def __init__(self, code, retryable=False, account_problem=False):
         super().__init__(code)
@@ -63,7 +73,7 @@ def call(run, provider, stage, payload, timeout=120, keep_thinking=False):
     AutomationEvent.objects.create(run=run, kind=stage + '_request', data=without_thinking(payload))
     request = urllib.request.Request(url, headers=headers, data=json.dumps(payload).encode())
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        with urlopen(request, timeout=timeout) as response:
             raw = response.read(2_000_001)
             if len(raw) > 2_000_000:
                 raise ProviderError('response_too_large')

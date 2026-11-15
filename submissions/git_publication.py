@@ -11,8 +11,15 @@ class GitPublicationError(ValueError):
     pass
 
 
+def minimal_env():
+    """Subprocesses get no provider keys, tokens or other inherited configuration."""
+    env = {key: os.environ[key] for key in ('PATH', 'HOME', 'TMPDIR', 'TZ') if key in os.environ}
+    env.setdefault('PATH', '/usr/local/bin:/usr/bin:/bin')
+    return {**env, 'LANG': 'C.UTF-8', 'PYTHONUTF8': '1'}
+
+
 def git_env():
-    env = {**os.environ, 'GIT_TERMINAL_PROMPT': '0',
+    env = {**minimal_env(), 'GIT_TERMINAL_PROMPT': '0',
            'GIT_CONFIG_GLOBAL': '/dev/null', 'GIT_CONFIG_NOSYSTEM': '1',
            'GIT_AUTHOR_NAME': 'Chainlore Bot', 'GIT_COMMITTER_NAME': 'Chainlore Bot',
            'GIT_AUTHOR_EMAIL': 'bot@chainlore.xyz', 'GIT_COMMITTER_EMAIL': 'bot@chainlore.xyz'}

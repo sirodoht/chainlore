@@ -73,7 +73,7 @@ class ProviderTests(TestCase):
         def transport(request, timeout):
             requests.append(json.loads(request.data))
             return io.BytesIO(json.dumps(paused if len(requests) == 1 else self.end).encode())
-        with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen', side_effect=transport):
+        with patch.object(ai, 'credential', return_value='test'), patch.object(ai, 'urlopen', side_effect=transport):
             result = ai.research(self.run)
         self.assertEqual(requests[1]['messages'][-1]['content'][0], thinking)
         self.assertNotIn('opaque-signature', json.dumps(result))
@@ -133,7 +133,7 @@ class ProviderTests(TestCase):
             with self.subTest(status=status):
                 error = urllib.error.HTTPError('https://api.anthropic.com/v1/messages', status, 'error', {},
                                                io.BytesIO(json.dumps({'error': {'message': detail + ' secret echoed by provider'}}).encode()))
-                with patch.object(ai, 'credential', return_value='not-a-real-secret'), patch.object(ai.urllib.request, 'urlopen', side_effect=error):
+                with patch.object(ai, 'credential', return_value='not-a-real-secret'), patch.object(ai, 'urlopen', side_effect=error):
                     with self.assertRaises(ai.ProviderError) as raised:
                         ai.call(self.run, 'anthropic', 'research', {'model': 'test'}, timeout=300)
                 self.assertTrue(raised.exception.account_problem)
@@ -144,28 +144,28 @@ class ProviderTests(TestCase):
     def test_rate_limit_and_server_errors_remain_retryable(self):
         for status in (429, 500, 529):
             error = urllib.error.HTTPError('https://api.typesafe.ai/v1/systemone', status, 'error', {'retry-after': '10'}, io.BytesIO(b'{"error":"temporarily unavailable"}'))
-            with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen', side_effect=error):
+            with patch.object(ai, 'credential', return_value='test'), patch.object(ai, 'urlopen', side_effect=error):
                 with self.assertRaises(ai.ProviderError) as raised:
                     ai.call(self.run, 'jev', 'triage', {})
             self.assertTrue(raised.exception.retryable)
             self.assertFalse(raised.exception.account_problem)
 
     def test_missing_key_pauses_without_making_a_request(self):
-        with patch.dict(os.environ, {}, clear=True), patch.object(ai.urllib.request, 'urlopen') as transport:
+        with patch.dict(os.environ, {}, clear=True), patch.object(ai, 'urlopen') as transport:
             with self.assertRaises(ai.ProviderError) as raised:
                 ai.call(self.run, 'jev', 'triage', {})
         self.assertTrue(raised.exception.account_problem)
         transport.assert_not_called()
 
     def test_research_transport_uses_extended_timeout(self):
-        with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen') as transport:
+        with patch.object(ai, 'credential', return_value='test'), patch.object(ai, 'urlopen') as transport:
             transport.return_value.__enter__.return_value.read.return_value = json.dumps(self.end).encode()
             ai.research(self.run)
         self.assertEqual(transport.call_args.kwargs['timeout'], 600)
 
     def test_writing_transport_allows_time_for_the_full_output_budget(self):
         self.run.research = {'content': [fetched('https://docs.example.com/first')]}
-        with patch.object(ai, 'credential', return_value='test'), patch.object(ai.urllib.request, 'urlopen') as transport:
+        with patch.object(ai, 'credential', return_value='test'), patch.object(ai, 'urlopen') as transport:
             transport.return_value.__enter__.return_value.read.return_value = json.dumps(self.end).encode()
             ai.write_article(self.run)
         self.assertEqual(transport.call_args.kwargs['timeout'], 600)

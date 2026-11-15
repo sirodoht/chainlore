@@ -50,12 +50,16 @@ def pending(submission):
 
 def notify(submission):
     kind = submission.get_kind_display().lower()
-    if submission.title:
-        subject = f'"{submission.title}"'
-    else:
+    # The address is unverified, so never relay the submitter's own wording to it:
+    # name only a published article or the public title chosen during processing.
+    if submission.article:
         title = articles().get(submission.article, {}).get('title', submission.article)
-        subject = f'the {title} article'
-    lines = [f'Thank you for your {kind} about {subject}.', '']
+        subject = f' about the {title} article'
+    elif submission.public_title:
+        subject = f' about "{submission.public_title}"'
+    else:
+        subject = ''
+    lines = [f'Thank you for your {kind}{subject}.', '']
     if submission.status == Submission.Status.RESOLVED:
         lines.append('We have acted on it.')
         if submission.resulting_url:

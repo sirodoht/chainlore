@@ -19,7 +19,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone as django_timezone
 from .categories import CATEGORY_SECTIONS
-from .git_publication import clone_source, commit_and_push, stage_articles
+from .git_publication import clone_source, commit_and_push, minimal_env, stage_articles
 from .models import AutomationEvent, AutomationRun, GeneratedArticle, Submission, ArticleRevision
 
 
@@ -76,7 +76,7 @@ def publication_lock(blocking=True):
 
 
 def build_source(source):
-    env = {**os.environ, 'CHAINLORE_BUILD_ROOT': str(source)}
+    env = {**minimal_env(), 'CHAINLORE_BUILD_ROOT': str(source)}
     for script in ('build.py', 'check.py'):
         result = subprocess.run([sys.executable, str(settings.BASE_DIR / 'scripts' / script)], env=env,
                                 capture_output=True, timeout=120)

@@ -44,12 +44,13 @@ TEMPLATES = [{
 }]
 DATABASES = {'default': {
     'ENGINE': 'django.db.backends.sqlite3', 'NAME': DATA_DIR / 'submissions.sqlite3',
-    'OPTIONS': {'timeout': 20, 'transaction_mode': 'IMMEDIATE'},
+    # WAL lets public pages read while the worker or a form post writes.
+    'OPTIONS': {'timeout': 20, 'transaction_mode': 'IMMEDIATE', 'init_command': 'PRAGMA journal_mode=WAL;'},
 }}
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS': {'min_length': 12}},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
@@ -65,6 +66,11 @@ SECURE_SSL_REDIRECT = PRODUCTION
 SESSION_COOKIE_SECURE = PRODUCTION
 CSRF_COOKIE_SECURE = PRODUCTION
 SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+if PRODUCTION:
+    # Host-only cookies: a sibling subdomain can neither read nor overwrite them.
+    SESSION_COOKIE_NAME = '__Host-sessionid'
+    CSRF_COOKIE_NAME = '__Host-csrftoken'
 SESSION_COOKIE_AGE = 60 * 60 * 8
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SECURE_HSTS_SECONDS = 31536000 if PRODUCTION else 0
@@ -79,6 +85,16 @@ X_FRAME_OPTIONS = 'DENY'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 65536
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 30
 FILE_UPLOAD_MAX_MEMORY_SIZE = 0
+# Without this, production errors are discarded: Django's default console handler
+# only runs under DEBUG. Tracebacks go to the journal; request bodies are never logged.
+if PRODUCTION:
+    LOGGING = {
+        'version': 1, 'disable_existing_loggers': False,
+        'formatters': {'plain': {'format': '%(levelname)s %(name)s: %(message)s'}},
+        'handlers': {'stderr': {'class': 'logging.StreamHandler', 'formatter': 'plain'}},
+        'root': {'handlers': ['stderr'], 'level': 'WARNING'},
+        'loggers': {'django': {'handlers': ['stderr'], 'level': 'WARNING', 'propagate': False}},
+    }
 # Email secrets live in the environment or private DATA_DIR, outside the repository.
 admin_email_file = DATA_DIR / 'admin-email'
 ADMIN_NOTIFICATION_EMAIL = os.environ.get('CHAINLORE_ADMIN_EMAIL',
