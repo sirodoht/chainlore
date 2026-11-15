@@ -1,4 +1,3 @@
-import hashlib
 from django.conf import settings
 from django.db import connection, transaction
 from django.http import Http404, HttpResponse
@@ -8,7 +7,7 @@ from urllib.parse import urlencode
 from . import tracking
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods
-from .catalog import articles, revision
+from .catalog import articles, css_version, revision
 from .forms import SubmissionForm
 from .limits import allow
 from .models import Submission
@@ -18,8 +17,7 @@ TITLES = {'request': 'Request an article', 'correction': 'Report an error', 'imp
 
 
 def context(**kwargs):
-    css = settings.SITE_ROOT / 'assets/site.css'
-    return {'css_version': hashlib.sha256(css.read_bytes()).hexdigest()[:12], **kwargs}
+    return {'css_version': css_version(), **kwargs}
 
 
 @require_GET

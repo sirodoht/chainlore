@@ -92,7 +92,20 @@ from .models import AutomationControl, AutomationEvent, AutomationRun, Generated
 from .automation_control import regenerate_placeholders, resume_queue, retry_runs, resume_approved_improvements, pause_queue
 
 
+RUN_PAYLOADS = ('editorial', 'inputs', 'triage', 'research', 'research_session', 'draft', 'output_review')
+
+
 class AuditAdmin(admin.ModelAdmin):
+    # Audit payloads run to megabytes per row. Lists load them only if a column asks.
+    list_defer = ()
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        match = request.resolver_match
+        if self.list_defer and match and (match.url_name or '').endswith('_changelist'):
+            queryset = queryset.defer(*self.list_defer)
+        return queryset
+
     def get_readonly_fields(self, request, obj=None):
         return [field.name for field in self.model._meta.fields]
 
@@ -111,6 +124,8 @@ class AutomationRunAdmin(AuditAdmin):
     list_display = ['id', 'submission', 'state', 'attempts', 'last_error', 'created_at']
     list_filter = ['state', 'created_at']
     search_fields = ['submission__title', 'submission__article', 'submission__reference']
+    list_select_related = ['submission']
+    list_defer = RUN_PAYLOADS
     actions = ['retry_failed', 'restart_review', 'regenerate_placeholder']
 
     def has_operate_permission(self, request):
@@ -181,18 +196,23 @@ class AutomationEventAdmin(AuditAdmin):
     list_filter = ['kind', 'created_at']
     search_fields = ['run__submission__title', 'run__submission__reference']
     list_select_related = ['run__submission']
+    list_defer = ('data', *(f'run__{name}' for name in RUN_PAYLOADS))
 
 
 @admin.register(GeneratedArticle)
 class GeneratedArticleAdmin(AuditAdmin):
     list_display = ['slug', 'title', 'run', 'published_at', 'git_revision']
     search_fields = ['slug', 'title']
+    list_select_related = ['run__submission']
+    list_defer = ('markdown', *(f'run__{name}' for name in RUN_PAYLOADS))
 
 
 @admin.register(ArticleRevision)
 class ArticleRevisionAdmin(AuditAdmin):
     list_display = ['slug', 'run', 'published_at', 'writer_credit', 'git_revision']
     search_fields = ['slug', 'title']
+    list_select_related = ['run__submission']
+    list_defer = ('original_markdown', 'markdown', *(f'run__{name}' for name in RUN_PAYLOADS))
 
 
 @admin.register(Verification)
@@ -200,9 +220,13 @@ class VerificationAdmin(AuditAdmin):
     list_display = ['id', 'run', 'state', 'checker', 'completed_at', 'source_hash']
     list_filter = ['state', 'completed_at']
     search_fields = ['run__submission__title', 'source_hash', 'approved_hash']
+    list_select_related = ['run__submission']
+    list_defer = ('source', 'session', 'report', 'evidence', 'approved_source', *(f'run__{name}' for name in RUN_PAYLOADS))
 
 
 @admin.register(ProviderSpend)
 class ProviderSpendAdmin(AuditAdmin):
     list_display = ['run', 'provider', 'stage', 'reserved_tokens', 'input_tokens', 'output_tokens', 'state', 'created_at']
     list_filter = ['provider', 'state', 'created_at']
+    list_select_related = ['run__submission']
+    list_defer = tuple(f'run__{name}' for name in RUN_PAYLOADS)

@@ -80,6 +80,28 @@ def check_inventory(check):
     return units, urls
 
 
+_pdf_cache = {}
+
+
+def pdf_text(data):
+    """Extract once per document: source checks re-read the same saved evidence several times a tick."""
+    key = hashlib.sha256(data.encode()).digest()
+    if key not in _pdf_cache:
+        text = ''
+        try:
+            from pypdf import PdfReader
+            raw = base64.b64decode(data, validate=True)
+            if len(raw) <= 8_000_000:
+                reader = PdfReader(io.BytesIO(raw))
+                text = '\n'.join(page.extract_text() or '' for page in reader.pages[:300])
+        except Exception:
+            text = ''
+        if len(_pdf_cache) >= 64:
+            _pdf_cache.clear()
+        _pdf_cache[key] = text
+    return _pdf_cache[key]
+
+
 def opened_sources(responses):
     sources = {}
     for response in responses:
@@ -92,15 +114,8 @@ def opened_sources(responses):
                 continue
             data = item.get('content', {}).get('source', {})
             text = data.get('data', '') if data.get('type') == 'text' else ''
-            if data.get('type') == 'base64' and data.get('media_type') == 'application/pdf':
-                try:
-                    from pypdf import PdfReader
-                    raw = base64.b64decode(data.get('data', ''), validate=True)
-                    if len(raw) <= 8_000_000:
-                        reader = PdfReader(io.BytesIO(raw))
-                        text = '\n'.join(page.extract_text() or '' for page in reader.pages[:300])
-                except Exception:
-                    text = ''
+            if data.get('type') == 'base64' and data.get('media_type') == 'application/pdf' and isinstance(data.get('data'), str):
+                text = pdf_text(data['data'])
             if text.strip():
                 sources[canonical(url)] = text[:500000]
     return sources
