@@ -49,11 +49,7 @@ collateral for DAI. Its Liquidation 2.0 design uses descending-price
 auctions with immediate settlement, rather than requiring bidders to
 leave funds locked until an auction ends.[^sky]
 
-Auction design creates additional dependencies. The initial price,
-price-decay function, and limits on concurrent debt liquidation affect
-how quickly assets can sell. Sky's documentation lists risks from prices
-falling too rapidly or too slowly, oracle inputs, and governance changes
-that affect auctions already underway.[^sky]
+Auction design creates additional dependencies. In Sky's Liquidation 2.0 design, the auction price is calculated from the auction's initial price and the time elapsed since the auction began, and the price-versus-time curve is configurable.[^imp-21-1] Governance changes to the parameters of a price-decrease calculator, or the replacement of one calculator with another, can also increase the price of a running auction.[^imp-21-1] Sky's Known Risks section has headings for price decreases that are too quick or too slow, an OSM risk for the start price, and auction parameter changes that affect running auctions.[^imp-21-1]
 
 ## Derivatives positions
 
@@ -97,3 +93,5 @@ price used in that test.[^aave][^sky][^hyperliquid]
 [^imp-7-3]: [cTokens – Compound v2 Docs](https://docs.compound.finance/v2/ctokens/)
 
 [^imp-15-1]: [Health Factor & Liquidations – Aave](https://aave.com/help/borrowing/liquidations)
+
+[^imp-21-1]: [Collateral Liquidation – Sky Protocol Docs](https://developers.skyeco.com/protocol/vaults/collateral-liquidation/)
