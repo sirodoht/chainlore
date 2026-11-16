@@ -3,7 +3,7 @@ title: Dogecoin
 ticker: DOGE
 category: Other
 status: draft
-updated: 2026-11-15
+updated: 2026-11-16
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -33,7 +33,7 @@ The page also describes charitable efforts. It says the community raised 26.5 mi
 
 CNBC reported that Dogecoin rallied 65% in 24 hours to a record high of $0.083745 at 5:30 p.m. ET on a Sunday, according to CoinMarketCap data, after billionaire Elon Musk and a number of celebrities appeared to back the cryptocurrency on Twitter. It said the token’s market value briefly hit a high of $10.7 billion that Sunday.[^5] CNBC said retail investors had pumped up the price, “taking their cue from the tweets of Tesla CEO Elon Musk”, and that the resurgence had also been down to enthusiasm from a Reddit group called SatoshiStreetBets.[^5]
 
-Coinpaper, in a report dated 10 March 2026, says Musk confirmed the timeline for X Money, which it describes as the payments platform developed by Elon Musk’s social media company X. According to the report, X Money is set to enter early public access in April 2026, and it describes features including direct deposits, yield on balances and peer-to-peer payments. The report says Dogecoin integration remains unconfirmed and that X has yet to announce any concrete cryptocurrency integration.[^3] The same report says the DOGE price rose more than 8% in a single day around the time of Musk’s announcement, which it attributes to market speculation rather than any confirmed development.[^3]
+Coinpaper, in a report dated 10 March 2026, says Musk confirmed the timeline for X Money, a payments service.[^imp-25-3] A Cryptorank copy of that report describes X Money as the payments platform developed by Elon Musk’s social media company X.[^imp-25-1] According to the report, X Money is set to enter early public access in April 2026, and it describes features including direct deposits, yield on balances and peer-to-peer payments.[^imp-25-3] The Paypers, a payments trade outlet, separately reports that officials of X confirmed the April 2026 early-access plan.[^imp-25-2] The report says Dogecoin integration remains unconfirmed and that X has yet to announce any concrete cryptocurrency integration.[^imp-25-3] The same report says the DOGE price rose more than 8% in a single day around the time of Musk’s announcement, which it attributes to market speculation rather than any confirmed development.[^imp-25-3]
 
 ## Technology
 
@@ -80,3 +80,7 @@ This is a labelled draft and has not been fact-checked. It relies on five source
 [^3]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://coinpaper.com/15324/x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
 [^4]: [Why You Should Care About Litecoin: It's the Backbone of Dogecoin](https://www.coindesk.com/tech/2023/08/02/why-you-should-care-about-litecoin-its-the-backbone-of-dogecoin)
 [^5]: [Tweets from Elon Musk and other celebrities send dogecoin to a record high](https://www.cnbc.com/2021/02/08/tweets-from-elon-musk-and-celebrities-send-dogecoin-to-a-record-high.html)
+
+[^imp-25-1]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://cryptorank.io/news/feed/58bbb-x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
+[^imp-25-2]: [X Money enters early public access in April](https://thepaypers.com/payments/news/x-money-set-to-launch-in-early-public-access-next-month)
+[^imp-25-3]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://coinpaper.com/15324/x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
