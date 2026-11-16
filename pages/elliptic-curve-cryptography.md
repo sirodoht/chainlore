@@ -22,11 +22,11 @@ Elliptic curve cryptography (ECC) refers to cryptographic schemes built on the a
 
 ## History
 
-Elliptic curve cryptographic schemes were proposed independently in 1985 by Neal Koblitz and Victor Miller, according to a reference-work entry seen in search results but not opened for this draft.[^6]
+According to a 2011 encyclopedia entry by Darrel Hankerson and Alfred Menezes, elliptic curve cryptographic schemes were proposed independently in 1985 by Neal Koblitz and Victor Miller.[^imp-23-1] The entry's reference list dates Koblitz's cited paper to 1987 ("Koblitz N (1987) Elliptic curve cryptosystems") and Miller's to 1986 ("Miller V (1986) Use of elliptic curves in cryptography"), so the 1985 date is the entry's own attribution; this draft has not opened either paper.[^imp-23-1] A 2000 paper in *Designs, Codes and Cryptography* states that in 1985 Koblitz and Miller "independently proposed using the group of points on an elliptic curve defined over a finite field in discrete log cryptosystems."[^imp-23-2]
 
 According to Matthew Green, NIST and NSA released a pseudorandom number generator based on elliptic curve cryptography in 2005–2006.[^5] Scientific American states that NIST published the standard in 2006 and that the International Organization for Standardization later adopted it.[^4]
 
-Green says that shortly afterwards, Shumow and Ferguson pointed out that the algorithm might contain an NSA backdoor, and that in 2007 two Microsoft researchers argued that its weaknesses could combine to open a backdoor.[^5] Scientific American reports that the Microsoft engineers stopped short of accusing NIST or the NSA of inserting it intentionally.[^4]
+Green says that shortly afterwards, Shumow and Ferguson pointed out that the algorithm might contain an NSA backdoor, and that in 2007 two Microsoft researchers argued that its weaknesses could combine to open a backdoor.[^imp-23-5] Schneier wrote in 2007 that Shumow and Ferguson had shown, in an informal presentation at the CRYPTO 2007 conference in August, a weakness that "can only be described as a backdoor"; he also wrote that the researchers did not know what the secret numbers were.[^imp-23-3]
 
 SEC 2 version 2.0 was published by Certicom Research and dated 27 January 2010.[^1]
 
@@ -64,7 +64,7 @@ In September 2013, news reports based on documents leaked by Edward Snowden prom
 
 NIST said it “would not deliberately weaken a cryptographic standard”. Scientific American notes that NIST stood by that statement after an editor's note.[^4]
 
-After the 2013 reports, NIST immediately recommended against using the algorithm and reissued SP 800-90A for public comment.[^3] On 19 September 2013, RSA advised developers not to use the default Dual_EC_DRBG generator in its BSAFE product.[^5]
+NIST's September 2013 Supplemental ITL Bulletin strongly recommended against using Dual_EC_DRBG as specified in the January 2012 version of SP 800-90A, pending resolution of the security concerns and re-issuance of SP 800-90A. The same bulletin re-issued SP 800-90A as a draft for public comment, with the comment period ending 6 November 2013.[^imp-23-4] On 19 September 2013, RSA advised developers not to use the default Dual_EC_DRBG generator in its BSAFE product.[^imp-23-5]
 
 Bruce Schneier, quoted by Scientific American, said that Microsoft, Cisco, Symantec and RSA included the algorithm in their cryptographic libraries primarily because they need it to be eligible for government contracts.[^4]
 
@@ -103,3 +103,9 @@ Paul Kocher, quoted by Scientific American, said that “there's really nothing 
 [^imp-19-1]: [SEC 2: Recommended Elliptic Curve Domain Parameters](https://www.secg.org/sec2-v2.pdf)
 
 [^imp-22-1]: [Elliptic Curve Cryptography](https://link.springer.com/rwe/10.1007/978-1-4419-5906-5_245)
+
+[^imp-23-1]: [Elliptic Curve Cryptography](https://link.springer.com/rwe/10.1007/978-1-4419-5906-5_245)
+[^imp-23-2]: [Designs, Codes and Cryptography, 19, 173–193 (2000)](https://www.math.lsu.edu/~mahlburg/teaching/handouts/2013-7290/Koblitz-Menezes-Vanstone2000.pdf)
+[^imp-23-3]: [The Strange Story of Dual_EC_DRBG - Schneier on Security](https://www.schneier.com/blog/archives/2007/11/the_strange_sto.html)
+[^imp-23-4]: [SUPPLEMENTAL ITL BULLETIN FOR SEPTEMBER 2013](https://csrc.nist.gov/csrc/media/publications/shared/documents/itl-bulletin/itlbul2013-09-supplemental.pdf)
+[^imp-23-5]: [The Many Flaws of Dual_EC_DRBG](https://blog.cryptographyengineering.com/2013/09/18/the-many-flaws-of-dualecdrbg/)
