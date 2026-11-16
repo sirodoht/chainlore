@@ -6,7 +6,7 @@ written_by: Opus 5.5 High
 status: draft
 checked: 2026-10-30
 checked_by: GPT-6-Astra high
-updated: 2026-11-15
+updated: 2026-11-16
 ---
 
 # Hyperliquid
@@ -287,6 +287,8 @@ Hyperliquid also said that “All users apart from flagged addresses will be mad
 
 Arkham called the manual closing price “a highly controversial move for a decentralized exchange,” and argued that it overrode the platform's autonomous smart contracts.[^imp-10-1] Blockworks argues that the settlement showed what Galois Capital called a “validator put,” an implicit backstop under which the protocol would intervene to cap HLP losses. It notes that some validators confirmed quorum was reached, but that more than half the stake belonged to five Hyper Foundation validators. That is a March 2025 observation.[^imp-10-3] Blockworks names critics including Hasu, ZachXBT and Wintermute's Evgeny Gaevoy, who argued that a DEX should not override prices. Bitget's managing director, Gracy Chen, called Hyperliquid's handling “immature, unethical and unprofessional.”[^imp-10-3]
 
+The sources reviewed do not establish who operated the three JELLY accounts. Arkham refers to them by address fragments (0xde9, 0x20e and 0x67f), describes them as coordinated accounts that together took both sides of the trade, and names no person behind them.[^imp-16-1] Blockworks refers to “a trader” and to “the attacker” without naming the accounts or giving their addresses.[^imp-16-2]
+
 ### 2026 market and insider-trading cases
 
 On 28 July 2026 CoinDesk reported that perpetual futures tied to the American depositary receipts of South Korean chipmaker SK Hynix had plunged 20% in one minute on Hyperliquid before rebounding above US$1,000. CoinDesk's headline described the low as US$900.[^imp-6-3]
@@ -403,3 +405,6 @@ In September 2026 CoinDesk reported that U.S. authorities allege two Robinhood e
 [^imp-10-1]: [JELLYJELLY Exploit on Hyperliquid (Arkham Intelligence, 26 March 2025)](https://info.arkm.com/research/jellyjelly-exploit-on-hyperliquid)
 [^imp-10-2]: [Hyperliquid delists JELLYJELLY memecoin amid whale manipulation fiasco (The Block, 26 March 2025)](https://www.theblock.co/post/348314/hyperliquid-delists-jellyjelly-memecoin-amid-whale-manipulation-fiasco)
 [^imp-10-3]: [A perp too far: Hyperliquid’s ‘validator put’ (Blockworks)](https://blockworks.com/news/hyperliquid-decentralization-validator-put)
+
+[^imp-16-1]: [JELLYJELLY Exploit on Hyperliquid (Arkham Intelligence, 26 March 2025)](https://info.arkm.com/research/jellyjelly-exploit-on-hyperliquid)
+[^imp-16-2]: [A perp too far: Hyperliquid’s ‘validator put’ (Blockworks)](https://blockworks.com/news/hyperliquid-decentralization-validator-put)
