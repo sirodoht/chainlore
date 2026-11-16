@@ -6,7 +6,7 @@ written_by: GPT-6-Astra high
 status: draft
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
-updated: 2026-11-15
+updated: 2026-11-16
 ---
 
 # Liquidation
@@ -39,11 +39,7 @@ On Aave, a liquidator repays part or all of a borrower's debt and receives colla
 
 Aave caps the repayment. Up to 50% of total debt can be liquidated when the health factor is above 0.95 and both collateral and debt are at least $2,000 each. Up to 100% can be liquidated when the health factor is 0.95 or below, or when either value is below $2,000. Partial liquidations must leave at least $1,000 of both collateral and debt; otherwise the position must be fully cleared.[^imp-7-1]
 
-The threshold is not identical to insolvency. A position can cross its
-liquidation threshold while collateral is still worth more than its
-debt, because the threshold incorporates a buffer. Liquidation aims to
-act before further price changes or execution costs consume that
-buffer.[^aave]
+The threshold is not identical to insolvency. Aave's health factor multiplies collateral value by the weighted average liquidation threshold and divides by total borrow value. Aave states that a health factor below 1 signals liquidation risk.[^imp-15-1] A value below 1 therefore does not by itself show that collateral is worth less than debt. In Aave's documented example, $10,000 of ETH collateral with an 80% liquidation threshold supports a health factor of 1.333 at $6,000 of GHO borrowing.[^imp-15-1] Using the same formula, the health factor reaches 1 at $8,000 of debt. This break-even is a derived calculation from the published formula, not a figure Aave states. Between $8,000 and $10,000 of debt, a position would be eligible for liquidation while its collateral still exceeds the amount owed. At $10,000 or more of debt, collateral is no longer greater than debt.[^imp-15-1]
 
 ## Auctions
 
@@ -99,3 +95,5 @@ price used in that test.[^aave][^sky][^hyperliquid]
 [^imp-7-1]: [Health Factor & Liquidations – Aave](https://aave.com/help/borrowing/liquidations)
 [^imp-7-2]: [Liquidation – Compound III Docs](https://docs.compound.finance/liquidation/)
 [^imp-7-3]: [cTokens – Compound v2 Docs](https://docs.compound.finance/v2/ctokens/)
+
+[^imp-15-1]: [Health Factor & Liquidations – Aave](https://aave.com/help/borrowing/liquidations)
