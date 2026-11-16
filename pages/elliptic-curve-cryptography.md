@@ -7,7 +7,7 @@ updated: 2026-11-16
 written_by: claude-haiku-5-5 (high effort)
 ---
 
-Elliptic curve cryptography (ECC) refers to cryptographic schemes built on the arithmetic of points on elliptic curves over finite fields.[^6][^1] This is an unverified draft, not fact-checked. It covers the cryptographic uses of elliptic curves and is based only on the sources listed in the References section.
+Elliptic curve cryptography (ECC) refers to cryptographic schemes built on the arithmetic of points on elliptic curves over finite fields.[^imp-22-1] A 2011 encyclopedia entry by Darrel Hankerson and Alfred Menezes defines ECC as the design and analysis of public-key cryptographic schemes that can be implemented using elliptic curves, and describes ECC schemes as analogues of discrete-logarithm schemes whose underlying group is the group of points on an elliptic curve over a finite field.[^imp-22-1] This is an unverified draft, not fact-checked. It covers the cryptographic uses of elliptic curves and is based only on the sources listed in the References section.
 
 | Property | Detail |
 |---|---|
@@ -101,3 +101,5 @@ Paul Kocher, quoted by Scientific American, said that “there's really nothing 
 [^6]: [Elliptic Curve Cryptography](https://link.springer.com/rwe/10.1007/978-3-642-27739-9_245-2)
 
 [^imp-19-1]: [SEC 2: Recommended Elliptic Curve Domain Parameters](https://www.secg.org/sec2-v2.pdf)
+
+[^imp-22-1]: [Elliptic Curve Cryptography](https://link.springer.com/rwe/10.1007/978-1-4419-5906-5_245)
