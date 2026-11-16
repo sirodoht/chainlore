@@ -3,7 +3,7 @@ title: Elliptic curve cryptography
 ticker: None
 category: Concept
 status: draft
-updated: 2026-10-31
+updated: 2026-11-16
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -34,7 +34,7 @@ SEC 2 version 2.0 was published by Certicom Research and dated 27 January 2010.[
 
 SEC 2 defines elliptic curve domain parameters over a prime field Fp as a sextuple T = (p, a, b, G, n, h). These consist of a prime p defining the field, coefficients a and b, a base point G, the prime order n of G, and the cofactor h = #E(Fp)/n.[^1]
 
-SEC 2 states that for parameters where log₂ p = 2t, the curve gives about t bits of security, because solving the logarithm problem on the curve is believed to take about 2^t operations.[^1]
+SEC 2 states that for parameters where ⌈log₂ p⌉ = 2t, the curve gives about t bits of security, because solving the logarithm problem on the curve is believed to take about 2^t operations.[^imp-19-1]
 
 SEC 2 recommends curves over Fp at 192, 224, 256, 384 and 521 bits. It describes Koblitz curves and “verifiably random” curves. SECG states that no trapdoors can have been placed in the verifiably random parameters during their generation; this is SECG's own claim, and this draft did not independently check it.[^1]
 
@@ -99,3 +99,5 @@ Paul Kocher, quoted by Scientific American, said that “there's really nothing 
 [^5]: [The Many Flaws of Dual_EC_DRBG](https://blog.cryptographyengineering.com/2013/09/18/the-many-flaws-of-dualecdrbg/)
 
 [^6]: [Elliptic Curve Cryptography](https://link.springer.com/rwe/10.1007/978-3-642-27739-9_245-2)
+
+[^imp-19-1]: [SEC 2: Recommended Elliptic Curve Domain Parameters](https://www.secg.org/sec2-v2.pdf)
