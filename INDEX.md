@@ -63,6 +63,7 @@ All pages in Chainlore.
 - [FTX](pages/ftx.md): a cryptocurrency exchange that collapsed and filed
   for bankruptcy in November 2022.
 - [Mt. Gox](pages/mt-gox.md): the 2014 collapse and subsequent creditor repayments.
+- [Kraken (cryptocurrency exchange)](pages/kraken-cryptocurrency-exchange.md): | Field | Detail | |---|---| | Operating name | Kraken | | Legal entities | Payward Ventures, Inc. and Payward Trading, Ltd. (d/b/a Kraken) per SEC litigation release; Payward…
 
 ## Legislation
 
