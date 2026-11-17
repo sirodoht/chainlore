@@ -6,7 +6,7 @@ written_by: GPT-6-Astra high
 status: draft
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
-updated: 2026-11-16
+updated: 2026-11-17
 ---
 
 # Liquidation
@@ -53,11 +53,7 @@ Auction design creates additional dependencies. In Sky's Liquidation 2.0 design,
 
 ## Derivatives positions
 
-Hyperliquid first attempts to close an under-margined account's positions
-through market orders. Orders may fill partially, and a backstop
-liquidator can take over if equity deteriorates further. Isolated and
-cross-margin positions expose different pools of collateral to that
-process.[^hyperliquid]
+According to Hyperliquid's liquidation documentation, when account equity falls below maintenance margin, the system first attempts to close the positions in full by sending market orders to the order book. Those orders may close the position fully or partially.[^imp-30-1] If equity falls below two-thirds of maintenance margin without a successful book liquidation, a backstop liquidation through the liquidator vault can take over the position.[^imp-30-1] The documented collateral that transfers depends on margin mode: a cross backstop moves cross positions and cross margin, while an isolated backstop moves only the isolated position and its margin, leaving the user's cross margin and positions untouched.[^imp-30-1] The same page describes a different procedure for liquidatable positions above 100k USDC, where only 20% of the position is sent to the book as a market order.[^imp-30-1]
 
 Liquidation does not itself guarantee that all debt is recovered. In
 Hyperliquid's documented auto-deleveraging process, a negative account
@@ -95,3 +91,5 @@ price used in that test.[^aave][^sky][^hyperliquid]
 [^imp-15-1]: [Health Factor & Liquidations – Aave](https://aave.com/help/borrowing/liquidations)
 
 [^imp-21-1]: [Collateral Liquidation – Sky Protocol Docs](https://developers.skyeco.com/protocol/vaults/collateral-liquidation/)
+
+[^imp-30-1]: [Hyperliquid documentation – Liquidations](https://hyperliquid.gitbook.io/hyperliquid-docs/trading/liquidations)
