@@ -3,7 +3,7 @@ title: Litecoin
 ticker: LTC
 category: Layer 1
 status: draft
-updated: 2026-11-18
+updated: 2026-11-19
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -26,17 +26,23 @@ Litecoin (LTC) is an open-source, proof-of-work cryptocurrency created by Charli
 
 The launch announcement was posted on Bitcointalk in a thread titled 'Litecoin - a lite version of Bitcoin. Launched!', with a first post timestamped October 9, 2011.[^1] The post says the project was started by people who met on IRC to create an alternative currency similar to Bitcoin, and that it aimed to be 'silver to Bitcoin's gold'.[^1] The post surveys earlier altcoins, several of which it calls dead, and says the coin would begin with 150 premined coins: the genesis block and the first two blocks.[^1]
 
+Wikipedia gives October 7, 2011 as the release date, while the forum post is timestamped October 9, 2011, so the exact start date is not settled here.[^imp-34-2] The forum page shows a last edit dated June 25, 2014, so its current wording may differ from the 2011 original.[^imp-34-1]
+
 Bitstamp describes Lee as a computer scientist and entrepreneur best known as the inventor of Litecoin.[^2] Bitstamp also notes that LTC has fallen in crypto market rankings over recent cycles.[^2]
 
 According to Wikipedia, a weak source for this draft, Dogecoin began merge-mining with Litecoin in September 2014.[^11] Crypto-press reporting says Litecoin activated SegWit in April 2017, and that Bitcoin followed a few months later.[^12]
 
 ## Technology
 
+The 2011 launch post pointed readers to a GitHub repository for the source code.[^imp-34-1]
+
 **Proof of work.** Litecoin uses Scrypt proof of work to validate transactions and secure the network.[^3] The launch thread says the developers liked Tenebrix's Scrypt design and thanks ArtForz for the implementation.[^1] The thread compares Litecoin's 2.5-minute average block time with Bitcoin's 10 minutes.[^1] Trezor states that difficulty adjusts every 2,016 blocks, about 3.5 days.[^3]
 
 **Supply.** The maximum supply is 84 million LTC.[^3] A secondary source states that mining rewards halve every 840,000 blocks, approximately every four years.[^6] The smallest unit is the litoshi, equal to 10⁻⁸ LTC.[^3]
 
 **MWEB.** The project describes Mimblewimble Extension Blocks (MWEB) as based on the Mimblewimble protocol, promising confidential transactions and efficient pruning.[^8] According to the project, MWEB works alongside the main blockchain while remaining compatible with existing wallets and services.[^8] Crypto-press reporting names David Burkett, a Mimblewimble developer, as leading development of the protocol for Litecoin.[^12] A weak commentary source states that only activity inside MWEB is shielded.[^14]
+
+Crypto-press reporting says Litecoin reached the 75% network consensus threshold for MWEB activation on May 2, and that MWEB then locked in for activation at block height 2,257,920.[^imp-34-3] The article is dated May 22, 2022, and describes MWEB as an opt-in feature for confidential transactions.[^imp-34-3]
 
 ## Governance
 
@@ -80,3 +86,7 @@ The project states that Litecoin is released under the MIT/X11 licence.[^7] Its 
 [^12]: [Litecoin Activates MimbleWimble Extension Blocks (MWEB)](https://cryptopotato.com/litecoin-activates-mimblewimble-extension-blocks-mweb/)
 [^14]: [MWEB three years on: what the adoption data actually says about Litecoin privacy — Litecoin.watch](https://litecoin.watch/articles/mweb-three-years-on-what-the-adoption-data-actually-says-about-litecoin-privacy)
 [^18]: [Litecoin's 2026 MWEB incidents: what the postmortem establishes — Litecoin.watch](https://litecoin.watch/articles/litecoin-s-first-security-incident-mweb-exploit-triggers-13-block-reorg-and-600k-loss)
+
+[^imp-34-1]: [Litecoin - a lite version of Bitcoin. Launched! (Bitcointalk announcement thread)](https://bitcointalk.org/index.php?topic=47417.0)
+[^imp-34-2]: [Litecoin - Wikipedia](https://en.wikipedia.org/wiki/Litecoin)
+[^imp-34-3]: [Litecoin Activates MimbleWimble Extension Blocks (MWEB) - CryptoPotato](https://cryptopotato.com/litecoin-activates-mimblewimble-extension-blocks-mweb/)
