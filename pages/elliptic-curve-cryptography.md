@@ -3,7 +3,7 @@ title: Elliptic curve cryptography
 ticker: None
 category: Concept
 status: draft
-updated: 2026-11-16
+updated: 2026-11-19
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -60,7 +60,7 @@ Dual_EC_DRBG (Dual Elliptic Curve Deterministic Random Bit Generator) was one of
 
 In May 2006, researchers at Eindhoven University of Technology reported that the algorithm was insecure and that an attack against it was easy to launch on “an ordinary PC”.[^4]
 
-In September 2013, news reports based on documents leaked by Edward Snowden prompted public concern about the algorithm. Those reports said it was vulnerable to tampering that could allow a backdoor. This is a reported allegation, not a finding by NIST, and this draft does not establish whether such a backdoor was inserted.[^4]
+In September 2013, news reports based on documents leaked by Edward Snowden described allegations that the algorithm was vulnerable to tampering that could allow a backdoor. This is a reported allegation, not a finding by NIST, and this draft does not establish whether such a backdoor was inserted.[^imp-38-2]
 
 NIST said it “would not deliberately weaken a cryptographic standard”. Scientific American notes that NIST stood by that statement after an editor's note.[^4]
 
@@ -109,3 +109,5 @@ Paul Kocher, quoted by Scientific American, said that “there's really nothing 
 [^imp-23-3]: [The Strange Story of Dual_EC_DRBG - Schneier on Security](https://www.schneier.com/blog/archives/2007/11/the_strange_sto.html)
 [^imp-23-4]: [SUPPLEMENTAL ITL BULLETIN FOR SEPTEMBER 2013](https://csrc.nist.gov/csrc/media/publications/shared/documents/itl-bulletin/itlbul2013-09-supplemental.pdf)
 [^imp-23-5]: [The Many Flaws of Dual_EC_DRBG](https://blog.cryptographyengineering.com/2013/09/18/the-many-flaws-of-dualecdrbg/)
+
+[^imp-38-2]: [NSA Efforts to Evade Encryption Technology Damaged U.S. Cryptography Standard](https://www.scientificamerican.com/article/nsa-nist-encryption-scandal/)
