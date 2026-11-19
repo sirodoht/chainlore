@@ -71,6 +71,10 @@ verification failure can create unbacked claims across networks.[^wormhole]
 
 In March 2022, attackers stole 173,600 ETH, worth about $590 million at the time, and 25.5 million USDC from the Ronin Bridge, which links Ethereum to Ronin, the sidechain used by the Axie Infinity game.[^imp-33-2] According to The Block's report on a Sky Mavis post-mortem, the attackers took four validator keys controlled by Sky Mavis and compromised a fifth validator belonging to Axie DAO through a “gas-free signature.” With five of nine validators under their control, they could make illegitimate transfers from the bridge on Ethereum.[^imp-33-1]
 
+On 27 April 2022, The Block reported that Sky Mavis planned to expand the Ronin validator set to 21 nodes within three months and to more than 100 nodes in the long run. The report attributed the plan to a post-mortem in which the company said it aimed to become a "zero-trust organization", a framework that assumes Sky Mavis is always at risk from external and internal threats.[^imp-36-1]
+
+On 8 September 2022, The Block reported that Chainalysis and US law enforcement had recovered $30 million of the stolen funds, which it described as North Korea-linked. The Block reported that Chainalysis said its blockchain tracking tools were used to see where the stolen funds had been laundered.[^imp-36-2]
+
 ## See also
 
 - [Binance](binance.md)
@@ -90,3 +94,6 @@ In March 2022, attackers stole 173,600 ETH, worth about $590 million at the time
 
 [^imp-33-1]: [Sky Mavis plans to become a 'zero-trust organization' after $600 million Ronin hack](https://www.theblock.co/news/regulation/2022-04-27-sky-mavis-plans-to-become-a-zero-trust-organization-after-600-million-ronin-hack-143821)
 [^imp-33-2]: [Chainalysis and US law enforcement recover $30 million from Ronin exploit](https://www.theblock.co/news/regulation/2022-09-08-chainalysis-and-us-law-enforcement-recover-30-million-from-north-korea-linked-ronin-exploit-168663)
+
+[^imp-36-1]: [Sky Mavis plans to become a 'zero-trust organization' after $600 million Ronin hack](https://www.theblock.co/news/regulation/2022-04-27-sky-mavis-plans-to-become-a-zero-trust-organization-after-600-million-ronin-hack-143821)
+[^imp-36-2]: [Chainalysis and US law enforcement recover $30 million from Ronin exploit](https://www.theblock.co/news/regulation/2022-09-08-chainalysis-and-us-law-enforcement-recover-30-million-from-north-korea-linked-ronin-exploit-168663)
