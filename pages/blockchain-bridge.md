@@ -3,10 +3,10 @@ title: Blockchain bridge
 ticker: None
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: ai-fact-checked
+status: draft
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
-updated: 2026-10-31
+updated: 2026-11-19
 ---
 
 # Blockchain bridge
@@ -69,6 +69,8 @@ fake account bypassed verification; some of the resulting tokens were then
 redeemed for ETH on Ethereum. The incident illustrates how a bridge's
 verification failure can create unbacked claims across networks.[^wormhole]
 
+In March 2022, attackers stole 173,600 ETH, worth about $590 million at the time, and 25.5 million USDC from the Ronin Bridge, which links Ethereum to Ronin, the sidechain used by the Axie Infinity game.[^imp-33-2] According to The Block's report on a Sky Mavis post-mortem, the attackers took four validator keys controlled by Sky Mavis and compromised a fifth validator belonging to Axie DAO through a “gas-free signature.” With five of nine validators under their control, they could make illegitimate transfers from the bridge on Ethereum.[^imp-33-1]
+
 ## See also
 
 - [Binance](binance.md)
@@ -85,3 +87,6 @@ verification failure can create unbacked claims across networks.[^wormhole]
 [^messages]: Ethereum Improvement Proposals. *ERC-5164: Cross-Chain Execution*. <https://eips.ethereum.org/EIPS/eip-5164>
 [^stages]: L2Beat. *Stages framework*. <https://l2beat.com/stages>
 [^wormhole]: CertiK (1 August 2022). *Wormhole bridge exploit incident analysis*. <https://www.certik.com/blog/1kDYgyBcisoD2EqiBpHE5l-wormhole-bridge-exploit-incident-analysis>
+
+[^imp-33-1]: [Sky Mavis plans to become a 'zero-trust organization' after $600 million Ronin hack](https://www.theblock.co/news/regulation/2022-04-27-sky-mavis-plans-to-become-a-zero-trust-organization-after-600-million-ronin-hack-143821)
+[^imp-33-2]: [Chainalysis and US law enforcement recover $30 million from Ronin exploit](https://www.theblock.co/news/regulation/2022-09-08-chainalysis-and-us-law-enforcement-recover-30-million-from-north-korea-linked-ronin-exploit-168663)
