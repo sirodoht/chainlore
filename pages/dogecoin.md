@@ -3,7 +3,7 @@ title: Dogecoin
 ticker: DOGE
 category: Other
 status: draft
-updated: 2026-11-16
+updated: 2026-11-20
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -71,7 +71,7 @@ The research identified no primary source or independent reporting of wrongdoing
 
 ## Limits of this draft
 
-This is a labelled draft and has not been fact-checked. It relies on five sources. Two are the project’s and the Foundation’s own pages, whose claims are attributed to them as self-descriptions. The other three are press reports, and the CoinDesk source was only partly retrieved.[^1][^2][^3][^4][^5]
+This is a labelled draft and has not been fact-checked. It relies on seven distinct web pages. Two are the project’s and the Foundation’s own pages, whose claims are attributed to them as self-descriptions. The other five are third-party news or press pages: CoinDesk, CNBC, Coinpaper, The Paypers, and a Cryptorank feed copy of a Coinpaper report. The CoinDesk source was only partly retrieved.[^imp-43-1][^imp-43-2][^imp-43-3][^imp-43-4][^imp-43-5][^imp-43-6][^imp-43-7]
 
 ## References
 
@@ -84,3 +84,11 @@ This is a labelled draft and has not been fact-checked. It relies on five source
 [^imp-25-1]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://cryptorank.io/news/feed/58bbb-x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
 [^imp-25-2]: [X Money enters early public access in April](https://thepaypers.com/payments/news/x-money-set-to-launch-in-early-public-access-next-month)
 [^imp-25-3]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://coinpaper.com/15324/x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
+
+[^imp-43-1]: [The History of Dogecoin](https://dogecoin.com/dogepedia/articles/history-of-dogecoin/)
+[^imp-43-2]: [About - Dogecoin Foundation](https://foundation.dogecoin.com/about/)
+[^imp-43-3]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://coinpaper.com/15324/x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
+[^imp-43-4]: [Why You Should Care About Litecoin: It's the Backbone of Dogecoin](https://www.coindesk.com/tech/2023/08/02/why-you-should-care-about-litecoin-its-the-backbone-of-dogecoin)
+[^imp-43-5]: [Tweets from Elon Musk and other celebrities send dogecoin to a record high](https://www.cnbc.com/2021/02/08/tweets-from-elon-musk-and-celebrities-send-dogecoin-to-a-record-high.html)
+[^imp-43-6]: [X Money Launch Date Confirmed — Will Dogecoin Be Part of Elon Musk's Payment App?](https://cryptorank.io/news/feed/58bbb-x-money-launch-date-confirmed-will-dogecoin-be-part-of-elon-musk-s-payment-app)
+[^imp-43-7]: [X Money enters early public access in April](https://thepaypers.com/payments/news/x-money-set-to-launch-in-early-public-access-next-month)
