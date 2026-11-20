@@ -21,6 +21,10 @@ The 2016 Bitfinex hack was the theft of approximately 120,000 bitcoin from the v
 
 ## History
 
+CoinDesk reported on 2 August 2016 that Bitfinex had taken its trading platform offline after a reported hack that resulted in the theft of customer funds.[^imp-41-1] Cointelegraph put the value of the stolen bitcoin at $72 million at the time.[^imp-41-2]
+
+A TechCrunch headline on 2 August 2016 reported that bitcoin dropped 20% after about $70 million worth was stolen from Bitfinex.[^imp-41-3] The headline reports the sequence of the two events only. The sources reviewed do not establish a confirmed cause for the fall in price.
+
 The US Department of Justice said the case was investigated by the IRS Criminal Investigation Washington, D.C. Field Office's Cyber Crimes Unit, the FBI's Chicago Field Office and HSI New York, with help from the Ansbach Police Department in Germany.[^4] On 8 February 2022, the DOJ announced the arrests in Manhattan of Ilya Lichtenstein and Heather Morgan, both of New York. A criminal complaint alleged that they conspired to launder the proceeds of the theft.[^4] Agents executed court-authorised search warrants on online accounts and obtained files containing the private keys to the wallet that directly received the stolen funds, which allowed them to seize more than 94,000 BTC.[^4] Deputy Attorney General Lisa O. Monaco described the seizure as the department's largest financial seizure ever.[^4] The DOJ later said the government had seized another approximately $475 million tied to the hack since the arrests.[^1]
 
 According to court documents cited by the DOJ, Lichtenstein used advanced hacking tools to access Bitfinex's network, fraudulently authorised more than 2,000 transactions moving 119,754 BTC to a wallet he controlled, and then deleted access credentials and log files.[^1] The DOJ describes laundering methods including fictitious identities, automated transactions, deposits into darknet markets and exchanges, chain-hopping, mixing services such as Bitcoin Fog, Helix and ChipMixer, and gold coins that Morgan concealed by burying them.[^1] On 3 August 2023, Lichtenstein pleaded guilty to conspiracy to commit money laundering. Morgan pleaded guilty to one count of money laundering conspiracy and one count of conspiracy to defraud the United States.[^1] A DOJ press release, reproduced on a third-party site, says Lichtenstein was later sentenced to five years in prison.[^9] The sources reviewed do not establish the sentencing date or Morgan's sentence.
@@ -34,6 +38,8 @@ BFX token holders could sell the tokens on the market or sell them to Bitfinex a
 Bitfinex also created a tradable Recovery Right Token (RRT) for certain BFX holders that converted BFX tokens into shares of iFinex. The FAQ says that any recovered funds will be used for distributions to RRT holders, up to $1 per RRT.[^2] The FAQ also says that, if Bitfinex receives a recovery, it will within 18 months use 80% of the recovered net funds to repurchase and burn outstanding UNUS SED LEO tokens. This is a company statement.[^2]
 
 ## Incidents and controversies
+
+Mt. Gox, a bitcoin exchange, reported in February 2014 that about 850,000 bitcoin were missing and filed for bankruptcy protection.[^imp-41-4]
 
 In the restitution dispute, Judge Colleen Kollar-Kotelly asked prosecutors to clarify, according to Cointelegraph. The judge noted that returning the funds to Bitfinex “would appear to have the effect of reducing the amount of the forfeiture order.”[^18]
 
@@ -63,3 +69,8 @@ In the restitution dispute, Judge Colleen Kollar-Kotelly asked prosecutors to cl
 [^16]: [Hackers move more than $26 million in bitcoin stolen from Bitfinex in 2016](https://www.theblock.co/news/regulation/2020-10-07-hackers-bitcoin-bitfinex-oct-80126)
 [^17]: [$9,317,156,860 Worth of Seized Bitcoin To Be Returned to Bitfinex, Says US Government in New Court Order - The Daily Hodl](https://dailyhodl.com/2025/01/15/9317156860-worth-of-seized-bitcoin-to-be-returned-to-bitfinex-says-us-government-in-new-court-order/)
 [^18]: [Judge says it could be ‘improper’ to order Bitfinex hack funds returned](https://cointelegraph.com/news/judge-improper-order-funds-returned-bitfinex-hack)
+
+[^imp-41-1]: [Bitfinex Offline as Customer Bitcoin Reported Stolen](https://www.coindesk.com/markets/2016/08/02/bitfinex-offline-as-customer-bitcoin-reported-stolen)
+[^imp-41-2]: [Only Bitfinex may get restitution in 2016 hack, per government filing](https://cointelegraph.com/news/bitfinex-2016-bitcoin-hack-restitution-us-government)
+[^imp-41-3]: [Bitcoin drops 20% after $70M worth of bitcoin was stolen from Bitfinex exchange](https://techcrunch.com/2016/08/02/bitcoin-drops-20-after-70m-worth-of-bitcoin-was-stolen-from-bitfinex-exchange/)
+[^imp-41-4]: [UPDATED: Mt.Gox Files For Bankruptcy Protection, Says 850,000 Bitcoin Lost](https://techcrunch.com/2014/02/28/mt-gox-files-for-bankruptcy)
