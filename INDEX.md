@@ -144,3 +144,7 @@ All pages in Chainlore.
 ## Events
 
 - [2016 Bitfinex hack](pages/2016-bitfinex-hack.md): The 2016 Bitfinex hack was the theft of approximately 120,000 bitcoin from the virtual currency exchange Bitfinex in August 2016. Bitfinex spread the loss across customer…
+
+## Organisations
+
+- [Ripple Labs](pages/ripple-labs.md): | Field | Detail | |---|---| | Type | Financial technology company | | Headquarters | San Francisco (dateline of the November 2025 release) | | Founded | September 2012 as…
