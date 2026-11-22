@@ -37,6 +37,12 @@ Ripple's developer documentation on consensus protections says validators influe
 
 - Fortress and Citadel Securities led the November 2025 investment.[^1]
 
+## Acquisitions and company-reported metrics
+
+In its 5 November 2025 press release, Ripple said it had completed six acquisitions in just over two years, two of them valued at over $1 billion. The release also said total Ripple Payments volumes had surpassed $95 billion and that RLUSD had crossed a $1 billion market capitalisation. These are company figures, and this article has not verified them independently.[^imp-50-1]
+
+The release says Ripple entered new markets in prime brokerage and treasury management, that it acquired GTreasury in October 2025, and that Hidden Road is now known as Ripple Prime.[^imp-50-1] The Block reported that Ripple had acquired Hidden Road for about $1.25 billion and bought the stablecoin platform Rail for $200 million, both in 2025.[^imp-50-2]
+
 ## Valuation
 
 Ripple announced a $500 million strategic investment at a $40 billion valuation on 5 November 2025, from institutional investors led by funds managed by affiliates of Fortress Investment Group and Citadel Securities.[^imp-49-12][^imp-49-13] The company said it decided to accept $500 million in new common equity, and that the investment followed a recent $1 billion tender offer at the same valuation.[^imp-49-12]
@@ -73,3 +79,6 @@ Ripple announced a $500 million strategic investment at a $40 billion valuation 
 [^imp-49-6]: [Consensus Protections Against Attacks and Failure Modes - XRP Ledger Dev Portal](https://developers.ripple.com/consensus-protections.html)
 [^imp-49-12]: [Ripple Announces $500 Million Strategic Investment Led by Fortress and Citadel Securities, Valuing the Company at $40 Billion Following Record Growth](https://www.businesswire.com/news/home/20251105757111/en/Ripple-Announces-500-Million-Strategic-Investment-Led-by-Fortress-and-Citadel-Securities-Valuing-the-Company-at-40-Billion-Following-Record-Growth)
 [^imp-49-13]: [Ripple boasts $40b valuation after Citadel, Fortress deal](https://crypto.news/ripple-40b-valuation-500m-citadel-fortress-deal/)
+
+[^imp-50-1]: [Ripple Announces $500 Million Strategic Investment Led by Fortress and Citadel Securities, Valuing the Company at $40 Billion Following Record Growth](https://ripple.com/ripple-press/ripple-announces-500-million-strategic-investment-led-by-fortress-citadel-securities-valuing-the-company-at-40-billion-following-record-growth/)
+[^imp-50-2]: [Ripple launches $750 million share buyback at $50 billion valuation](https://www.theblock.co/post/393299/ripple-launches-750-million-share-buyback-at-50-billion-valuation)
