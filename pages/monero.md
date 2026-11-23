@@ -3,10 +3,10 @@ title: Monero
 ticker: XMR
 category: Layer 1
 written_by: GPT-6-Astra high
-status: ai-fact-checked
+status: draft
 checked: 2026-11-09
 checked_by: claude-haiku-5-5 (high effort)
-updated: 2026-11-09
+updated: 2026-11-23
 ---
 
 # Monero
@@ -33,6 +33,15 @@ Monero launched in April 2014 as a fair, pre-announced launch of the CryptoNote 
 The same page describes a later split. It says the founder proposed changes that the community disagreed with. After the dispute, the Monero Core Team forked the project, and the community followed the new Core Team, which the page says has provided oversight since. These are self-reported claims.[^imp-8-1]
 
 The page also lists later changes: a migration to a different blockchain database structure, minimum ring signature sizes so that all transactions were private by mandate, and RingCT to hide transaction amounts. It says nearly all improvements have aimed at security, privacy or ease of use, and that development decisions are open to public discussion, with major developer meetings published online.[^imp-8-1]
+
+| Date | Milestone |
+|---|---|
+| 2014-04-18 | Chain live, according to the technical documentation.[^imp-53-2] |
+| 2017-01 | RingCT implemented at block 1220516. It became mandatory for all transactions after September 2017.[^imp-53-3] |
+| 2018-04-06 | CryptoNight v1 activated at block 1546000.[^imp-53-2] |
+| 2018-10-18 | CryptoNight v2 activated at block 1685555.[^imp-53-2] |
+| 2019-03-09 | CryptoNight v3 ("CryptonightR") activated at block 1788000.[^imp-53-2] |
+| 2019-11-30 | RandomX v0 activated at block 1978433.[^imp-53-2] |
 
 ## Privacy mechanisms
 
@@ -87,3 +96,6 @@ According to the arXiv abstract, Monero wallet application bugs known as "Differ
 [^imp-13-1]: [About Monero](https://www.getmonero.org/resources/about/index.html)
 [^imp-13-2]: [Monero technical specification](https://docs.getmonero.org/technical-specs/)
 [^imp-13-3]: [Monero Traceability Heuristics: Wallet Application Bugs and the Mordinal-P2Pool Perspective](https://arxiv.org/abs/2408.05332)
+
+[^imp-53-2]: [Monero Technical Specification](https://docs.getmonero.org/technical-specs/)
+[^imp-53-3]: [Moneropedia: Ring CT](https://www.getmonero.org/resources/moneropedia/ringCT.html)
