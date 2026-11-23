@@ -30,7 +30,11 @@ leadership.[^about][^spec]
 
 Monero launched in April 2014 as a fair, pre-announced launch of the CryptoNote reference code. According to the project's About page, there was no premine or instamine, and no portion of the block reward goes to development. These are the project's own statements.[^imp-8-1]
 
+The original launch announcement on Bitcointalk, posted under the handle thankful_for_today, gave 18 April 2014 as the launch date and described the new coin as a Bytecoin fork rather than a relaunch.[^imp-54-1]
+
 The same page describes a later split. It says the founder proposed changes that the community disagreed with. After the dispute, the Monero Core Team forked the project, and the community followed the new Core Team, which the page says has provided oversight since. These are self-reported claims.[^imp-8-1]
+
+The About page does not date the dispute or the fork.[^imp-54-2]
 
 The page also lists later changes: a migration to a different blockchain database structure, minimum ring signature sizes so that all transactions were private by mandate, and RingCT to hide transaction amounts. It says nearly all improvements have aimed at security, privacy or ease of use, and that development decisions are open to public discussion, with major developer meetings published online.[^imp-8-1]
 
@@ -99,3 +103,6 @@ According to the arXiv abstract, Monero wallet application bugs known as "Differ
 
 [^imp-53-2]: [Monero Technical Specification](https://docs.getmonero.org/technical-specs/)
 [^imp-53-3]: [Moneropedia: Ring CT](https://www.getmonero.org/resources/moneropedia/ringCT.html)
+
+[^imp-54-1]: [Bitmonero launch announcement (Bitcointalk)](https://bitcointalk.org/index.php?topic=563821.0)
+[^imp-54-2]: [About Monero](https://www.getmonero.org/resources/about/index.html)
