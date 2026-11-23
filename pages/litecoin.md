@@ -3,7 +3,7 @@ title: Litecoin
 ticker: LTC
 category: Layer 1
 status: draft
-updated: 2026-11-19
+updated: 2026-11-23
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -28,7 +28,7 @@ The launch announcement was posted on Bitcointalk in a thread titled 'Litecoin -
 
 Wikipedia gives October 7, 2011 as the release date, while the forum post is timestamped October 9, 2011, so the exact start date is not settled here.[^imp-34-2] The forum page shows a last edit dated June 25, 2014, so its current wording may differ from the 2011 original.[^imp-34-1]
 
-Bitstamp describes Lee as a computer scientist and entrepreneur best known as the inventor of Litecoin.[^2] Bitstamp also notes that LTC has fallen in crypto market rankings over recent cycles.[^2]
+A TechCrunch report from December 2017 describes Lee as the former director of engineering at Coinbase and as the founder of Litecoin, which he started in 2011.[^imp-57-2]
 
 According to Wikipedia, a weak source for this draft, Dogecoin began merge-mining with Litecoin in September 2014.[^11] Crypto-press reporting says Litecoin activated SegWit in April 2017, and that Bitcoin followed a few months later.[^12]
 
@@ -40,7 +40,7 @@ The 2011 launch post pointed readers to a GitHub repository for the source code.
 
 **Supply.** The maximum supply is 84 million LTC.[^3] A secondary source states that mining rewards halve every 840,000 blocks, approximately every four years.[^6] The smallest unit is the litoshi, equal to 10⁻⁸ LTC.[^3]
 
-**MWEB.** The project describes Mimblewimble Extension Blocks (MWEB) as based on the Mimblewimble protocol, promising confidential transactions and efficient pruning.[^8] According to the project, MWEB works alongside the main blockchain while remaining compatible with existing wallets and services.[^8] Crypto-press reporting names David Burkett, a Mimblewimble developer, as leading development of the protocol for Litecoin.[^12] A weak commentary source states that only activity inside MWEB is shielded.[^14]
+**MWEB.** LIP-0003, the draft proposal for MimbleWimble via Extension Blocks, describes an opt-in MimbleWimble transaction format carried through extension blocks. Extension blocks run alongside the main chain's canonical blocks at the same average interval of 2.5 minutes, and users opt in by moving coins into and out of the extension block through an integrating transaction.[^imp-57-3] The same proposal lists David Burkett, Andrew Yang and Charlie Lee as its authors.[^imp-57-3]
 
 Crypto-press reporting says Litecoin reached the 75% network consensus threshold for MWEB activation on May 2, and that MWEB then locked in for activation at block height 2,257,920.[^imp-34-3] The article is dated May 22, 2022, and describes MWEB as an opt-in feature for confidential transactions.[^imp-34-3]
 
@@ -84,9 +84,11 @@ The project states that Litecoin is released under the MIT/X11 licence.[^7] Its 
 [^9]: [Litecoin Spot ETF Now Trading (NASDAQ: LTCC)](https://litecoin.com/news/litecoin-spot-etf-approved)
 [^11]: [Litecoin](https://en.wikipedia.org/wiki/Litecoin)
 [^12]: [Litecoin Activates MimbleWimble Extension Blocks (MWEB)](https://cryptopotato.com/litecoin-activates-mimblewimble-extension-blocks-mweb/)
-[^14]: [MWEB three years on: what the adoption data actually says about Litecoin privacy — Litecoin.watch](https://litecoin.watch/articles/mweb-three-years-on-what-the-adoption-data-actually-says-about-litecoin-privacy)
 [^18]: [Litecoin's 2026 MWEB incidents: what the postmortem establishes — Litecoin.watch](https://litecoin.watch/articles/litecoin-s-first-security-incident-mweb-exploit-triggers-13-block-reorg-and-600k-loss)
 
 [^imp-34-1]: [Litecoin - a lite version of Bitcoin. Launched! (Bitcointalk announcement thread)](https://bitcointalk.org/index.php?topic=47417.0)
 [^imp-34-2]: [Litecoin - Wikipedia](https://en.wikipedia.org/wiki/Litecoin)
 [^imp-34-3]: [Litecoin Activates MimbleWimble Extension Blocks (MWEB) - CryptoPotato](https://cryptopotato.com/litecoin-activates-mimblewimble-extension-blocks-mweb/)
+
+[^imp-57-2]: [Litecoin founder Charlie Lee has sold all of his LTC | TechCrunch](https://techcrunch.com/2017/12/20/litecoin-charlie-lee-conflict-of-interest/amp)
+[^imp-57-3]: [LIP-0003: MimbleWimble via Extension Blocks (Litecoin Improvement Proposal, Draft)](https://github.com/litecoin-project/lips/blob/master/lip-0003.mediawiki)
