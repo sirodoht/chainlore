@@ -26,6 +26,8 @@ leadership.[^about][^spec]
 | Target block interval | Two minutes[^imp-13-2] |
 | Base tail subsidy | 0.6 XMR per block before block-size penalties[^imp-13-2] |
 
+The launch date, block-time and tail-emission entries in the table above match the Monero technical specification. It gives 18 April 2014 as the date the blockchain went live, a block time of two minutes, and a tail emission of 0.6 XMR per two-minute block.[^imp-55-1] It also says the block reward is subject to penalties for blocks larger than the median size of the last 100 blocks.[^imp-55-1]
+
 ## History
 
 Monero launched in April 2014 as a fair, pre-announced launch of the CryptoNote reference code. According to the project's About page, there was no premine or instamine, and no portion of the block reward goes to development. These are the project's own statements.[^imp-8-1]
@@ -46,6 +48,10 @@ The page also lists later changes: a migration to a different blockchain databas
 | 2018-10-18 | CryptoNight v2 activated at block 1685555.[^imp-53-2] |
 | 2019-03-09 | CryptoNight v3 ("CryptonightR") activated at block 1788000.[^imp-53-2] |
 | 2019-11-30 | RandomX v0 activated at block 1978433.[^imp-53-2] |
+
+The 2017-01 RingCT row in the history table follows the Moneropedia RingCT entry. That entry states that RingCT was implemented in block #1220516 in January 2017, and that after September 2017 it became mandatory for all transactions on the network.[^imp-55-2]
+
+In a post dated 2019-12-16, the Monero Core Team announced that fluffypony, the lead maintainer of Monero, was stepping down from that role. Snipa, a long-time contributor, was named to take his place, and fluffypony remained as a backup maintainer to relieve Snipa when he was busy or on vacation.[^imp-55-3] Finance Magnates identifies fluffypony as Riccardo Spagni and reports that he had led the project since its inception in 2014. It says his responsibilities were transferred to Snipa and that the reason for his departure was not yet known.[^imp-55-4]
 
 ## Privacy mechanisms
 
@@ -106,3 +112,8 @@ According to the arXiv abstract, Monero wallet application bugs known as "Differ
 
 [^imp-54-1]: [Bitmonero launch announcement (Bitcointalk)](https://bitcointalk.org/index.php?topic=563821.0)
 [^imp-54-2]: [About Monero](https://www.getmonero.org/resources/about/index.html)
+
+[^imp-55-1]: [Monero technical specification](https://docs.getmonero.org/technical-specs/)
+[^imp-55-2]: [Moneropedia: Ring CT](https://www.getmonero.org/resources/moneropedia/ringCT.html)
+[^imp-55-3]: [An update from the Core Team on some technical responsibilities](https://web.getmonero.org/2019/12/16/technical-responsibilities-update.html)
+[^imp-55-4]: [Fluffypony Steps Down as Lead Monero Maintainer, Finance Magnates](https://www.financemagnates.com/cryptocurrency/news/fluffypony-steps-down-as-lead-monero-maintainer/)
