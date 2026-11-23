@@ -24,7 +24,7 @@ Litecoin (LTC) is an open-source, proof-of-work cryptocurrency created by Charli
 
 ## History
 
-The launch announcement was posted on Bitcointalk in a thread titled 'Litecoin - a lite version of Bitcoin. Launched!', with a first post timestamped October 9, 2011.[^1] The post says the project was started by people who met on IRC to create an alternative currency similar to Bitcoin, and that it aimed to be 'silver to Bitcoin's gold'.[^1] The post surveys earlier altcoins, several of which it calls dead, and says the coin would begin with 150 premined coins: the genesis block and the first two blocks.[^1]
+The launch announcement is a Bitcointalk thread titled '[ANN] Litecoin - a lite version of Bitcoin. Launched!', and its opening post carries an October 9, 2011 timestamp.[^imp-58-1] The post says that "some of us who joined together on IRC" set out to create an alternative currency similar to Bitcoin, and that they "wanted to make a coin that is silver to Bitcoin's gold".[^imp-58-1] Of the six earlier altcoins the post reviews, it labels three as 'Dead': ixcoin, i0coin and SolidCoin.[^imp-58-1] The post also says Litecoin would begin with 150 premined coins: the genesis block and the first two blocks.[^imp-58-1]
 
 Wikipedia gives October 7, 2011 as the release date, while the forum post is timestamped October 9, 2011, so the exact start date is not settled here.[^imp-34-2] The forum page shows a last edit dated June 25, 2014, so its current wording may differ from the 2011 original.[^imp-34-1]
 
@@ -92,3 +92,5 @@ The project states that Litecoin is released under the MIT/X11 licence.[^7] Its 
 
 [^imp-57-2]: [Litecoin founder Charlie Lee has sold all of his LTC | TechCrunch](https://techcrunch.com/2017/12/20/litecoin-charlie-lee-conflict-of-interest/amp)
 [^imp-57-3]: [LIP-0003: MimbleWimble via Extension Blocks (Litecoin Improvement Proposal, Draft)](https://github.com/litecoin-project/lips/blob/master/lip-0003.mediawiki)
+
+[^imp-58-1]: [Bitcointalk announcement thread, opening post: Litecoin - a lite version of Bitcoin. Launched!](https://bitcointalk.org/index.php?topic=47417.0)
