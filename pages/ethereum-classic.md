@@ -38,9 +38,11 @@ ECIP-1100, titled Modified Exponential Subjective Scoring (MESS), was created on
 
 ## Governance
 
+Protocol proposals are published as Ethereum Classic Improvement Proposals (ECIPs). Proposals are grouped by category, and each proposal page shows a status; the ECIP-1100 page, for example, lists the category ECBP and the status Replaced.[^imp-60-6]
+
 A May 2026 community call discussed Olympia, a proposal described by a speaker as routing transaction fees into a treasury. Speakers described the proposal as contested and said there was no clear consensus behind it.[^5]
 
-The same call said a petition at nolympia.dev opposed Olympia, and that signatures from the mining pools F2Pool, 2Miners and Antpool together represented about 80% of ETC hashrate, citing trustpool.cc. This account comes from a community call transcript and has not been independently verified here.[^5]
+The call page states that F2Pool and 2Miners signed the nolympia.dev petition against Olympia, joining Antpool, and that these pools put roughly 80% of ETC hashrate on record opposing it.[^imp-60-8] The petition page lists F2Pool, 2Miners and Antpool among its signers.[^imp-60-7] The call page attributes the 80% figure to trustpool.cc, which was not checked for this article.[^imp-60-8]
 
 ## Incidents and controversies
 
@@ -71,3 +73,7 @@ Node software did not respond the same way. According to Bitquery, Geth and Hype
 [^3]: [Ethereum Classic 51% Chain Attack July 31, 2020 - Bitquery](https://bitquery.io/blog/ethereum-classic-51-chain-attack-july-31-2020)
 [^4]: [MESS (Modified Exponential Subjective Scoring)](https://ecips.ethereumclassic.org/ECIPs/ecip-1100)
 [^5]: [ETCCC 52 - Nolympia](https://cc.ethereumclassic.org/calls/52/)
+
+[^imp-60-6]: [MESS (Modified Exponential Subjective Scoring)](https://ecips.ethereumclassic.org/ECIPs/ecip-1100)
+[^imp-60-7]: [Nolympia - Petition against the Olympia Treasury proposal for Ethereum Classic](https://nolympia.dev/)
+[^imp-60-8]: [ETCCC 52 - Nolympia](https://cc.ethereumclassic.org/calls/52/)
