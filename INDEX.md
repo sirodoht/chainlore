@@ -20,6 +20,7 @@ All pages in Chainlore.
 - [XRP Ledger](pages/xrp-ledger.md): XRP, validator lists, payments, and exchange.
 - [Litecoin](pages/litecoin.md): Litecoin (LTC) is an open-source, proof-of-work cryptocurrency created by Charlie Lee. It was launched in 2011 as a fork of Bitcoin's codebase with modified parameters.
 - [Bitcoin Cash](pages/bitcoin-cash.md): | Property | Detail | | --- | --- | | Type | Hard fork of Bitcoin, incompatible with Bitcoin's rules | | Activation time | Unix time 1501590000 (1 August 2017, 12:20 UTC) | |…
+- [Ethereum Classic](pages/ethereum-classic.md): | Field | Detail | | --- | --- | | Ticker | ETC | | Consensus | Proof of work | | Fork block | 1920000, reported in a post dated 2016-07-20 | | Mining at fork completion |…
 
 ## Layer 2 networks
 
