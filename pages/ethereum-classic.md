@@ -9,12 +9,12 @@ written_by: claude-haiku-5-5 (high effort)
 
 | Field | Detail |
 | --- | --- |
-| Ticker | ETC[^5] |
-| Consensus | Proof of work[^3][^4] |
-| Fork block | 1920000, reported in a post dated 2016-07-20[^1] |
-| Mining at fork completion | Roughly 85% of miners mining the fork, per the Ethereum Foundation post[^1] |
-| Proposal process | Ethereum Classic Improvement Proposals (ECIPs)[^4][^5] |
-| Notable incident | 51% attack on 2020-07-31[^3] |
+| Ticker | ETC[^imp-61-7] |
+| Consensus | Proof of work[^imp-61-1][^imp-61-5] |
+| Fork block | 1920000, reported in a post dated 2016-07-20[^imp-61-3] |
+| Mining at fork completion | Roughly 85% of miners mining the fork, per the Ethereum Foundation post[^imp-61-3] |
+| Proposal process | Ethereum Classic Improvement Proposals (ECIPs)[^imp-61-5][^imp-61-7] |
+| Notable incident | 51% attack on 2020-07-31[^imp-61-4] |
 
 ## History
 
@@ -24,7 +24,13 @@ The post said the recovery contract was returning ether to DAO token holders, wi
 
 Users who wanted to follow the unchanged chain were told to run with the --oppose-dao-fork flag and to guard against transaction replay attacks.[^1]
 
+The same post told users interested only in the fork chain to upgrade to a fork-compatible client, and named Go client version 1.4.10 as the upgraded version.[^imp-61-3]
+
 The Ethereum Classic website republishes the Foundation's post. It describes its content as user-generated and solely for informational purposes, and states there is “no official anything” in Ethereum Classic.[^2] The sources reviewed do not describe a formal organisational relationship between Ethereum Classic and the Ethereum Foundation beyond this reprint.[^1][^2]
+
+A 2016 Bitcoin Magazine report, dated 20 July 2016, described Ethereum Classic as continuing on the existing Ethereum blockchain without the hard fork code that would undo the DAO. It quoted the project's website as saying the project intended to "keep the original censorship-resistant Ethereum going" and to "provide an alternative for people who strongly disagree with DAO bailout."[^imp-61-2]
+
+A 2023 Ethereum Classic course article by Donald McIntyre, dated 26 January 2023, describes the project's choice as a "Code Is Law" ethos of continuing the original, untampered Ethereum chain. The article says its content is user-generated and solely for informational purposes. It is published on the project's blog, so it should be treated as the project's own account.[^imp-61-1]
 
 ## Technology
 
@@ -77,3 +83,10 @@ Node software did not respond the same way. According to Bitquery, Geth and Hype
 [^imp-60-6]: [MESS (Modified Exponential Subjective Scoring)](https://ecips.ethereumclassic.org/ECIPs/ecip-1100)
 [^imp-60-7]: [Nolympia - Petition against the Olympia Treasury proposal for Ethereum Classic](https://nolympia.dev/)
 [^imp-60-8]: [ETCCC 52 - Nolympia](https://cc.ethereumclassic.org/calls/52/)
+
+[^imp-61-1]: [Ethereum Classic Course: 6. Ethereum Classic Is the Original Chain](https://ethereumclassic.org/blog/2023-01-26-ethereum-classic-course-6-ethereum-classic-is-the-original-chain/)
+[^imp-61-2]: [Rejecting Today's Hard Fork, The Ethereum Classic Project Continues On The Original Chain: Here's Why](https://bitcoinmagazine.com/culture/rejecting-today-s-hard-fork-the-ethereum-classic-project-continues-on-the-original-chain-here-s-why-1469038808)
+[^imp-61-3]: [Hard Fork Completed | Ethereum Foundation Blog](https://blog.ethereum.org/2016/07/20/hard-fork-completed)
+[^imp-61-4]: [Ethereum Classic 51% Chain Attack July 31, 2020 - Bitquery](https://bitquery.io/blog/ethereum-classic-51-chain-attack-july-31-2020)
+[^imp-61-5]: [MESS (Modified Exponential Subjective Scoring)](https://ecips.ethereumclassic.org/ECIPs/ecip-1100)
+[^imp-61-7]: [ETCCC 52 - Nolympia](https://cc.ethereumclassic.org/calls/52/)
