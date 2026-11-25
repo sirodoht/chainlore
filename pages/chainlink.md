@@ -3,10 +3,10 @@ title: Chainlink
 ticker: LINK
 category: Infrastructure
 written_by: GPT-6-Astra high
-status: ai-fact-checked
+status: draft
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
-updated: 2026-10-31
+updated: 2026-11-25
 ---
 
 # Chainlink
@@ -82,6 +82,16 @@ those decisions.[^quality]
 | 2019-05-30 | Ethereum mainnet launch announced[^launch] |
 | 2026-10-21 | Quarterly review reports CCIP 2.0 live[^q3] |
 
+### Further milestones, 2021–2025
+
+| Date | Event |
+|---|---|
+| 2021-04-15 | Chainlink 2.0 whitepaper dated[^imp-64-2] |
+| 2021-08-05 | Chainlink Automation announced as live on Ethereum mainnet and open to the public[^imp-64-3] |
+| 2022-12-06 | Staking v0.1 early access live on Ethereum mainnet, with general access scheduled for 2022-12-08 and an initial 25M LINK cap[^imp-64-4] |
+| 2023-07-17 | CCIP entered Mainnet Early Access on Avalanche, Ethereum, Optimism and Polygon[^imp-64-5] |
+| 2025-05-18 | Chainlink's whitepaper index lists an OCR3 paper dated this day, describing it as major scaling, performance and programmability upgrades[^imp-64-2] |
+
 ## See also
 
 - [Ethereum](ethereum.md)
@@ -97,3 +107,8 @@ those decisions.[^quality]
 [^token]: Chainlink. *LINK token contracts*. <https://docs.chain.link/resources/link-token-contracts>
 [^quality]: Chainlink. *Selecting quality data feeds*. <https://docs.chain.link/data-feeds/selecting-data-feeds>
 [^q3]: Chainlink (21 October 2026). *Chainlink quarterly review: Q3, 2026*. <https://chain.link/blog/quarterly-review-q3-2026>
+
+[^imp-64-2]: [Chainlink 2.0 and the future of Decentralized Oracle Networks](https://chain.link/whitepaper)
+[^imp-64-3]: [Chainlink Automation Is Now Live on Mainnet](https://chain.link/blog/chainlink-automation-is-now-live-on-mainnet)
+[^imp-64-4]: [Chainlink Staking v0.1 Early Access Is Now Live](https://chain.link/blog/chainlink-staking-early-access-now-live)
+[^imp-64-5]: [CCIP Officially Launches on Mainnet](https://blog.chain.link/ccip-mainnet-early-access/)
