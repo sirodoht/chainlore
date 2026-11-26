@@ -3,7 +3,7 @@ title: 2016 Bitfinex hack
 ticker: None
 category: Event
 status: draft
-updated: 2026-11-20
+updated: 2026-11-26
 written_by: claude-haiku-5-5 (high effort)
 ---
 
@@ -28,6 +28,8 @@ A TechCrunch headline on 2 August 2016 reported that bitcoin dropped 20% after a
 The US Department of Justice said the case was investigated by the IRS Criminal Investigation Washington, D.C. Field Office's Cyber Crimes Unit, the FBI's Chicago Field Office and HSI New York, with help from the Ansbach Police Department in Germany.[^4] On 8 February 2022, the DOJ announced the arrests in Manhattan of Ilya Lichtenstein and Heather Morgan, both of New York. A criminal complaint alleged that they conspired to launder the proceeds of the theft.[^4] Agents executed court-authorised search warrants on online accounts and obtained files containing the private keys to the wallet that directly received the stolen funds, which allowed them to seize more than 94,000 BTC.[^4] Deputy Attorney General Lisa O. Monaco described the seizure as the department's largest financial seizure ever.[^4] The DOJ later said the government had seized another approximately $475 million tied to the hack since the arrests.[^1]
 
 According to court documents cited by the DOJ, Lichtenstein used advanced hacking tools to access Bitfinex's network, fraudulently authorised more than 2,000 transactions moving 119,754 BTC to a wallet he controlled, and then deleted access credentials and log files.[^1] The DOJ describes laundering methods including fictitious identities, automated transactions, deposits into darknet markets and exchanges, chain-hopping, mixing services such as Bitcoin Fog, Helix and ChipMixer, and gold coins that Morgan concealed by burying them.[^1] On 3 August 2023, Lichtenstein pleaded guilty to conspiracy to commit money laundering. Morgan pleaded guilty to one count of money laundering conspiracy and one count of conspiracy to defraud the United States.[^1] A DOJ press release, reproduced on a third-party site, says Lichtenstein was later sentenced to five years in prison.[^9] The sources reviewed do not establish the sentencing date or Morgan's sentence.
+
+Sources differ slightly on the amount stolen. Bitfinex's FAQ gives 119,755 BTC,[^imp-72-2] while The Block, citing the government, gives 119,754 BTC.[^imp-72-3] The sources reviewed do not confirm the figure of 119,756 BTC that appears in the summary table.
 
 In August 2020, Bitfinex published a statement pledging rewards for information leading to the recovery of the funds and for the return of the stolen property.[^16] On 7 October 2020, more than $26 million in bitcoin tied to the 2016 hack was moved across seven transactions, according to The Block, which relied on the Whale Alert data bot.[^16]
 
@@ -74,3 +76,6 @@ In the restitution dispute, Judge Colleen Kollar-Kotelly asked prosecutors to cl
 [^imp-41-2]: [Only Bitfinex may get restitution in 2016 hack, per government filing](https://cointelegraph.com/news/bitfinex-2016-bitcoin-hack-restitution-us-government)
 [^imp-41-3]: [Bitcoin drops 20% after $70M worth of bitcoin was stolen from Bitfinex exchange](https://techcrunch.com/2016/08/02/bitcoin-drops-20-after-70m-worth-of-bitcoin-was-stolen-from-bitfinex-exchange/)
 [^imp-41-4]: [UPDATED: Mt.Gox Files For Bankruptcy Protection, Says 850,000 Bitcoin Lost](https://techcrunch.com/2014/02/28/mt-gox-files-for-bankruptcy)
+
+[^imp-72-2]: [2016 Security Breach Bitcoin Recovery — Frequently Asked Questions (FAQ)](https://support.bitfinex.com/hc/en-us/articles/4417401349657-2016-Security-Breach-Bitcoin-Recovery-Frequently-Asked-Questions-FAQ)
+[^imp-72-3]: [US government says stolen bitcoin from 2016 Bitfinex hack should be returned to the exchange 'in-kind'](https://www.theblock.co/news/markets/2025-01-15-us-government-says-stolen-bitcoin-from-2016-bitfinex-hack-should-be-returned-to-the-exchange-in-kind-334791)
