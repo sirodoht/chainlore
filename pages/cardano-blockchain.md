@@ -50,6 +50,8 @@ The documentation says that, in contrast to Ethereum, Plutus supports user-defin
 
 ### Ledger value and native tokens
 
+Cardano.org's plain-language explainer describes the ledger as holding unspent transaction outputs, which it calls individual notes of value, each locked to an address.[^imp-70-1] The same page says that, once minted, tokens travel inside ordinary transaction outputs alongside ada, and that a single transaction can carry many different assets.[^imp-70-1]
+
 The same page says that ada keeps special roles on the ledger: only ada pays fees and deposits, only ada is paid out as staking rewards, and every output that carries tokens has to hold some ada as well.[^imp-69-2] It also states that the ada an output must hold as a minimum is not a fee, because it stays in the output and comes back when the output is spent.[^imp-69-2]
 
 ## Governance
@@ -102,3 +104,5 @@ The Block reports that emergency patches were deployed within three hours of the
 [^imp-69-2]: [How Cardano Works: Consensus, Ledger and Upgrades | Cardano.org](https://cardano.org/how-cardano-works/)
 [^imp-69-3]: [Incident report: network partition analysis and resolution strategy | Intersect](https://intersectmbo.org/news/incident-report-network-partition-analysis-and-resolution-strategy)
 [^imp-69-4]: [Hoskinson involves FBI after developer's 'careless' experiment splits Cardano blockchain | The Block](https://www.theblock.co/news/ecosystems/2025-11-23-hoskinson-involves-fbi-after-developers-careless-experiment-splits-cardano-blockchain-380056)
+
+[^imp-70-1]: [How Cardano Works: Consensus, Ledger and Upgrades | Cardano](https://cardano.org/how-cardano-works/)
