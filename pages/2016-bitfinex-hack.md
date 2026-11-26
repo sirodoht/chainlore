@@ -33,11 +33,13 @@ Sources differ slightly on the amount stolen. Bitfinex's FAQ gives 119,755 BTC,[
 
 In August 2020, Bitfinex published a statement pledging rewards for information leading to the recovery of the funds and for the return of the stolen property.[^16] On 7 October 2020, more than $26 million in bitcoin tied to the 2016 hack was moved across seven transactions, according to The Block, which relied on the Whale Alert data bot.[^16]
 
+In January 2025, the US government filed a court document in the US District Court for the District of Columbia in a case involving Ilya Lichtenstein and Heather Morgan. The filing argued that more than 94,000 bitcoin should be returned to Bitfinex as in-kind restitution under the defendants' plea agreements, and that the restitution should include all of the assets seized from the Bitfinex Hack Wallet.[^imp-73-3] The government said there is no "victim" for the specific offenses of conviction in the proceeding, but that the court has the authority to order voluntary restitution pursuant to the defendants' plea agreements.[^imp-73-3] The filing is a request, and the sources reviewed do not establish whether the court has ruled on it.[^imp-73-3]
+
 ## Governance
 
 BFX token holders could sell the tokens on the market or sell them to Bitfinex at a fixed rate of $1 per token.[^3] Users could also take iFinex shares in place of BFX tokens.[^6] The exchange's FAQ says that all BFX token holders had their tokens redeemed at 100 cents on the US dollar or exchanged for shares of the capital stock of iFinex Inc. within eight months of the breach, and that all BFX tokens were destroyed.[^2]
 
-Bitfinex also created a tradable Recovery Right Token (RRT) for certain BFX holders that converted BFX tokens into shares of iFinex. The FAQ says that any recovered funds will be used for distributions to RRT holders, up to $1 per RRT.[^2] The FAQ also says that, if Bitfinex receives a recovery, it will within 18 months use 80% of the recovered net funds to repurchase and burn outstanding UNUS SED LEO tokens. This is a company statement.[^2]
+Bitfinex's FAQ says that the company created a tradable Recovery Right Token (RRT) for certain BFX holders that converted BFX tokens into shares of iFinex.[^imp-73-1] A Bitfinex blog post dated 11 October 2016 described the RRT as a token created to compensate victims of the security breach and to give priority to early BFX conversions, and said that no RRTs would be delivered for subscriptions made after 30 November 2016.[^imp-73-2] The FAQ says that any recovered funds will be used for distributions to RRT holders, up to $1 per RRT.[^imp-73-1] The FAQ also says that, if Bitfinex receives a recovery, it will within 18 months use 80% of the recovered net funds to repurchase and burn outstanding UNUS SED LEO tokens. This is a company statement.[^imp-73-1]
 
 ## Incidents and controversies
 
@@ -79,3 +81,7 @@ In the restitution dispute, Judge Colleen Kollar-Kotelly asked prosecutors to cl
 
 [^imp-72-2]: [2016 Security Breach Bitcoin Recovery — Frequently Asked Questions (FAQ)](https://support.bitfinex.com/hc/en-us/articles/4417401349657-2016-Security-Breach-Bitcoin-Recovery-Frequently-Asked-Questions-FAQ)
 [^imp-72-3]: [US government says stolen bitcoin from 2016 Bitfinex hack should be returned to the exchange 'in-kind'](https://www.theblock.co/news/markets/2025-01-15-us-government-says-stolen-bitcoin-from-2016-bitfinex-hack-should-be-returned-to-the-exchange-in-kind-334791)
+
+[^imp-73-1]: [2016 Security Breach Bitcoin Recovery — Frequently Asked Questions (FAQ)](https://support.bitfinex.com/hc/en-us/articles/4417401349657-2016-Security-Breach-Bitcoin-Recovery-Frequently-Asked-Questions-FAQ)
+[^imp-73-2]: [Bitfinex Recovery Right Tokens (Bitfinex blog, 11 October 2016)](https://blog.bitfinex.com/announcements/bitfinex-recovery-right-tokens/)
+[^imp-73-3]: [US government says stolen bitcoin from 2016 Bitfinex hack should be returned to the exchange 'in-kind'](https://www.theblock.co/news/markets/2025-01-15-us-government-says-stolen-bitcoin-from-2016-bitfinex-hack-should-be-returned-to-the-exchange-in-kind-334791)
