@@ -48,6 +48,10 @@ Cardano uses an extended UTXO model (EUTXO). Output addresses can contain comple
 
 The documentation says that, in contrast to Ethereum, Plutus supports user-defined fungible and non-fungible tokens natively, without an accompanying smart contract. This comparison is the documentation's own.[^3]
 
+### Ledger value and native tokens
+
+The same page says that ada keeps special roles on the ledger: only ada pays fees and deposits, only ada is paid out as staking rewards, and every output that carries tokens has to hold some ada as well.[^imp-69-2] It also states that the ada an output must hold as a minimum is not a fee, because it stays in the output and comes back when the output is spent.[^imp-69-2]
+
 ## Governance
 
 The Voltaire phase gives the community the ability to vote on network development updates, technical improvements and project funding.[^1] The Conway ledger era, part of Voltaire, includes two hard forks: Chang introduced the initial governance framework, and Plomin completed the governance feature set, including delegated representatives (DReps), treasury withdrawals and governance actions under CIP-1694.[^1]
@@ -57,6 +61,25 @@ On 29 January 2025, Cardano transitioned to community governance with the Plomin
 A Cardano.org news post credited to Intersect describes Plomin as “the first community-driven hard fork in blockchain history”. This is the post's own description and has not been checked against independent coverage.[^4]
 
 The documentation says that two further eras are planned. Dijkstra will focus on Plutus v4, consensus and ledger integration, and Conway refactors for transition. Euler's full scope is still to be determined.[^1]
+
+## November 2025 chain partition
+
+Intersect's initial incident report describes a chain partition on the Cardano mainnet that began at approximately 08:00 UTC on 21 November 2025. The report calls itself an overview of an ongoing incident, so its details may change as the investigation continues.[^imp-69-3]
+
+The report attributes the partition to a malformed delegation transaction that exploited a bug in an underlying software library, which was not trapped by validation code. It describes the bug as a deserialization bug in a hash that dates back to 2022, and says that the transaction was explicitly crafted to trigger this bug on mainnet after its earlier discovery on the Preview network.[^imp-69-3]
+
+According to the report, older nodes, including those used by Daedalus, DB-Sync, light wallets and explorers, rejected the transaction, while newer nodes, including the majority of stake pools, accepted it. The result was two chains: one containing the "poisoned" transaction and a "healthy" chain without it. Block production continued on both chains, and at least some identical transactions appeared on both. Exchanges and third-party providers largely paused deposits and withdrawals as a precaution.[^imp-69-3]
+
+The report says that node versions 10.5.2 and 10.5.3 were released at approximately 11:00 UTC and 15:30 UTC, and that stake pool operators running versions 10.3.1, 10.4.1 or 10.5.1 were told to upgrade to 10.5.3 immediately. It states that, in line with the Ouroboros consensus protocol, the chain with the highest density will eventually overtake the other chain and orphan its invalid blocks.[^imp-69-3]
+
+The report states that no user funds had been compromised and that the wallet responsible for the malformed transaction had been identified. It also says that relevant authorities, including the Federal Bureau of Investigation, are being engaged to investigate the incident as a potential cyberattack.[^imp-69-3]
+
+The Block reports that emergency patches were deployed within three hours of the issue being detected, that the network converged through natural consensus by 22 November, and that block explorers froze or displayed conflicting information during the partition.[^imp-69-4] It also reports that the price of ADA dropped as much as 16% before rebounding slightly.[^imp-69-4] A developer claimed responsibility on X and apologised to the Cardano community, saying they were attempting to test the damaging transaction. This is the developer's own account and has not been independently verified.[^imp-69-4]
+
+| Date | Event |
+|---|---|
+| 2025-11-20 | A similar incident occurs on the Preview testnet, according to Intersect's report.[^imp-69-3] |
+| 2025-11-21 | A chain partition begins on the Cardano mainnet at approximately 08:00 UTC, creating "poisoned" and "healthy" chains.[^imp-69-3] |
 
 ## Timeline
 
@@ -75,3 +98,7 @@ The documentation says that two further eras are planned. Dijkstra will focus on
 [^3]: [Plutus | Cardano Docs](https://docs.cardano.org/developer-resources/smart-contracts/plutus)
 [^4]: [Chang upgrade completed - Plomin hard fork achieved! | Cardano](https://cardano.org/news/2025-01-30-chang-upgrade-completed/)
 [^5]: [What Actually Happened with the Cardano Exploit? - Bitfinex blog](https://blog.bitfinex.com/education/what-actually-happened-with-the-cardano-exploit/)
+
+[^imp-69-2]: [How Cardano Works: Consensus, Ledger and Upgrades | Cardano.org](https://cardano.org/how-cardano-works/)
+[^imp-69-3]: [Incident report: network partition analysis and resolution strategy | Intersect](https://intersectmbo.org/news/incident-report-network-partition-analysis-and-resolution-strategy)
+[^imp-69-4]: [Hoskinson involves FBI after developer's 'careless' experiment splits Cardano blockchain | The Block](https://www.theblock.co/news/ecosystems/2025-11-23-hoskinson-involves-fbi-after-developers-careless-experiment-splits-cardano-blockchain-380056)
