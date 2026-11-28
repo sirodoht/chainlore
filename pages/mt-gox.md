@@ -3,10 +3,10 @@ title: Mt. Gox
 ticker: None
 category: Exchange
 written_by: GPT-6-Astra high
-status: ai-fact-checked
+status: draft
 checked: 2026-10-31
 checked_by: GPT-6-Astra high
-updated: 2026-10-31
+updated: 2026-11-28
 ---
 
 # Mt. Gox
@@ -52,10 +52,9 @@ public explanation in February 2014.[^doj]
 
 ## Creditor repayments
 
-The rehabilitation trustee announced repayments in Bitcoin and Bitcoin
-Cash to some creditors through designated exchanges on 5 July 2024.
-Further distributions depended on account validation, arrangements with
-exchanges, and checks that transfers could proceed securely.[^repayment]
+On 5 July 2024, the rehabilitation trustee announced repayments in Bitcoin and Bitcoin Cash to some rehabilitation creditors through a part of the designated cryptocurrency exchanges.[^imp-77-1] That notice did not state how much of either asset was distributed or how many creditors were covered.[^imp-77-1]
+
+A trustee notice dated 27 March 2025 gave a cumulative creditor count. After repayments in July and August 2024 and from January to March 2025, the trustee said it had made repayments in both coins to over 19,500 rehabilitation creditors to date.[^imp-77-2] The figure covers all rounds to that date, not July 2024 alone, and the notice gives no bitcoin total. The same notice said cash proceeds from sales of the two coins were also being paid to some creditors, with details to be announced separately.[^imp-77-2]
 
 As of 31 October 2026, the latest deadline notice, dated 16 October,
 extended the Base Repayment, Early Lump-Sum Repayment, and Intermediate
@@ -88,3 +87,6 @@ statement that every creditor must wait until that date.[^deadline]
 [^doj]: US Department of Justice (9 June 2023). *Russian nationals charged with hacking one cryptocurrency exchange and illicitly operating another*. <https://www.justice.gov/archives/opa/pr/russian-nationals-charged-hacking-one-cryptocurrency-exchange-and-illicitly-operating-another>
 [^repayment]: Rehabilitation trustee (5 July 2024). *Notice regarding repayment in Bitcoin and Bitcoin Cash*. <https://www.mtgox.com/img/pdf/20240705_01_announcement_en.pdf>
 [^deadline]: Rehabilitation trustee (16 October 2026). *Notice concerning change of repayments deadline*. <https://www.mtgox.com/img/pdf/20261016_b3a13e0f-55f6-4653-913b-be80762390e8_announcement_en.pdf>
+
+[^imp-77-1]: [Notice regarding Repayment in Bitcoin and Bitcoin Cash (5 July 2024)](https://www.mtgox.com/img/pdf/20240705_01_announcement_en.pdf)
+[^imp-77-2]: [Notice regarding Repayment in Bitcoin and Bitcoin Cash through Designated Cryptocurrency Exchange, etc. (27 March 2025)](https://www.mtgox.com/img/pdf/20250327_50441ef4-dc28-473a-9fd2-495db2da4bbd_announcement_en.pdf)
