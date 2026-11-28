@@ -50,6 +50,10 @@ concerned allegations in an indictment, rather than a finding of guilt.
 Its account of a multiyear theft is distinct from the exchange's initial
 public explanation in February 2014.[^doj]
 
+## Rehabilitation claims deadline
+
+Creditors had until 22 October 2018, Japan time, to file proofs of rehabilitation claims in the civil rehabilitation proceedings.[^imp-78-1] A trustee notice dated 22 November 2018 said that proofs filed after that deadline may be acceptable if the filings were delayed for reasons not attributable to creditors.[^imp-78-1] The notice states that the court determines whether proofs filed after the deadline will be accepted.[^imp-78-1] The trustee said that, among other factors, creditors located worldwide and the time needed to deliver claim forms justified it making efforts to ask the court to accept proofs received by 26 December 2018, Japan time.[^imp-78-1] The notice does not report whether the court accepted any late proofs.[^imp-78-1]
+
 ## Creditor repayments
 
 On 5 July 2024, the rehabilitation trustee announced repayments in Bitcoin and Bitcoin Cash to some rehabilitation creditors through a part of the designated cryptocurrency exchanges.[^imp-77-1] That notice did not state how much of either asset was distributed or how many creditors were covered.[^imp-77-1]
@@ -90,3 +94,5 @@ statement that every creditor must wait until that date.[^deadline]
 
 [^imp-77-1]: [Notice regarding Repayment in Bitcoin and Bitcoin Cash (5 July 2024)](https://www.mtgox.com/img/pdf/20240705_01_announcement_en.pdf)
 [^imp-77-2]: [Notice regarding Repayment in Bitcoin and Bitcoin Cash through Designated Cryptocurrency Exchange, etc. (27 March 2025)](https://www.mtgox.com/img/pdf/20250327_50441ef4-dc28-473a-9fd2-495db2da4bbd_announcement_en.pdf)
+
+[^imp-78-1]: [Announcement for Handling of Proofs of Rehabilitation Claims Filed After Deadline (22 November 2018)](https://www.mtgox.com/img/pdf/20181122_announcement_en.pdf)
